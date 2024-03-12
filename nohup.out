@@ -28,3 +28,124 @@
 [I 2024-03-07 07:01:19.350 ServerApp] Creating new file in 
 [I 2024-03-07 07:01:22.252 ServerApp] New terminal with automatic name: 1
 [I 2024-03-07 07:55:51.693 ServerApp] Uploading file to /0307.jl
+[I 2024-03-11 05:47:13.727 ServerApp] 302 GET / (@172.22.138.29) 0.33ms
+[I 2024-03-11 05:47:13.729 LabApp] 302 GET /lab? (@172.22.138.29) 0.38ms
+[I 2024-03-11 05:47:19.033 ServerApp] User b42bb1316d5c4f96a202902ea936bfd3 logged in.
+[I 2024-03-11 05:47:19.033 ServerApp] 302 POST /login?next=%2Flab%3F (b42bb1316d5c4f96a202902ea936bfd3@172.22.138.29) 64.92ms
+[W 2024-03-11 05:47:26.782 LabApp] Could not determine jupyterlab build status without nodejs
+[W 2024-03-11 05:47:26.910 ServerApp] 404 GET /api/contents/%ED%86%B5%EA%B3%84%EB%8D%B0%EC%9D%B4%ED%84%B0%EB%B2%A0%EC%9D%B4%EC%8A%A4/%EB%8D%B0%EC%9D%B4%ED%84%B0%EB%B2%A0%EC%9D%B4%EC%8A%A4.txt?content=0&hash=0&1710136043504 (b42bb1316d5c4f96a202902ea936bfd3@172.22.138.29) 0.97ms referer=http://210.117.173.186:44107/lab?
+[W 2024-03-11 05:47:26.910 ServerApp] 404 GET /api/contents/%ED%86%B5%EA%B3%84%EB%8D%B0%EC%9D%B4%ED%84%B0%EB%B2%A0%EC%9D%B4%EC%8A%A4/%EB%8D%B0%EC%9D%B4%ED%84%B0%EB%B2%A0%EC%9D%B4%EC%8A%A4.txt?content=0&hash=0&1710136043504 (172.22.138.29): No such file or directory: 통계데이터베이스/데이터베이스.txt
+[W 2024-03-11 05:47:26.910 ServerApp] 404 GET /api/contents/%ED%86%B5%EA%B3%84%EB%8D%B0%EC%9D%B4%ED%84%B0%EB%B2%A0%EC%9D%B4%EC%8A%A4/0311.txt?content=0&hash=0&1710136043504 (b42bb1316d5c4f96a202902ea936bfd3@172.22.138.29) 1.42ms referer=http://210.117.173.186:44107/lab?
+[W 2024-03-11 05:47:26.910 ServerApp] 404 GET /api/contents/%ED%86%B5%EA%B3%84%EB%8D%B0%EC%9D%B4%ED%84%B0%EB%B2%A0%EC%9D%B4%EC%8A%A4/0311.txt?content=0&hash=0&1710136043504 (172.22.138.29): No such file or directory: 통계데이터베이스/0311.txt
+[W 2024-03-11 05:47:27.517 ServerApp] 404 GET /api/contents/%ED%86%B5%EA%B3%84%EB%8D%B0%EC%9D%B4%ED%84%B0%EB%B2%A0%EC%9D%B4%EC%8A%A4?1710136044113 (b42bb1316d5c4f96a202902ea936bfd3@172.22.138.29) 0.64ms referer=http://210.117.173.186:44107/lab?
+[W 2024-03-11 05:47:27.517 ServerApp] 404 GET /api/contents/%ED%86%B5%EA%B3%84%EB%8D%B0%EC%9D%B4%ED%84%B0%EB%B2%A0%EC%9D%B4%EC%8A%A4?1710136044113 (172.22.138.29): No such file or directory: 통계데이터베이스
+[W 2024-03-12 04:03:27.681 LabApp] Could not determine jupyterlab build status without nodejs
+[W 2024-03-12 04:03:28.131 ServerApp] 404 GET /api/contents/%ED%83%90%EC%83%89%EC%A0%81%EC%9E%90%EB%A3%8C%EB%B6%84%EC%84%9D/Untitled.ipynb?content=0&hash=0&1710216208699 (1e597b79770048ab83ff0d6393178ea2@61.99.5.75) 0.76ms referer=http://210.117.173.186:44107/lab?
+[W 2024-03-12 04:03:28.131 ServerApp] 404 GET /api/contents/%ED%83%90%EC%83%89%EC%A0%81%EC%9E%90%EB%A3%8C%EB%B6%84%EC%84%9D/Untitled.ipynb?content=0&hash=0&1710216208699 (61.99.5.75): No such file or directory: 탐색적자료분석/Untitled.ipynb
+[W 2024-03-12 04:03:28.856 ServerApp] 404 GET /api/contents/%ED%83%90%EC%83%89%EC%A0%81%EC%9E%90%EB%A3%8C%EB%B6%84%EC%84%9D?1710216209415 (1e597b79770048ab83ff0d6393178ea2@61.99.5.75) 0.51ms referer=http://210.117.173.186:44107/lab?
+[W 2024-03-12 04:03:28.856 ServerApp] 404 GET /api/contents/%ED%83%90%EC%83%89%EC%A0%81%EC%9E%90%EB%A3%8C%EB%B6%84%EC%84%9D?1710216209415 (61.99.5.75): No such file or directory: 탐색적자료분석
+[I 2024-03-12 04:59:21.308 ServerApp] Malformed HTTP message from 172.22.138.26: Malformed HTTP request line
+[I 2024-03-12 04:59:21.360 ServerApp] Malformed HTTP message from 172.22.138.26: no colon in header line
+[I 2024-03-12 04:59:21.374 ServerApp] 302 GET / (@172.22.138.26) 0.35ms
+[I 2024-03-12 04:59:21.379 LabApp] 302 GET /lab? (@172.22.138.26) 0.41ms
+[I 2024-03-12 04:59:24.164 ServerApp] User 524993529267468e8708e8f9178430ca logged in.
+[I 2024-03-12 04:59:24.165 ServerApp] 302 POST /login?next=%2Flab%3F (524993529267468e8708e8f9178430ca@172.22.138.26) 37.52ms
+[W 2024-03-12 04:59:25.297 LabApp] Could not determine jupyterlab build status without nodejs
+[W 2024-03-12 04:59:25.416 ServerApp] 404 GET /api/contents/RiverFlow/posts/1.%20R%2C%20%EA%B7%B8%20%EC%9C%84%EB%8C%80%ED%95%9C%20%EC%8B%9C%EC%9E%91.ipynb?content=0&hash=0&1710219565393 (524993529267468e8708e8f9178430ca@172.22.138.26) 0.88ms referer=http://210.117.173.186:44107/lab?
+[W 2024-03-12 04:59:25.416 ServerApp] 404 GET /api/contents/RiverFlow/posts/1.%20R%2C%20%EA%B7%B8%20%EC%9C%84%EB%8C%80%ED%95%9C%20%EC%8B%9C%EC%9E%91.ipynb?content=0&hash=0&1710219565393 (172.22.138.26): No such file or directory: RiverFlow/posts/1. R, 그 위대한 시작.ipynb
+[W 2024-03-12 04:59:25.987 ServerApp] 404 GET /api/contents/RiverFlow?1710219565964 (524993529267468e8708e8f9178430ca@172.22.138.26) 0.66ms referer=http://210.117.173.186:44107/lab?
+[W 2024-03-12 04:59:25.987 ServerApp] 404 GET /api/contents/RiverFlow?1710219565964 (172.22.138.26): No such file or directory: RiverFlow
+[I 2024-03-12 04:59:42.633 ServerApp] Creating new directory in 
+[W 2024-03-12 05:01:50.440 ServerApp] delete /untitled1.txt
+[I 2024-03-12 05:02:36.755 ServerApp] Creating new notebook in /lecture
+[I 2024-03-12 05:02:39.708 ServerApp] Kernel started: 0bbb0a9c-9f35-47c6-a897-ff3640ac0be9
+[I 2024-03-12 05:02:45.803 ServerApp] Adapting from protocol version 5.0 (kernel 0bbb0a9c-9f35-47c6-a897-ff3640ac0be9) to 5.3 (client).
+[I 2024-03-12 05:02:45.805 ServerApp] Connecting to kernel 0bbb0a9c-9f35-47c6-a897-ff3640ac0be9.
+[I 2024-03-12 05:02:45.835 ServerApp] Adapting from protocol version 5.0 (kernel 0bbb0a9c-9f35-47c6-a897-ff3640ac0be9) to 5.3 (client).
+[I 2024-03-12 05:02:45.835 ServerApp] Connecting to kernel 0bbb0a9c-9f35-47c6-a897-ff3640ac0be9.
+[I 2024-03-12 05:02:45.860 ServerApp] Adapting from protocol version 5.0 (kernel 0bbb0a9c-9f35-47c6-a897-ff3640ac0be9) to 5.3 (client).
+[I 2024-03-12 05:02:45.860 ServerApp] Connecting to kernel 0bbb0a9c-9f35-47c6-a897-ff3640ac0be9.
+[I 2024-03-12 05:03:21.344 ServerApp] Saving file at /untitled.txt
+[W 2024-03-12 05:04:00.532 ServerApp] 404 GET /api/contents/loading.jl?content=0&hash=0&1710219840496 (524993529267468e8708e8f9178430ca@172.22.138.26) 0.52ms referer=http://210.117.173.186:44107/lab/tree/lecture/0312.ipynb
+[W 2024-03-12 05:04:00.532 ServerApp] 404 GET /api/contents/loading.jl?content=0&hash=0&1710219840496 (172.22.138.26): No such file or directory: loading.jl
+[W 2024-03-12 05:04:00.542 ServerApp] 404 GET /api/contents/lock.jl?content=0&hash=0&1710219840506 (524993529267468e8708e8f9178430ca@172.22.138.26) 0.58ms referer=http://210.117.173.186:44107/lab/tree/lecture/0312.ipynb
+[W 2024-03-12 05:04:00.542 ServerApp] 404 GET /api/contents/lock.jl?content=0&hash=0&1710219840506 (172.22.138.26): No such file or directory: lock.jl
+[W 2024-03-12 05:04:00.544 ServerApp] 404 GET /api/contents/loading.jl?content=0&hash=0&1710219840509 (524993529267468e8708e8f9178430ca@172.22.138.26) 0.45ms referer=http://210.117.173.186:44107/lab/tree/lecture/0312.ipynb
+[W 2024-03-12 05:04:00.544 ServerApp] 404 GET /api/contents/loading.jl?content=0&hash=0&1710219840509 (172.22.138.26): No such file or directory: loading.jl
+[W 2024-03-12 05:04:00.547 ServerApp] 404 GET /api/contents/essentials.jl?content=0&hash=0&1710219840511 (524993529267468e8708e8f9178430ca@172.22.138.26) 0.46ms referer=http://210.117.173.186:44107/lab/tree/lecture/0312.ipynb
+[W 2024-03-12 05:04:00.547 ServerApp] 404 GET /api/contents/essentials.jl?content=0&hash=0&1710219840511 (172.22.138.26): No such file or directory: essentials.jl
+[W 2024-03-12 05:04:00.550 ServerApp] 404 GET /api/contents/essentials.jl?content=0&hash=0&1710219840514 (524993529267468e8708e8f9178430ca@172.22.138.26) 0.51ms referer=http://210.117.173.186:44107/lab/tree/lecture/0312.ipynb
+[W 2024-03-12 05:04:00.550 ServerApp] 404 GET /api/contents/essentials.jl?content=0&hash=0&1710219840514 (172.22.138.26): No such file or directory: essentials.jl
+[W 2024-03-12 05:04:00.552 ServerApp] 404 GET /api/contents/loading.jl?content=0&hash=0&1710219840517 (524993529267468e8708e8f9178430ca@172.22.138.26) 0.44ms referer=http://210.117.173.186:44107/lab/tree/lecture/0312.ipynb
+[W 2024-03-12 05:04:00.552 ServerApp] 404 GET /api/contents/loading.jl?content=0&hash=0&1710219840517 (172.22.138.26): No such file or directory: loading.jl
+[W 2024-03-12 05:04:05.839 ServerApp] 404 GET /api/contents/loading.jl?content=0&hash=0&1710219845803 (524993529267468e8708e8f9178430ca@172.22.138.26) 0.98ms referer=http://210.117.173.186:44107/lab/tree/lecture/0312.ipynb
+[W 2024-03-12 05:04:05.839 ServerApp] 404 GET /api/contents/loading.jl?content=0&hash=0&1710219845803 (172.22.138.26): No such file or directory: loading.jl
+[W 2024-03-12 05:04:05.842 ServerApp] 404 GET /api/contents/lock.jl?content=0&hash=0&1710219845806 (524993529267468e8708e8f9178430ca@172.22.138.26) 0.49ms referer=http://210.117.173.186:44107/lab/tree/lecture/0312.ipynb
+[W 2024-03-12 05:04:05.842 ServerApp] 404 GET /api/contents/lock.jl?content=0&hash=0&1710219845806 (172.22.138.26): No such file or directory: lock.jl
+[W 2024-03-12 05:04:05.845 ServerApp] 404 GET /api/contents/loading.jl?content=0&hash=0&1710219845809 (524993529267468e8708e8f9178430ca@172.22.138.26) 0.76ms referer=http://210.117.173.186:44107/lab/tree/lecture/0312.ipynb
+[W 2024-03-12 05:04:05.845 ServerApp] 404 GET /api/contents/loading.jl?content=0&hash=0&1710219845809 (172.22.138.26): No such file or directory: loading.jl
+[W 2024-03-12 05:04:05.847 ServerApp] 404 GET /api/contents/essentials.jl?content=0&hash=0&1710219845812 (524993529267468e8708e8f9178430ca@172.22.138.26) 0.49ms referer=http://210.117.173.186:44107/lab/tree/lecture/0312.ipynb
+[W 2024-03-12 05:04:05.847 ServerApp] 404 GET /api/contents/essentials.jl?content=0&hash=0&1710219845812 (172.22.138.26): No such file or directory: essentials.jl
+[W 2024-03-12 05:04:05.849 ServerApp] 404 GET /api/contents/essentials.jl?content=0&hash=0&1710219845814 (524993529267468e8708e8f9178430ca@172.22.138.26) 0.46ms referer=http://210.117.173.186:44107/lab/tree/lecture/0312.ipynb
+[W 2024-03-12 05:04:05.850 ServerApp] 404 GET /api/contents/essentials.jl?content=0&hash=0&1710219845814 (172.22.138.26): No such file or directory: essentials.jl
+[W 2024-03-12 05:04:05.851 ServerApp] 404 GET /api/contents/loading.jl?content=0&hash=0&1710219845816 (524993529267468e8708e8f9178430ca@172.22.138.26) 0.44ms referer=http://210.117.173.186:44107/lab/tree/lecture/0312.ipynb
+[W 2024-03-12 05:04:05.851 ServerApp] 404 GET /api/contents/loading.jl?content=0&hash=0&1710219845816 (172.22.138.26): No such file or directory: loading.jl
+[I 2024-03-12 05:04:46.434 ServerApp] Saving file at /lecture/0312.ipynb
+[W 2024-03-12 05:04:46.451 ServerApp] 404 GET /api/contents/loading.jl?content=0&hash=0&1710219886413 (524993529267468e8708e8f9178430ca@172.22.138.26) 0.46ms referer=http://210.117.173.186:44107/lab/tree/lecture/0312.ipynb
+[W 2024-03-12 05:04:46.451 ServerApp] 404 GET /api/contents/loading.jl?content=0&hash=0&1710219886413 (172.22.138.26): No such file or directory: loading.jl
+[W 2024-03-12 05:04:46.454 ServerApp] 404 GET /api/contents/lock.jl?content=0&hash=0&1710219886417 (524993529267468e8708e8f9178430ca@172.22.138.26) 0.43ms referer=http://210.117.173.186:44107/lab/tree/lecture/0312.ipynb
+[W 2024-03-12 05:04:46.454 ServerApp] 404 GET /api/contents/lock.jl?content=0&hash=0&1710219886417 (172.22.138.26): No such file or directory: lock.jl
+[W 2024-03-12 05:04:46.456 ServerApp] 404 GET /api/contents/loading.jl?content=0&hash=0&1710219886419 (524993529267468e8708e8f9178430ca@172.22.138.26) 0.43ms referer=http://210.117.173.186:44107/lab/tree/lecture/0312.ipynb
+[W 2024-03-12 05:04:46.457 ServerApp] 404 GET /api/contents/loading.jl?content=0&hash=0&1710219886419 (172.22.138.26): No such file or directory: loading.jl
+[W 2024-03-12 05:04:46.459 ServerApp] 404 GET /api/contents/essentials.jl?content=0&hash=0&1710219886421 (524993529267468e8708e8f9178430ca@172.22.138.26) 0.54ms referer=http://210.117.173.186:44107/lab/tree/lecture/0312.ipynb
+[W 2024-03-12 05:04:46.459 ServerApp] 404 GET /api/contents/essentials.jl?content=0&hash=0&1710219886421 (172.22.138.26): No such file or directory: essentials.jl
+[W 2024-03-12 05:04:46.463 ServerApp] 404 GET /api/contents/essentials.jl?content=0&hash=0&1710219886425 (524993529267468e8708e8f9178430ca@172.22.138.26) 0.45ms referer=http://210.117.173.186:44107/lab/tree/lecture/0312.ipynb
+[W 2024-03-12 05:04:46.463 ServerApp] 404 GET /api/contents/essentials.jl?content=0&hash=0&1710219886425 (172.22.138.26): No such file or directory: essentials.jl
+[W 2024-03-12 05:04:46.466 ServerApp] 404 GET /api/contents/loading.jl?content=0&hash=0&1710219886428 (524993529267468e8708e8f9178430ca@172.22.138.26) 0.45ms referer=http://210.117.173.186:44107/lab/tree/lecture/0312.ipynb
+[W 2024-03-12 05:04:46.466 ServerApp] 404 GET /api/contents/loading.jl?content=0&hash=0&1710219886428 (172.22.138.26): No such file or directory: loading.jl
+[I 2024-03-12 05:05:21.378 ServerApp] Saving file at /untitled.txt
+[I 2024-03-12 05:05:42.703 ServerApp] Saving file at /untitled.txt
+[I 2024-03-12 05:06:46.478 ServerApp] Saving file at /lecture/0312.ipynb
+[I 2024-03-12 05:07:18.997 ServerApp] Saving file at /lecture/0312.ipynb
+[I 2024-03-12 05:07:19.954 ServerApp] Starting buffering for 0bbb0a9c-9f35-47c6-a897-ff3640ac0be9:86f0b36a-2a0d-432a-b416-4b7448bd08fe
+[I 2024-03-12 06:42:35.678 ServerApp] 302 GET / (@172.22.138.26) 0.47ms
+[I 2024-03-12 06:42:36.073 ServerApp] Adapting from protocol version 5.0 (kernel 0bbb0a9c-9f35-47c6-a897-ff3640ac0be9) to 5.3 (client).
+[I 2024-03-12 06:42:36.074 ServerApp] Connecting to kernel 0bbb0a9c-9f35-47c6-a897-ff3640ac0be9.
+[I 2024-03-12 06:42:36.138 ServerApp] Starting buffering for 0bbb0a9c-9f35-47c6-a897-ff3640ac0be9:76c38173-c5e4-4322-b5a8-a7352aed67d7
+[W 2024-03-12 06:42:36.190 LabApp] Could not determine jupyterlab build status without nodejs
+[I 2024-03-12 06:42:36.555 ServerApp] Adapting from protocol version 5.0 (kernel 0bbb0a9c-9f35-47c6-a897-ff3640ac0be9) to 5.3 (client).
+[I 2024-03-12 06:42:36.555 ServerApp] Connecting to kernel 0bbb0a9c-9f35-47c6-a897-ff3640ac0be9.
+[I 2024-03-12 06:42:43.366 ServerApp] Starting buffering for 0bbb0a9c-9f35-47c6-a897-ff3640ac0be9:faacac98-2b80-432b-80f0-4bb83ac96f11
+[I 2024-03-12 06:42:45.202 ServerApp] Kernel shutdown: 0bbb0a9c-9f35-47c6-a897-ff3640ac0be9
+KERNEL EXCEPTION
+ZMQ.StateError("Socket operation on non-socket")
+
+Stacktrace:
+ [1] _send(socket::ZMQ.Socket, zmsg::Base.RefValue{ZMQ._Message}, more::Bool)
+   @ ZMQ ~/.julia/packages/ZMQ/lrABE/src/comm.jl:14
+ [2] send(socket::ZMQ.Socket, data::String; more::Bool)
+   @ ZMQ ~/.julia/packages/ZMQ/lrABE/src/comm.jl:45
+ [3] send
+   @ ~/.julia/packages/ZMQ/lrABE/src/comm.jl:42 [inlined]
+ [4] send_ipython(socket::ZMQ.Socket, m::IJulia.Msg)
+   @ IJulia ~/.julia/packages/IJulia/Vo51o/src/msg.jl:48
+ [5] shutdown_request(socket::ZMQ.Socket, msg::IJulia.Msg)
+   @ IJulia ~/.julia/packages/IJulia/Vo51o/src/handlers.jl:192
+ [6] #invokelatest#2
+   @ ./essentials.jl:1030 [inlined]
+ [7] invokelatest
+   @ ./essentials.jl:1027 [inlined]
+ [8] eventloop(socket::ZMQ.Socket)
+   @ IJulia ~/.julia/packages/IJulia/Vo51o/src/eventloop.jl:8
+ [9] (::IJulia.var"#14#17")()
+   @ IJulia ~/.julia/packages/IJulia/Vo51o/src/eventloop.jl:37
+Starting kernel event loops.
+[W 2024-03-12 06:42:48.332 ServerApp] delete /lecture/0312.ipynb
+[I 2024-03-12 06:42:51.017 ServerApp] Uploading file to /lecture/0312.jl
+[I 2024-03-12 06:50:20.730 ServerApp] 302 GET / (@172.22.138.26) 0.35ms
+[I 2024-03-12 06:50:20.734 LabApp] 302 GET /lab? (@172.22.138.26) 0.33ms
+[I 2024-03-12 06:50:23.599 ServerApp] User c45479dbeea64531ac5468ab89b3f54b logged in.
+[I 2024-03-12 06:50:23.600 ServerApp] 302 POST /login?next=%2Flab%3F (c45479dbeea64531ac5468ab89b3f54b@172.22.138.26) 41.57ms
+[W 2024-03-12 06:50:24.562 LabApp] Could not determine jupyterlab build status without nodejs
+[I 2024-03-12 06:50:28.985 ServerApp] Saving file at /lecture/0312.jl
+[I 2024-03-12 06:50:43.211 ServerApp] New terminal with automatic name: 2
