@@ -149,3 +149,10 @@ Starting kernel event loops.
 [W 2024-03-12 06:50:24.562 LabApp] Could not determine jupyterlab build status without nodejs
 [I 2024-03-12 06:50:28.985 ServerApp] Saving file at /lecture/0312.jl
 [I 2024-03-12 06:50:43.211 ServerApp] New terminal with automatic name: 2
+[I 2024-03-19 04:53:36.941 ServerApp] 302 GET / (@172.22.138.29) 0.48ms
+[I 2024-03-19 04:53:36.943 LabApp] 302 GET /lab? (@172.22.138.29) 0.35ms
+[I 2024-03-19 04:53:41.567 ServerApp] User 3254bc99e3f94b909f2119c8d43fb84e logged in.
+[I 2024-03-19 04:53:41.567 ServerApp] 302 POST /login?next=%2Flab%3F (3254bc99e3f94b909f2119c8d43fb84e@172.22.138.29) 27.01ms
+[W 2024-03-19 04:53:42.675 LabApp] Could not determine jupyterlab build status without nodejs
+[W 2024-03-19 04:53:43.370 ServerApp] 404 GET /api/contents/%ED%86%B5%EA%B3%84%EB%8D%B0%EC%9D%B4%ED%84%B0%EB%B2%A0%EC%9D%B4%EC%8A%A4?1710824022724 (3254bc99e3f94b909f2119c8d43fb84e@172.22.138.29) 0.61ms referer=http://210.117.173.186:44107/lab?
+[W 2024-03-19 04:53:43.370 ServerApp] 404 GET /api/contents/%ED%86%B5%EA%B3%84%EB%8D%B0%EC%9D%B4%ED%84%B0%EB%B2%A0%EC%9D%B4%EC%8A%A4?1710824022724 (172.22.138.29): No such file or directory: 통계데이터베이스
