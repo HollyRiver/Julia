@@ -124,6 +124,15 @@ md"""
 `-` 변수 할당 처리
 """
 
+# ╔═╡ 7b9f0ebd-91fb-4bba-8cca-c1a515ff312e
+# ╠═╡ disabled = true
+#=╠═╡
+a = 1
+  ╠═╡ =#
+
+# ╔═╡ dc1c5b25-84cf-4967-b915-7468955ffa24
+a = 2  ## 전역으로 선언시 이전 셀 비활성화
+
 # ╔═╡ bd78e53c-d222-41b7-beb3-a10991feb09a
 @bind x Slider(0:0.1:2, show_value = true, default = 1)
 
@@ -200,222 +209,24 @@ f(x, y) = √(x^2+y^2); println(f(2,3))  ## 수학적 정의
 
 # ╔═╡ cb5eae90-aa93-4c04-9aff-dc4fd587e630
 function h(x)
+<<<<<<< HEAD
 	return ℯ^x / (1 + ℯ^x)  ## 사용자 정의 함수 지정
+=======
 	return ℯ^x / (1 + ℯ^x)  ## 
+>>>>>>> a77b5f0bef2977c1310e8cd26e58429b7aa1de9d
 end
 
 # ╔═╡ c71c0636-3c50-4775-8578-640c70cc9009
 h(2)
 
+<<<<<<< HEAD
 # ╔═╡ 538ceafd-c3ad-4f58-8ef1-b8d2f7a80fb6
 md"""
 ### 이변량 정규분포
-
----
 """
 
-# ╔═╡ 18afa3d2-517f-4c47-ac41-a8012079ada9
-md"""
-파라메터
--  $\rho$ = $(@bind ρ Slider(-0.99:0.01:0.99, show_value=true))
--  $\mu_X$ = $(@bind μ₁ Slider(-1:0.1:1, show_value=true))
--  $\mu_Y$ = $(@bind μ₂ Slider(-1:0.1:1, show_value=true))
--  $\sigma_X$ = $(@bind σ₁ Slider(0.01:0.01:2, show_value=true))
--  $\sigma_Y$ = $(@bind σ₂ Slider(0.01:0.01:2, show_value=true))
-"""
-
-# ╔═╡ e03cc014-83c8-4659-8737-c44be8c6ae74
-function pdf(x, y)
-	x = (x - μ₁)/σ₁
-	y = (y - μ₂)/σ₂
-	c₁ = 2π*σ₁*σ₂*√(1-ρ^2)
-	c₂ = 2(1-ρ^2)
-
-	return 1/c₁ * ℯ^(-1/c₂*(x^2 + y^2 - 2ρ*x*y))
-end
-
-# ╔═╡ 08e626a3-6bdf-4dec-9a44-f051ed68d745
-begin
-	p1 = plot(-5:0.1:5, -5:0.1:5, pdf, st=[:surface],legend=false);  ## surface : 입체도
-	p2 = plot(-5:0.1:5, -5:0.1:5, pdf, st=[:contour],legend=false);  ## contour : 등고선
-	plot(p1, p2)
-end
-
-# ╔═╡ 3c403a5e-60cb-4f0b-a882-679cdfae1b6b
-md"""
-# 분포 이론
-"""
-
-# ╔═╡ 32336b49-3be3-48d7-9f5c-d9fad228c27b
-md"모든 분포는 균일분포에서 비롯된다..."
-
-# ╔═╡ db1b6061-2513-4ca3-9205-8242bd1c7472
-md"""
-## 분포 생성 코드
-
----
-
-
-"""
-
-# ╔═╡ 0153b93a-6edd-4a64-a992-c2c2e0cfe06b
-let
-	N = 10
-	p = 0.5
-	distribution = Bernoulli(p)
-	rand(distribution, N)
-	@show distribution
-end
-
-# ╔═╡ 6f523ea7-cbae-47aa-a1c5-3480fbeaeedd
-md"""
-> 분포라는 개체 자체를 가지고 놀 수 있다...
-"""
-
-# ╔═╡ cfd3861e-3440-4822-a83d-9382bb2bc316
-@show Binomial(10, 0.5)
-
-# ╔═╡ 32f8f3a7-ab89-4188-aa6d-4d52cc084c21
-md"""
-## 난수 생성 알고리즘
-
----
-
-
-"""
-
-# ╔═╡ e7caf6fc-e34c-42a5-93fe-a7b9d4605afa
-md"""
-### 1. 이항분포
-
-> 확률이 같은 이항분포의 합은 이항분포이다.
-"""
-
-# ╔═╡ a2c165b4-6459-4113-a25d-0c35e41f2e3c
-md"""
-n = $(@bind n Slider(1:20, show_value = true, default = 10))
-
-p = $(@bind p Slider(0.1:0.1:1, show_value = true, default = 0.5))
-"""
-
-# ╔═╡ 7ef017b1-5822-48ae-9643-7960ebf4fdb0
-let
-	X = rand(Binomial(n, p), 100)
-	histogram(X)
-end
-
-# ╔═╡ 3df97593-cea3-45d5-840b-9a9874abb8cc
-md"""
-균일분포 → 베르누이분포 → 이항분포
-"""
-
-# ╔═╡ 43536bc0-599c-4180-87a5-6d3b02c77dd4
-let
-	N = 1000
-	n = 10
-	p = 0.5
-	X = [(rand(10) .< p) |> sum for i in 1:N]  ## 테이블 연산자가 논리 연산자보다 우선
-	histogram(X, xlim = (0, 11), bin = 12, label = "By Uniform")
-	histogram!(rand(Binomial(n, p), N), bin = 12, label = "Pure binomial")
-end
-
-# ╔═╡ 843fd1fa-3f42-41da-9254-34977df8d736
-md"""
-### 2. 포아송분포
-
-> 서로 다른 포아송분포의 합 → 포아송분포
-"""
-
-# ╔═╡ 2afbbb9b-46a0-47a1-8599-8363f458755b
-md"λ = $(@bind λ Slider(0.1:0.1:10, show_value = true, default = 1))"
-
-# ╔═╡ c0044d57-4bfc-4c8a-a8d9-9513fc9a1bef
-let
-	N = 100
-	X = rand(Poisson(λ), N)
-	histogram(X)
-end
-
-# ╔═╡ daa6729a-5f5d-4547-a792-0e8c54bf597e
-md"균일분포 → 베르누이분포 → 이항분포 ≈ 포아송분포"
-
-# ╔═╡ 2a8cb317-2ccf-4d50-a005-6c4a3953febf
-let
-	N = 1000
-	λ = 4
-	n = 1000
-	p = λ/n  ## np = lambda, p가 작고, n이 크면 포아송분포로 근사할 수 있음.
-
-	X = [(rand(n) .< p) |> sum for i in 1:N]
-	histogram(X, label = "By Uniform", xlim = (0, 60))
-	histogram!(rand(Poisson(λ), N), label = "Pure Poisson")
-end
-
-# ╔═╡ 027c5b5d-5212-488f-beba-b3476c7cec54
-md"""
-### 3. 지수분포
-
-> 지수분포에 양수를 곱하면 지수분포(척도모수)
-"""
-
-# ╔═╡ f1f8dd40-c975-490b-9e91-7b49b84581ca
-md"θ = $(@bind θ Slider(0.1:0.1:10, show_value = true, default = 2))"
-
-# ╔═╡ 5baad307-94f3-453c-9878-57d0c0fb6150
-let
-	X = rand(Exponential(θ), 100)
-	histogram(X)
-end
-
-# ╔═╡ 032ddcbf-1edd-45fc-8ea7-c2c9a7c17b3a
-md"균일분포 → 베르누이분포 → 기하분포 → 지수분포"
-
-# ╔═╡ 1e75c5ab-c0ea-49fd-9cb0-da11d2ae6de8
-function GEO(p)
-	if (rand() < p)
-		X = 1
-	else
-		X = 1
-		while (rand() >= p)
-			X = X + 1
-		end
-	end
-	
-	return X
-end
-
-# ╔═╡ cda2ef25-f70e-42a4-b721-882509c3b418
-
-
-# ╔═╡ 9aa12753-7cb4-4370-ae10-9f99dfe01652
-md"""
-## 분포의 특징
-"""
-
-# ╔═╡ 86602033-145a-4163-a23e-28c38275c3ef
-
-
-# ╔═╡ e0db18e0-9b04-4eb6-bb0d-2091b428a553
-
-
-# ╔═╡ d220f49f-b652-4f9e-84d6-46c50497e719
-
-
-# ╔═╡ a81e4c58-56e1-4f77-87de-ff26f070e77e
-
-
-# ╔═╡ 33776495-04c1-4b1b-8226-fa5816e5435f
-
-
-# ╔═╡ 7b9f0ebd-91fb-4bba-8cca-c1a515ff312e
-# ╠═╡ disabled = true
-#=╠═╡
-a = 1
-  ╠═╡ =#
-
-# ╔═╡ dc1c5b25-84cf-4967-b915-7468955ffa24
-a = 2  ## 전역으로 선언시 이전 셀 비활성화
-
+=======
+>>>>>>> a77b5f0bef2977c1310e8cd26e58429b7aa1de9d
 # ╔═╡ 00000000-0000-0000-0000-000000000001
 PLUTO_PROJECT_TOML_CONTENTS = """
 [deps]
@@ -1671,38 +1482,9 @@ version = "1.4.1+1"
 # ╠═7ebf832f-13eb-4b0f-9d7d-b84dd1fb660c
 # ╠═cb5eae90-aa93-4c04-9aff-dc4fd587e630
 # ╠═c71c0636-3c50-4775-8578-640c70cc9009
+<<<<<<< HEAD
 # ╟─538ceafd-c3ad-4f58-8ef1-b8d2f7a80fb6
-# ╠═e03cc014-83c8-4659-8737-c44be8c6ae74
-# ╠═18afa3d2-517f-4c47-ac41-a8012079ada9
-# ╠═08e626a3-6bdf-4dec-9a44-f051ed68d745
-# ╟─3c403a5e-60cb-4f0b-a882-679cdfae1b6b
-# ╟─32336b49-3be3-48d7-9f5c-d9fad228c27b
-# ╟─db1b6061-2513-4ca3-9205-8242bd1c7472
-# ╠═0153b93a-6edd-4a64-a992-c2c2e0cfe06b
-# ╟─6f523ea7-cbae-47aa-a1c5-3480fbeaeedd
-# ╠═cfd3861e-3440-4822-a83d-9382bb2bc316
-# ╟─32f8f3a7-ab89-4188-aa6d-4d52cc084c21
-# ╟─e7caf6fc-e34c-42a5-93fe-a7b9d4605afa
-# ╠═a2c165b4-6459-4113-a25d-0c35e41f2e3c
-# ╠═7ef017b1-5822-48ae-9643-7960ebf4fdb0
-# ╟─3df97593-cea3-45d5-840b-9a9874abb8cc
-# ╠═43536bc0-599c-4180-87a5-6d3b02c77dd4
-# ╟─843fd1fa-3f42-41da-9254-34977df8d736
-# ╠═2afbbb9b-46a0-47a1-8599-8363f458755b
-# ╠═c0044d57-4bfc-4c8a-a8d9-9513fc9a1bef
-# ╟─daa6729a-5f5d-4547-a792-0e8c54bf597e
-# ╠═2a8cb317-2ccf-4d50-a005-6c4a3953febf
-# ╟─027c5b5d-5212-488f-beba-b3476c7cec54
-# ╟─f1f8dd40-c975-490b-9e91-7b49b84581ca
-# ╠═5baad307-94f3-453c-9878-57d0c0fb6150
-# ╟─032ddcbf-1edd-45fc-8ea7-c2c9a7c17b3a
-# ╠═1e75c5ab-c0ea-49fd-9cb0-da11d2ae6de8
-# ╠═cda2ef25-f70e-42a4-b721-882509c3b418
-# ╟─9aa12753-7cb4-4370-ae10-9f99dfe01652
-# ╠═86602033-145a-4163-a23e-28c38275c3ef
-# ╠═e0db18e0-9b04-4eb6-bb0d-2091b428a553
-# ╠═d220f49f-b652-4f9e-84d6-46c50497e719
-# ╠═a81e4c58-56e1-4f77-87de-ff26f070e77e
-# ╠═33776495-04c1-4b1b-8226-fa5816e5435f
+=======
+>>>>>>> a77b5f0bef2977c1310e8cd26e58429b7aa1de9d
 # ╟─00000000-0000-0000-0000-000000000001
 # ╟─00000000-0000-0000-0000-000000000002
