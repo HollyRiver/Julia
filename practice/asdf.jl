@@ -124,6 +124,15 @@ md"""
 `-` 변수 할당 처리
 """
 
+# ╔═╡ 7b9f0ebd-91fb-4bba-8cca-c1a515ff312e
+# ╠═╡ disabled = true
+#=╠═╡
+a = 1
+  ╠═╡ =#
+
+# ╔═╡ dc1c5b25-84cf-4967-b915-7468955ffa24
+a = 2  ## 전역으로 선언시 이전 셀 비활성화
+
 # ╔═╡ bd78e53c-d222-41b7-beb3-a10991feb09a
 @bind x Slider(0:0.1:2, show_value = true, default = 1)
 
@@ -385,15 +394,108 @@ function GEO(p)
 end
 
 # ╔═╡ cda2ef25-f70e-42a4-b721-882509c3b418
+let
+	N = 10000
+	λ = 1/θ
+	n = 1000
+	p = λ/n
+	Δt = 1/n  ## 단위시간분의 n
 
+	X = [GEO(p)*Δt for i in 1:N]
+	histogram(X, label = "By Uniform")
+	histogram!(rand(Exponential(θ), N), label = "Pure Exponential")
+end
+
+# ╔═╡ 337076ae-8469-4a0a-b1ea-c52ebc7a9027
+md"지수분포의 누적분포함수의 역함수(균일분포) → 지수분포"
+
+# ╔═╡ 9e2bc040-2a33-43b0-86a0-e610b98f5930
+let
+	f(x) = 1/θ * exp(-x/θ)
+	F(x) = 1-exp(-x/θ)
+	Finv(x) = -θ*log(1-x)
+
+	N = 10000
+	histogram(rand(N) .|> Finv, label = "By Inverse Func")
+	histogram!(rand(Exponential(θ), N), label = "Pure Exponential")
+end
+
+# ╔═╡ 7ed313dd-830e-4381-8cfe-b8c98da4d002
+md"Memoryless Property : 지수분포, 기하분포"
+
+# ╔═╡ 5bb17acc-c570-4b62-a01a-6b7c00c35dde
+md"""
+t = $(@bind t Slider(0.01:0.01:5, show_value = true, default = 1))
+
+s = $(@bind s Slider(0.01:0.01:5, show_value = true, default = 2))
+"""
+
+# ╔═╡ ea41d446-be33-45f8-b372-2776119f4fda
+let
+	N = 10000000
+	X = rand(Exponential(5), N)
+	println("P(X > t) = $(sum(X .> t) / N)")
+	println("P(X > t+s | X > t) = $(sum(X .> s+t) / sum(X .> s))")
+end
+
+# ╔═╡ a30d1531-bcb7-48d1-a369-460aced7cc4f
+md"""
+### 4. 정규분포 : 박스뮬러변환
+
+> 이변량 정규분포와 지수분포의 관계를 이용
+"""
+
+# ╔═╡ 84bc5e5a-3c61-486c-b0b0-4e03d301690e
+md"i = $(@bind i Slider(1:1:3000, show_value = true, default = 1))"
+
+# ╔═╡ 57e5b93d-2f3b-40a8-9e4c-11901d498d98
+let
+	Random.seed!(14107)
+	N = 3000
+	R = rand(Exponential(2), N) .|> sqrt
+	θ = rand(N)*2*π
+	X = (@. R*cos(θ))
+	Y = (@. R*sin(θ))
+	Z = rand(Normal(0, 1), N).^2 + rand(Normal(0, 1), N).^2
+
+	p1 = scatter(X, Y, alpha = 0.1); ylims!(-5, 5)
+	scatter!([0, X[i]], [0, Y[i]]); plot!([0, X[i]], [0, Y[i]], linewidth = 5);
+	p2 = histogram(Z, label = "Box-Muler transform"); histogram!(rand(Exponential(2), N), label = "Pure Exponential");
+
+	plot(p1, p2)
+end
+
+# ╔═╡ 1304886c-ab78-4d23-80ce-6025d66640a8
+md"""
+박스뮬러변환 : 지수분포 → 정규분포
+"""
+
+# ╔═╡ ccc44a13-355f-403e-be45-d4a031ea1ce5
+let
+	N = 10000
+	Finv(x) = -2*log(1-x)
+
+	X = rand(N)
+	θ = rand(N)*2π
+
+	histogram((@. (X |> Finv |> sqrt) * cos(θ)), label = "Box-Muler Transform")
+	histogram!(rand(Normal(0,1), N), label = "Pure Normal Distribution")
+end
+
+# ╔═╡ 7f14bfa0-6fcd-4c8a-aba7-44c7937a4ddd
+let 
+	rand(Exponential(1),10000) .|> (x -> 1-exp(-x)) |> histogram
+end
+
+# ╔═╡ 8bdcb86c-1767-4990-9bb4-731790c9f2b1
+md"""
+>  $F(X) = P(X ≤ X) = 1$이므로, 모든 지점에서 확률이 같다. 즉, Uniform Distribution이다?
+"""
 
 # ╔═╡ 9aa12753-7cb4-4370-ae10-9f99dfe01652
 md"""
 ## 분포의 특징
 """
-
-# ╔═╡ 86602033-145a-4163-a23e-28c38275c3ef
-
 
 # ╔═╡ e0db18e0-9b04-4eb6-bb0d-2091b428a553
 
@@ -406,15 +508,6 @@ md"""
 
 # ╔═╡ 33776495-04c1-4b1b-8226-fa5816e5435f
 
-
-# ╔═╡ 7b9f0ebd-91fb-4bba-8cca-c1a515ff312e
-# ╠═╡ disabled = true
-#=╠═╡
-a = 1
-  ╠═╡ =#
-
-# ╔═╡ dc1c5b25-84cf-4967-b915-7468955ffa24
-a = 2  ## 전역으로 선언시 이전 셀 비활성화
 
 # ╔═╡ 00000000-0000-0000-0000-000000000001
 PLUTO_PROJECT_TOML_CONTENTS = """
@@ -1698,8 +1791,19 @@ version = "1.4.1+1"
 # ╟─032ddcbf-1edd-45fc-8ea7-c2c9a7c17b3a
 # ╠═1e75c5ab-c0ea-49fd-9cb0-da11d2ae6de8
 # ╠═cda2ef25-f70e-42a4-b721-882509c3b418
+# ╟─337076ae-8469-4a0a-b1ea-c52ebc7a9027
+# ╠═9e2bc040-2a33-43b0-86a0-e610b98f5930
+# ╟─7ed313dd-830e-4381-8cfe-b8c98da4d002
+# ╟─5bb17acc-c570-4b62-a01a-6b7c00c35dde
+# ╠═ea41d446-be33-45f8-b372-2776119f4fda
+# ╟─a30d1531-bcb7-48d1-a369-460aced7cc4f
+# ╟─84bc5e5a-3c61-486c-b0b0-4e03d301690e
+# ╠═57e5b93d-2f3b-40a8-9e4c-11901d498d98
+# ╟─1304886c-ab78-4d23-80ce-6025d66640a8
+# ╠═ccc44a13-355f-403e-be45-d4a031ea1ce5
+# ╠═7f14bfa0-6fcd-4c8a-aba7-44c7937a4ddd
+# ╟─8bdcb86c-1767-4990-9bb4-731790c9f2b1
 # ╟─9aa12753-7cb4-4370-ae10-9f99dfe01652
-# ╠═86602033-145a-4163-a23e-28c38275c3ef
 # ╠═e0db18e0-9b04-4eb6-bb0d-2091b428a553
 # ╠═d220f49f-b652-4f9e-84d6-46c50497e719
 # ╠═a81e4c58-56e1-4f77-87de-ff26f070e77e
