@@ -981,7 +981,126 @@ md"""
 """
 
 # ╔═╡ 49164c88-b2ee-4c65-b118-89b496e473e4
+let
+	N = 10000
+	g(x) = √x
+	X = rand(Normal(5, 0.5), N)
+	Y = g.(X)
 
+	p1 = plot(g, xlim = (0, 12))
+	scatter!(X, Y)
+
+	p2 = histogram(Y)
+	histogram!(rand(Normal(g(5), 0.5*slope(g, 5)), N))
+
+	plot(p1, p2)
+end
+
+# ╔═╡ ae9990d0-2440-4bfe-8de9-85913c19fd2b
+md"""
+> 그래프에서 산점도가 직선과 유사하게 나타나면 선형근사를 통해 정규분포로 근사할 수 있다. μ근처에서 거의 선형이 아니더라도, X의 분산이 매우 작으면 g(X)는 μ 근처에서 거의 선형이라 해도 무방하다.
+
+$$g(X) \sim X(g(μ, (σ\times g'(μ))^2)$$
+"""
+
+# ╔═╡ a708374e-a9f3-4be1-b967-5a231ffed615
+md"`-` CLT"
+
+# ╔═╡ 1a65a539-344d-40f4-b504-97d8381f5b4d
+let
+	p = 0.5
+	n = 10000
+	N = 10000
+	Z̄ = [rand(Bernoulli(p), n) |> mean for i in 1:N]
+	σ = √(p*(1-p)/n)
+
+	histogram(Z̄)
+	histogram!(rand(Normal(0.5, σ), N))
+end
+
+# ╔═╡ 2fb55099-9959-44fd-8a45-8d76af65ebb7
+md"""
+표본의 크기가 커질 때, 표본평균의 분포는 정규분포에 근사된다.
+"""
+
+# ╔═╡ 484618d9-85fc-4911-91ac-67d2ab56f764
+md"""
+`-` Delta method
+"""
+
+# ╔═╡ bc8cc076-4a68-4111-986a-a1952fa1d762
+md"""
+* 함수 g(x)가 μ 근처에서 대략 선형이라면 → 선형근사를 사용 가능
+
+* 선형이 아니더라도 n을 키운다면 중심극한정리에 의하여 통계량의 분산을 원하는 만큼 작게 만들 수 있으므로 → 근사적으로 정규분포를 따르게 할 수 있음
+"""
+
+# ╔═╡ 2b6d4bc6-b625-47fe-8476-c6860abc148e
+let
+	N = 10000
+	p = 0.2
+	n = 10000
+	
+	Z̄ = [rand(Bernoulli(p), n) |> mean for i in 1:N]
+
+	g(x) = x*(1-x)
+	Y = g.(Z̄)
+	σ = √(p*(1-p)/n)
+
+	histogram(Y)
+	histogram!(rand(Normal(g(p), σ*slope(g, p)), N))
+end
+
+# ╔═╡ 939884e4-344d-49ba-9800-5b36f3d72a88
+md"""
+>  $S_n$이 n에 따라 달라지는 어떠한 통계량(보통 평균)이라고 하자. $S_n$의 분포가 n에 따라 분산이 줄어드는 정규분포를 따른다면, n이 커짐에 따라 임의의 미분가능한 함수 g는 $S_n$의 평균에서 거의
+>
+> $$g(x) ≈ ax + b$$
+> 꼴의 선형함수로 근사할 수 있다. 이를 엄밀하게 쓰면 다음과 같다.
+>
+> $$S_n \to^d N(\mu, \frac{\sigma^2}{n}) \Rightarrow g(S_n) \to^d N(g(\mu), \frac{\sigma^2}{n}\times[g'(\mu)]^2)$$
+"""
+
+# ╔═╡ 5a2e24b5-f452-406b-bf9c-946659df6c95
+md"""
+`-` $Z_1, Z_2, \dots, Z_n \sim^{iid} Ber(p)$라고 하고, 분산을
+
+$$\hat{p}(1-\hat{p}) = \bar{Z}(1-\bar{Z})$$
+
+로 추정한다고 하자. 이때, $\hat{p}(1-\hat{p})$의 점근분포를 활용하여 95% 신뢰구간을 구하라. $p = 0.5$일 경우에 신뢰구간이 어떻게 되는지 보이고, 왜 그런지 이유를 설명하라.
+"""
+
+# ╔═╡ 8787557d-134b-4365-bab7-ef1868911fb2
+md"""
+p₂ = $(@bind p₂ Slider(0.1:0.1:1, show_value = true, default = 0.2))
+
+n₂ = $(@bind n₂ Slider([100, 1000, 10000, 100000], show_value = true, default = 10000))
+"""
+
+# ╔═╡ 9ac8f2bc-31f7-449a-89c0-85e1d56feb56
+let
+	N = 10000
+	Z̄ = [rand(Bernoulli(p₂), n₂) |> mean for i in 1:N]
+
+	g(x) = x*(1-x)
+	Y = g.(Z̄)
+	μ = g(p₂)
+	σ = √(p₂*(1-p₂)/n₂) * slope(g, μ)
+
+	println("참값 : $(p₂*(1-p₂))")
+	println("L(시뮬) : $(quantile(Y, 0.025))")
+	println("U(시뮬) : $(quantile(Y, 0.975))")
+	println("L(이론) : $(quantile(Normal(μ, σ), 0.025))")
+	println("U(이론) : $(quantile(Normal(μ, σ), 0.975))")
+	
+	histogram(Y)
+	histogram!(rand(Normal(μ, σ), N))
+end
+
+# ╔═╡ c765d274-d9e9-4685-ab28-7ec96d1c4c97
+md"""
+>  $g(x)$가 $S_n$의 평균에서 기울기가 0인 직선이라면, 델타 메소드를 사용할 수 없다. (분산이 0으로 감)
+"""
 
 # ╔═╡ 00000000-0000-0000-0000-000000000001
 PLUTO_PROJECT_TOML_CONTENTS = """
@@ -2380,5 +2499,17 @@ version = "1.4.1+1"
 # ╟─1e322fc6-6463-4823-8dd1-d8d406657ffc
 # ╟─c72cb6ce-260c-41db-800b-60050a460bb8
 # ╠═49164c88-b2ee-4c65-b118-89b496e473e4
+# ╟─ae9990d0-2440-4bfe-8de9-85913c19fd2b
+# ╟─a708374e-a9f3-4be1-b967-5a231ffed615
+# ╠═1a65a539-344d-40f4-b504-97d8381f5b4d
+# ╟─2fb55099-9959-44fd-8a45-8d76af65ebb7
+# ╟─484618d9-85fc-4911-91ac-67d2ab56f764
+# ╟─bc8cc076-4a68-4111-986a-a1952fa1d762
+# ╠═2b6d4bc6-b625-47fe-8476-c6860abc148e
+# ╟─939884e4-344d-49ba-9800-5b36f3d72a88
+# ╟─5a2e24b5-f452-406b-bf9c-946659df6c95
+# ╟─8787557d-134b-4365-bab7-ef1868911fb2
+# ╠═9ac8f2bc-31f7-449a-89c0-85e1d56feb56
+# ╟─c765d274-d9e9-4685-ab28-7ec96d1c4c97
 # ╟─00000000-0000-0000-0000-000000000001
 # ╟─00000000-0000-0000-0000-000000000002
