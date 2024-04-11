@@ -300,14 +300,15 @@ $H_1: (\mu_x,\mu_y)\neq (0,0)$
 
 # ╔═╡ 14e567fb-12cd-4bae-834e-9d3186cc415a
 let
+	n = 3
 	N = 1000
-	X̄ = [rand(Normal(0, 1), 3) |> mean for i in 1:N]
-	Ȳ = [rand(Normal(0, 1), 3) |> mean for i in 1:N]
+	X̄ = [rand(Normal(0, 1), n) |> mean for i in 1:N]
+	Ȳ = [rand(Normal(0, 1), n) |> mean for i in 1:N]
 
-	R = @. sqrt(X̄^2 + Ȳ^2)
+	R = @. sqrt(X̄^2 + Ȳ^2)  ## n×R² ~ χ²(2)
 
 	println("가장 작은 r의 시뮬레이션 값 ; $(quantile(R, 0.9))")
-	println("가장 작은 r의 이론값 : $(sqrt(quantile(Exponential(2/3), 0.9)))")
+	println("가장 작은 r의 이론값 : $(sqrt(quantile(Chisq(2), 0.9)/n))")
 end
 
 # ╔═╡ e31e5380-ee2e-4d63-a754-325e5e229d82
@@ -318,16 +319,18 @@ md"""
 # ╔═╡ 88185647-d669-4fc5-8f40-586b7f655e6d
 let
 	N = 1000
-	X̄ = [rand(Normal(0, 1), 3) |> mean for i in 1:N]
-	Ȳ = [rand(Normal(0, 1), 3) |> mean for i in 1:N]
+	n = 3
+	X̄ = [rand(Normal(0, 1), n) |> mean for i in 1:N]
+	Ȳ = [rand(Normal(0, 1), n) |> mean for i in 1:N]
 
 	R = @. sqrt(X̄^2 + Ȳ^2)
 
 	x̄ = 0.8
 	ȳ = 0.7
-	r_sq = x̄^2 + ȳ^2
+	r_sq = x̄^2 + ȳ^2  ## n×R² ~ χ²(2)
+	t = n*r_sq
 
-	println("p-value(이론값) : $(1-cdf(Exponential(2/3), r_sq))")
+	println("p-value(이론값) : $(1-cdf(Chisq(2), t))")
 	println("p-value(시뮬레이션 값) : $((R .> sqrt(r_sq)) |> mean)")
 end
 
@@ -348,11 +351,18 @@ let
 
 	x̄ = 0.8
 	ȳ = 0.7
-	r_sq = x̄^2 + ȳ^2
+	r_sq = x̄^2 + ȳ^2  ## n×R² ~ χ²(2)
+	t = n*r_sq
+	t3 = 3*r_sq
 
-	println("p-value(이론값) : $(1-cdf(Exponential(2/30), r_sq))")
-	println("p-value(시뮬레이션 값) : $((R .> sqrt(r_sq)) |> mean)")
+	println("p-value 이론값(n = 30) : $(1-cdf(Chisq(2), t))")
+	println("p-value 이론값(n = 3) : $(1-cdf(Chisq(2), t3))")
 end
+
+# ╔═╡ af897cf2-ec2b-4af5-a8f6-0720e2556000
+md"""
+> p-value의 값은 감소하였다.
+"""
 
 # ╔═╡ 00000000-0000-0000-0000-000000000001
 PLUTO_PROJECT_TOML_CONTENTS = """
@@ -1656,5 +1666,6 @@ version = "1.4.1+1"
 # ╠═88185647-d669-4fc5-8f40-586b7f655e6d
 # ╟─49497ce6-6669-4a10-9938-74c8c60ef4d6
 # ╠═9df7bbea-f9ca-48a9-97f2-8bbfef6c8ebc
+# ╟─af897cf2-ec2b-4af5-a8f6-0720e2556000
 # ╟─00000000-0000-0000-0000-000000000001
 # ╟─00000000-0000-0000-0000-000000000002

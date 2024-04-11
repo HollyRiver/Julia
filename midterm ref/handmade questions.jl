@@ -448,10 +448,10 @@ let
 	X̄ = [rand(Normal(0, 1), n) |> mean for i in 1:N]
 	Ȳ = [rand(Normal(0, 1), n) |> mean for i in 1:N]
 
-	R = @. sqrt(X̄^2 + Ȳ^2)
+	R = @. sqrt(X̄^2 + Ȳ^2)  ## n×R² ~ χ²(2)
 
 	println("r의 시뮬레이션 값 : $(quantile(R, 0.95))")
-	println("r의 이론값 : $(sqrt(quantile(Exponential(2/9), 0.95)))")
+	println("r의 이론값 : $(sqrt(quantile(Chisq(2), 0.95)/n))")
 end
 
 # ╔═╡ e6d32952-d79e-4bad-9356-6090604ac7f8
@@ -469,10 +469,11 @@ let
 	R_sq = @. (X̄^2 + Ȳ^2)
 	x̄ = 0.6
 	ȳ = 0.4
-	r_sq = x̄^2 + ȳ^2
+	r_sq = x̄^2 + ȳ^2  ## n×R² ~ χ²(2)
+	t = n*r_sq
 
 	println("p-value의 시뮬레이션 값 : $((R_sq .>= r_sq) |> mean)")
-	println("p-value의 이론값 : $(1-cdf(Exponential(2/9), r_sq))")
+	println("p-value의 이론값 : $(1-cdf(Chisq(2), t))")
 end
 
 # ╔═╡ 7ef2a793-1e2c-4f3d-8136-76efe68292a6
@@ -490,12 +491,12 @@ let
 	R_sq = @. (X̄^2 + Ȳ^2)
 	x̄ = 0.6
 	ȳ = 0.4
-	r_sq = x̄^2 + ȳ^2
+	r_sq = x̄^2 + ȳ^2  ## n×R² ~ χ²(2)
+	t = n*r_sq
+	t3 = 9*r_sq
 
-	println("p-value의 시뮬레이션 값 : $((R_sq .>= r_sq) |> mean)")
-	println("p-value의 이론값 : $(1-cdf(Exponential(2/n), r_sq))")
-
-	println("3의 이론값 : $(1-cdf(Exponential(2/9), r_sq))")
+	println("p-value의 이론값(n = 100) : $(1-cdf(Chisq(2), t))")
+	println("p-value의 이론값(n = 9) : $(1-cdf(Chisq(2), t3))")
 end
 
 # ╔═╡ 00000000-0000-0000-0000-000000000001
