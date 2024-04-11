@@ -14,1098 +14,509 @@ macro bind(def, element)
     end
 end
 
-# ╔═╡ 6f5e1250-e775-11ee-1994-e3c1b9e5584c
+# ╔═╡ ab0152d0-f702-11ee-2e44-7f0af5538000
 using PlutoUI, Plots, Distributions, Random, ForwardDiff
 
-# ╔═╡ 455a0811-d32e-4459-a1da-2dedae860d88
+# ╔═╡ 7f38d5f0-1ad4-4823-8ef1-7c17a99360a4
 md"""
-### code and theorem review
+
+### 2024-04-11 통계전산 중간고사
+
+---
+학번 | 202014107
+
+학과 | 통계학과
+
+이름 | 강신성
+
+---
+
+> 해당 파일은 직접 제작한 문제로 시험문제가 아님을 밝힘
 """
 
-# ╔═╡ 9f1e3085-6804-4631-aeba-04afdd1fd01e
+# ╔═╡ df513dc1-426a-4058-ac20-d2cf99569f49
 Plots.plotly()
 
-# ╔═╡ abf78c62-9107-4aac-8113-9da0f95f5cde
+# ╔═╡ 9daa8eb7-f86a-4512-9c0f-1c4fe0126ad1
 PlutoUI.TableOfContents()
 
-# ╔═╡ 1d41c736-6b1d-46d1-9df7-447b7c7a02ce
+# ╔═╡ dbfb330a-5d67-48f2-8a1c-69103f93af2e
 md"""
-### 기초지식
-
-
----
-
-
-
-`-` 이미 할당된 값들
+### 1. 난수 생성
 """
 
-# ╔═╡ d0052329-8f0b-4fc3-998e-b8e5912d5536
-let
-	println(π)  ## \pi
-	println(ℯ)  ## \euler
-end
-
-# ╔═╡ e38a58bc-c110-4885-993a-7f25fb0166ef
+# ╔═╡ 93027762-b0c5-4bcf-a281-5a18ae2ac7d0
 md"""
-`-` 새로운 연산자
+*  $U(0, 1)$로부터 $X_1, X_2, \cdots, X_{1000} \overset{iid}{\sim} Bin(5, 0.4)$를 생성하시오.
 """
 
-# ╔═╡ 4e593850-16ed-40ca-83fd-a486b18ec079
-1 ≈ 1.00000001  ## \approx, 이 이상부터는 다른 수라고 판단
+# ╔═╡ b1a7915b-60f2-4ab8-ac14-2a9fabf9e85c
+[sum(rand(5) .<= 0.4) for i in 1:1000]
 
-# ╔═╡ 6efcbb0a-8ef3-4599-b874-0b4d02fa7518
-1 ≤ 1.0  ## 보기 좋으라고...
-
-# ╔═╡ a16b583b-9405-48ee-9c05-83e38533b68f
-1 <= 1.0  ## 솔직히 이걸 쓰는 게 더 편하긴 하다.
-
-# ╔═╡ b29f68bf-3de5-4d7c-84f4-2bd2bd874537
+# ╔═╡ 1debdb0c-368a-4ebb-b27d-7f15327f21e6
 md"""
-`-` 편리한 함수사용
+*  $Bernoulli(0.3)$로부터 $X_1, X_2, \cdots, X_{1000} \overset{iid}{\sim} Bin(8, 0.3)$를 생성하시오.
 """
 
-# ╔═╡ a7de0a15-d975-418f-9a54-1f8441ae91ac
-let
-	f(x) = x+5
-	@show f(2)  ## 일반 함수 사용
+# ╔═╡ 92e7c09e-1ec9-4df9-9b28-231b43c01635
+[rand(Bernoulli(0.3), 8) |> sum for i in 1:1000]
 
-	g(x) = 2x
-	@show (g∘f)(1)  ## 함성함수, \circ
-
-	@show 1 |> f |> g  ## 파이프 연산자
-end
-
-# ╔═╡ cec3fbdf-1b41-438c-b263-8fe140700b26
+# ╔═╡ c369fc7c-a04e-47f6-9116-4d45ed106b4d
 md"""
-`-` 모듈 없는 매트릭스 선언
+*  $U(0, 1)$로부터 $X_1, X_2, \cdots, X_{1000} \overset{iid}{\sim} Poi(12)$를 근사적으로 생성하시오.
 """
 
-# ╔═╡ a65c8eef-f5b2-4ae5-8520-db338fe5780c
-let
-	X = [1 2
-		 3 4]
-	X
-end
+# ╔═╡ dc68e92f-79d9-4404-8ce0-66f426e6e4ad
+[sum(rand(1000) .<= 12/1000) for i in 1:1000]
 
-# ╔═╡ 9ee8c5bc-5f7a-4833-a531-1007466ffda8
+# ╔═╡ 5cf69bf9-b909-4ae1-9a54-436e8d6de88d
 md"""
-`-` 인덱스
+*  $Geo(0.001)$로부터 $X_1, X_2, \cdots, X_{1000} \overset{iid}{\sim} Exp(3)$를 근사적으로 생성하시오.
 """
 
-# ╔═╡ 4997f438-a5ce-40bd-968c-32d70f07f801
-lst = [11, 22, 33]
-
-# ╔═╡ 8cc89254-26ff-4020-bbeb-0a248564bbef
-lst[1]  ## 1부터 시작한다.
-
-# ╔═╡ b8ebbd63-f1ef-4892-9ef9-2f9286129f86
-md"""
-`-` 컴프리헨션
-"""
-
-# ╔═╡ 059cd126-a60a-4009-8c1c-74f2de00ca8c
-[x^2 for x in [1,2,3]]  ## 파이썬과 동일하게 사용이 가능
-
-# ╔═╡ 0c8547d7-13e9-4215-b1a0-c4438a1127f7
-md"""
-`-` 튜플
-"""
-
-# ╔═╡ 58be869e-bc81-4232-932e-a54d3fe0b3e3
-let
-	x1, x2, x3 = 1,2,3
-	print(x1, x2, x3)  ## 그 자체로 이어서 출력(sep 없음)
-	x1, x2  ## 튜플로 출력
-end
-
-# ╔═╡ 1df27dda-e79b-44bb-a8a3-5b6c48af4cc5
-md"""
-`-` 변수 할당 처리
-"""
-
-# ╔═╡ bd78e53c-d222-41b7-beb3-a10991feb09a
-@bind x Slider(0:0.1:2, show_value = true, default = 1)
-
-# ╔═╡ c00b097a-d5ae-4a5d-a384-bc06cbfdef08
-y = 2
-
-# ╔═╡ dcea012a-3cef-4a3d-9fcd-1014baec2b8f
-z = x + y  ## 변수 할당에 변수가 관여될 때, 해당 변수가 바뀌면 할당된 변수도 연쇄적으로 바뀜
-
-# ╔═╡ 8dc0960a-99da-4a6b-b7b0-ffae32df16b4
-md"""
-`-` 마크다운 셀 이용
-"""
-
-# ╔═╡ 45ff35d1-1ebd-4ea7-b72c-0eb4ddf6f58f
-name = "강신성"
-
-# ╔═╡ 3f4e4892-a743-4bc5-8eb1-adaf684c61d5
-md"이름 : 3학년 $(name)
-> f스트링처럼 \$( )를 통해 외부 변수를 집어넣을 수가 있다."
-
-# ╔═╡ c170c172-2a1c-49d1-914f-aaf23a0c6f1f
-md"""
-`-` 슬라이터와 인터렉티브 플롯
-"""
-
-# ╔═╡ 77c34287-881b-408b-9d9e-287318b5ba01
-begin
-	alpha_selector = @bind α Slider(-1:0.1:1, show_value = true, default = 0)
-	beta_selector = @bind β Slider(-1:0.1:1, show_value = true, default = 0)
-end
-
-# ╔═╡ e2d79467-f780-404a-b084-f71de303d97f
-md"""
-α = $(alpha_selector)
-
-β = $(beta_selector)
-"""  ## 마크다운 셀 응용
-
-# ╔═╡ 668a0ce3-03ac-4f5e-8313-5fa3e741d9e9
-let
-	f(x) = (x - α)*(x - β)*(x - y)
-	plot(-1:0.01:2, f)  ## x의 범위를 지정
-end
-
-# ╔═╡ cefde001-9774-4069-9dda-cee8271f4c1f
-md"""
-`-` 라디오 버튼
-"""
-
-# ╔═╡ 16feef51-3329-4289-a95d-59fa89576c73
-@bind vote Radio(["male", "female"], default = "male")  ## default가 없으면 nothing(null)
-
-# ╔═╡ 38e95bf2-76f6-4ff8-b108-ac3cafa2f308
-md"당신의 성별은 $(vote)입니다."
-
-# ╔═╡ 682518ab-28ad-4d98-93fe-3f9ba66380bf
-md"""
-### 함수식과 연산
-
----
-
-
-"""
-
-# ╔═╡ 623fe2c0-6e50-44f2-982a-a99f7c5cbead
-md"`-` 함수식 선언"
-
-# ╔═╡ 9ab07c9f-4d3b-4109-8bda-cc29e99a40ef
-f(x, y) = √(x^2+y^2); println(f(2,3))  ## 수학적 정의
-
-# ╔═╡ 7ebf832f-13eb-4b0f-9d7d-b84dd1fb660c
-(x -> 2x)(2)  ## 람다 수식 이용
-
-# ╔═╡ cb5eae90-aa93-4c04-9aff-dc4fd587e630
-function h(x)
-	return ℯ^x / (1 + ℯ^x)  ## 사용자 정의 함수 지정
-	return ℯ^x / (1 + ℯ^x)  ## 
-end
-
-# ╔═╡ c71c0636-3c50-4775-8578-640c70cc9009
-h(2)
-
-# ╔═╡ 538ceafd-c3ad-4f58-8ef1-b8d2f7a80fb6
-md"""
-### 이변량 정규분포
-
----
-"""
-
-# ╔═╡ 18afa3d2-517f-4c47-ac41-a8012079ada9
-md"""
-파라메터
--  $\rho$ = $(@bind ρ Slider(-0.99:0.01:0.99, show_value=true))
--  $\mu_X$ = $(@bind μ₁ Slider(-1:0.1:1, show_value=true))
--  $\mu_Y$ = $(@bind μ₂ Slider(-1:0.1:1, show_value=true))
--  $\sigma_X$ = $(@bind σ₁ Slider(0.01:0.01:2, show_value=true))
--  $\sigma_Y$ = $(@bind σ₂ Slider(0.01:0.01:2, show_value=true))
-"""
-
-# ╔═╡ e03cc014-83c8-4659-8737-c44be8c6ae74
-function pdf(x, y)
-	x = (x - μ₁)/σ₁
-	y = (y - μ₂)/σ₂
-	c₁ = 2π*σ₁*σ₂*√(1-ρ^2)
-	c₂ = 2(1-ρ^2)
-
-	return 1/c₁ * ℯ^(-1/c₂*(x^2 + y^2 - 2ρ*x*y))
-end
-
-# ╔═╡ 08e626a3-6bdf-4dec-9a44-f051ed68d745
-begin
-	p1 = plot(-5:0.1:5, -5:0.1:5, pdf, st=[:surface],legend=false);  ## surface : 입체도
-	p2 = plot(-5:0.1:5, -5:0.1:5, pdf, st=[:contour],legend=false);  ## contour : 등고선
-	plot(p1, p2)
-end
-
-# ╔═╡ 3c403a5e-60cb-4f0b-a882-679cdfae1b6b
-md"""
-# 분포 이론
-"""
-
-# ╔═╡ 32336b49-3be3-48d7-9f5c-d9fad228c27b
-md"모든 분포는 균일분포에서 비롯된다..."
-
-# ╔═╡ db1b6061-2513-4ca3-9205-8242bd1c7472
-md"""
-## 분포 생성 코드
-
----
-
-
-"""
-
-# ╔═╡ 0153b93a-6edd-4a64-a992-c2c2e0cfe06b
-let
-	N = 10
-	p = 0.5
-	distribution = Bernoulli(p)
-	rand(distribution, N)
-	@show distribution
-end
-
-# ╔═╡ 6f523ea7-cbae-47aa-a1c5-3480fbeaeedd
-md"""
-> 분포라는 개체 자체를 가지고 놀 수 있다...
-"""
-
-# ╔═╡ cfd3861e-3440-4822-a83d-9382bb2bc316
-@show Binomial(10, 0.5)
-
-# ╔═╡ 32f8f3a7-ab89-4188-aa6d-4d52cc084c21
-md"""
-## 난수 생성 알고리즘
-
----
-
-
-"""
-
-# ╔═╡ e7caf6fc-e34c-42a5-93fe-a7b9d4605afa
-md"""
-### 1. 이항분포
-
-> 확률이 같은 이항분포의 합은 이항분포이다.
-"""
-
-# ╔═╡ a2c165b4-6459-4113-a25d-0c35e41f2e3c
-md"""
-n = $(@bind n Slider(1:20, show_value = true, default = 10))
-
-p = $(@bind p Slider(0.1:0.1:1, show_value = true, default = 0.5))
-"""
-
-# ╔═╡ 7ef017b1-5822-48ae-9643-7960ebf4fdb0
-let
-	X = rand(Binomial(n, p), 100)
-	histogram(X)
-end
-
-# ╔═╡ 3df97593-cea3-45d5-840b-9a9874abb8cc
-md"""
-균일분포 → 베르누이분포 → 이항분포
-"""
-
-# ╔═╡ 43536bc0-599c-4180-87a5-6d3b02c77dd4
-let
-	N = 1000
-	n = 10
-	p = 0.5
-	X = [(rand(10) .< p) |> sum for i in 1:N]  ## 테이블 연산자가 논리 연산자보다 우선
-	histogram(X, xlim = (0, 11), bin = 12, label = "By Uniform")
-	histogram!(rand(Binomial(n, p), N), bin = 12, label = "Pure binomial")
-end
-
-# ╔═╡ 843fd1fa-3f42-41da-9254-34977df8d736
-md"""
-### 2. 포아송분포
-
-> 서로 다른 포아송분포의 합 → 포아송분포
-"""
-
-# ╔═╡ 2afbbb9b-46a0-47a1-8599-8363f458755b
-md"λ = $(@bind λ Slider(0.1:0.1:10, show_value = true, default = 1))"
-
-# ╔═╡ c0044d57-4bfc-4c8a-a8d9-9513fc9a1bef
-let
-	N = 100
-	X = rand(Poisson(λ), N)
-	histogram(X)
-end
-
-# ╔═╡ daa6729a-5f5d-4547-a792-0e8c54bf597e
-md"균일분포 → 베르누이분포 → 이항분포 ≈ 포아송분포"
-
-# ╔═╡ 2a8cb317-2ccf-4d50-a005-6c4a3953febf
-let
-	N = 1000
-	λ = 4
-	n = 1000
-	p = λ/n  ## np = lambda, p가 작고, n이 크면 포아송분포로 근사할 수 있음.
-
-	X = [(rand(n) .< p) |> sum for i in 1:N]
-	histogram(X, label = "By Uniform", xlim = (0, 60))
-	histogram!(rand(Poisson(λ), N), label = "Pure Poisson")
-end
-
-# ╔═╡ 027c5b5d-5212-488f-beba-b3476c7cec54
-md"""
-### 3. 지수분포
-
-> 지수분포에 양수를 곱하면 지수분포(척도모수)
-"""
-
-# ╔═╡ f1f8dd40-c975-490b-9e91-7b49b84581ca
-md"θ = $(@bind θ Slider(0.1:0.1:10, show_value = true, default = 2))"
-
-# ╔═╡ 5baad307-94f3-453c-9878-57d0c0fb6150
-let
-	X = rand(Exponential(θ), 100)
-	histogram(X)
-end
-
-# ╔═╡ 032ddcbf-1edd-45fc-8ea7-c2c9a7c17b3a
-md"균일분포 → 베르누이분포 → 기하분포 → 지수분포"
-
-# ╔═╡ 1e75c5ab-c0ea-49fd-9cb0-da11d2ae6de8
-function GEO(p)
-	if (rand() < p)
-		X = 1
-	else
-		X = 1
-		while (rand() >= p)
-			X = X + 1
-		end
-	end
-	
-	return X
-end
-
-# ╔═╡ cda2ef25-f70e-42a4-b721-882509c3b418
-let
-	N = 10000
-	λ = 1/θ
-	n = 1000
-	p = λ/n
-	Δt = 1/n  ## 단위시간분의 n
-
-	X = [GEO(p)*Δt for i in 1:N]
-	histogram(X, label = "By Uniform")
-	histogram!(rand(Exponential(θ), N), label = "Pure Exponential")
-end
-
-# ╔═╡ 606d98c9-6ed3-42ad-a71f-e7960ac25a0f
+# ╔═╡ 92b67f70-9ffa-4f4a-8269-28f8c0d0283b
 [sum((rand(Geometric(0.001)) .+ 1) .* (3/1000)) for i in 1:1000]
 
-# ╔═╡ 337076ae-8469-4a0a-b1ea-c52ebc7a9027
-md"지수분포의 누적분포함수의 역함수(균일분포) → 지수분포"
+# ╔═╡ 40f0d141-571d-4cdd-83c2-3151bca514fc
+md"""
+*  $Bernoulli(0.001)$로부터 $X_1, X_2, \cdots, X_{1000} \overset{iid}{\sim} Poi(10)$를 근사적으로 생성하시오.
+"""
 
-# ╔═╡ 9e2bc040-2a33-43b0-86a0-e610b98f5930
+# ╔═╡ 5ec50e44-64cf-46ee-a385-8d6703a8b0be
+[rand(Bernoulli(0.001), 10000) |> sum for i in 1:1000]
+
+# ╔═╡ 42a2e19f-8076-4144-a875-8f4990551c92
+md"""
+*  $U(0, 1)$로부터 $X_1, X_2, \cdots, X_{1000} \overset{iid}{\sim} Exp(5)$를 생성하시오.
+"""
+
+# ╔═╡ 67b19145-4de6-43ec-bed4-666e1a0d3c5d
+rand(1000) .|> (x -> -5*log(1-x))
+
+# ╔═╡ d4f99fce-cfe3-440c-b529-2e99c13a33cc
+md"""
+*  $U(0, 1)$로부터 $X_1, X_2, \cdots, X_{1000} \overset{iid}{\sim} N(2, 4)$를 생성하시오.
+"""
+
+# ╔═╡ b60f086b-36ab-4de4-932f-0ed596f822b3
 let
-	f(x) = 1/θ * exp(-x/θ)
-	F(x) = 1-exp(-x/θ)
-	Finv(x) = -θ*log(1-x)
+	R = sqrt.(rand(1000) .|> (x -> -2*log(1-x)))
+	θ = rand(1000).*2π
 
-	N = 10000
-	histogram(rand(N) .|> Finv, label = "By Inverse Func")
-	histogram!(rand(Exponential(θ), N), label = "Pure Exponential")
+	@. R*cos(θ)*2 + 2
 end
 
-# ╔═╡ 7ed313dd-830e-4381-8cfe-b8c98da4d002
-md"Memoryless Property : 지수분포, 기하분포"
-
-# ╔═╡ 5bb17acc-c570-4b62-a01a-6b7c00c35dde
+# ╔═╡ 4c256543-4363-4416-a3a6-55a4ff6e0d1a
 md"""
-t = $(@bind t Slider(0.01:0.01:5, show_value = true, default = 1))
-
-s = $(@bind s Slider(0.01:0.01:5, show_value = true, default = 2))
+*  $Exp(3)$로부터 $X_1, X_2, \cdots, X_{1000} \overset{iid}{\sim} N(0, 1)$를 생성하시오.
 """
 
-# ╔═╡ ea41d446-be33-45f8-b372-2776119f4fda
+# ╔═╡ a97098c3-1ac8-47bb-a30f-d15b344b0455
 let
-	N = 10000000
-	X = rand(Exponential(5), N)
-	println("P(X > t) = $(sum(X .> t) / N)")
-	println("P(X > t+s | X > t) = $(sum(X .> s+t) / sum(X .> s))")
+	R = sqrt.(rand(Exponential(3), 1000)*(2/3))
+	θ = rand(1000)*2π
+
+	@. R*cos(θ)
 end
 
-# ╔═╡ a30d1531-bcb7-48d1-a369-460aced7cc4f
+# ╔═╡ ad25c4a0-e646-46ac-9c59-77b5505e29b7
 md"""
-### 4. 정규분포 : 박스뮬러변환
-
-> 이변량 정규분포와 지수분포의 관계를 이용
+*  $N(0, 1)$로부터 $X_1, X_2, \cdots, X_{1000} \overset{iid}{\sim} Exp(8)$를 생성하시오.
 """
 
-# ╔═╡ 84bc5e5a-3c61-486c-b0b0-4e03d301690e
-md"i = $(@bind i Slider(1:1:3000, show_value = true, default = 1))"
+# ╔═╡ 5da31915-4ae7-4b4a-9084-62c5741b6976
+(rand(Normal(0, 1), 1000).^2 + rand(Normal(0, 1), 1000).^2)*4
 
-# ╔═╡ 57e5b93d-2f3b-40a8-9e4c-11901d498d98
+# ╔═╡ 28226dec-8815-4e5d-8014-666656335fa4
+md"""
+*  $Poi(2)$로부터 $X_1, X_2, \cdots, X_{1000} \overset{iid}{\sim} Poi(12)$를 생성하시오.
+"""
+
+# ╔═╡ 274c42eb-2b4a-4ec6-bfdc-6cdd58d7fef0
+[rand(Poisson(2), 6) |> sum for i in 1:1000]
+
+# ╔═╡ 9864922a-4dd7-49be-8250-9c2c51d7f9ba
+md"""
+*  $Exp(3)$로부터 $X_1, X_2, \cdots, X_{1000} \overset{iid}{\sim} Exp(8)$를 생성하시오.
+"""
+
+# ╔═╡ 3a1ce044-2b11-4ed2-bc5b-3aee78ccb451
+rand(Exponential(3), 1000) * (8/3)
+
+# ╔═╡ 6117a9bb-4ca4-4241-86c2-9fa1a6d8cf3b
+md"""
+*  $Bin(3, 0.4)$로부터 $X_1, X_2, \cdots, X_{1000} \overset{iid}{\sim} Bin(12, 0.4)$를 생성하시오.
+"""
+
+# ╔═╡ e84e0fd0-65e1-4c64-8057-b483d504b2a2
+[rand(Binomial(3, 0.4), 4) |> sum for i in 1:1000]
+
+# ╔═╡ 57a0136a-6395-4b50-96f0-74c7185fa986
+md"""
+*  $Exp(6)$로부터 $X_1, X_2, \cdots, X_{1000} \overset{iid}{\sim} χ²(4)$를 생성하시오.
+"""
+
+# ╔═╡ 56593f2c-a253-42fa-9a35-c33ab82d3ca9
+@. rand(Exponential(6), 1000)/3 + rand(Exponential(6), 1000)/3
+
+# ╔═╡ b47a30d7-380c-4c10-a9dc-b5c628e98941
+md"""
+*  $χ²(3)$로부터 $X_1, X_2, \cdots, X_{1000} \overset{iid}{\sim} χ²(9)$를 생성하시오.
+"""
+
+# ╔═╡ 8f483ed3-49bc-4b2f-85c0-2b88aa2c9b09
+[rand(Chisq(3), 3) |> sum for i in 1:1000]
+
+# ╔═╡ 4460d9e2-8796-4dd6-9466-e96162db1bf2
+md"""
+*  $\Gamma(2, 8)$로부터 $X_1, X_2, \cdots, X_{1000} \overset{iid}{\sim} χ²(8)$를 생성하시오.
+"""
+
+# ╔═╡ 23c77a9b-831d-4ba6-b80a-6df28a934a16
+[(rand(Gamma(2, 8), 2)./4) |> sum for i in 1:1000]
+
+# ╔═╡ 041af1b0-44ab-4c26-ba7b-00f64b13b0bf
+md"""
+*  $χ²(2)$로부터 $X_1, X_2, \cdots, X_{1000} \overset{iid}{\sim} Γ(8, 4)$를 생성하시오.
+"""
+
+# ╔═╡ 08ab408b-5345-4487-b2d6-c4eefdbf5d31
+[(rand(Chisq(2), 8) |> sum)*2 for i in 1:1000]
+
+# ╔═╡ 66b0e59a-8185-42df-9bb6-a530db625e74
+md"""
+*  $U(0, 1)$로부터 $X_1, X_2, \cdots, X_{1000} \overset{iid}{\sim} Γ(4, 7)$를 생성하시오.
+"""
+
+# ╔═╡ 7612ed60-89fa-4813-af2b-4a5376bb77cd
+[sum(rand(4) .|> (x -> -7*log(1-x))) for i in 1:1000]
+
+# ╔═╡ 778570ff-4c34-4e37-b52f-6870ba29d707
+md"""
+*  $Γ(3, 4)$로부터 $X_1, X_2, \cdots, X_{1000} \overset{iid}{\sim} Γ(12, 4)$를 생성하시오.
+"""
+
+# ╔═╡ 07decc24-9617-4521-ab43-89acf2b510ea
+[rand(Gamma(3, 4), 4) |> sum for i in 1:1000]
+
+# ╔═╡ 985ea030-823d-405f-99a4-64cf9fd8d863
+md"""
+### 2. Delta Method
+"""
+
+# ╔═╡ 59f322fc-178a-4aa7-9d53-f71baaf5cd26
+md"""
+ $X_1, X_2, \cdots, X_n \overset{iid}{\sim} Ber(p)$라고 하자. 모수의 추정치를 $\hat{p} = \bar{X_n} = \frac1n\Sigma^{n}_{i = 1}X_i$라고 할 때, 아래의 물음에 답하여라.
+"""
+
+# ╔═╡ 646d0348-8569-4f35-91f3-14c6fcda104f
+md"""
+1. 평균은 $\hat{p}$, 분산은 $\hat{p}(1-\hat{p})$라고 추정할 때, $p = 0.2$인 경우 μ와 σ²에 대한 90% 점근적 신뢰구간을 시뮬레이션과 Delta Method를 사용하여 구하여라.
+"""
+
+# ╔═╡ df2904cc-c4a1-47d4-8a17-5d810f22995b
 let
-	Random.seed!(14107)
-	N = 3000
-	R = rand(Exponential(2), N) .|> sqrt
-	θ = rand(N)*2*π
-	X = (@. R*cos(θ))
-	Y = (@. R*sin(θ))
-	Z = rand(Normal(0, 1), N).^2 + rand(Normal(0, 1), N).^2
+	p = 0.2
+	n = 1000
+	N = 1000
+	X̄ = [rand(Bernoulli(p), n) |> mean for i in 1:N]
 
-	p1 = scatter(X, Y, alpha = 0.1); ylims!(-5, 5)
-	scatter!([0, X[i]], [0, Y[i]]); plot!([0, X[i]], [0, Y[i]], linewidth = 5);
-	p2 = histogram(Z, label = "Box-Muler transform"); histogram!(rand(Exponential(2), N), label = "Pure Exponential");
+	μ = p
+	σ = sqrt(p*(1-p)/n)
 
-	plot(p1, p2)
+	println("μ에 대한 90% 점근적 신뢰구간(시뮬레이션) : $((quantile(X̄, 0.05), quantile(X̄, 0.95)))")
+	println("μ에 대한 90% 점근적 신뢰구간(델타 메소드) : $((quantile(Normal(μ, σ), 0.05), quantile(Normal(μ, σ), 0.95)))")
 end
 
-# ╔═╡ 1304886c-ab78-4d23-80ce-6025d66640a8
-md"""
-박스뮬러변환 : 지수분포 → 정규분포
-"""
-
-# ╔═╡ ccc44a13-355f-403e-be45-d4a031ea1ce5
+# ╔═╡ de29e20a-abb2-4a37-8939-7586cefb1e94
 let
-	N = 10000
-	Finv(x) = -2*log(1-x)
+	p = 0.2
+	n = 1000
+	N = 1000
+	X̄ = [rand(Bernoulli(p), n) |> mean for i in 1:N]
 
-	X = rand(N)
-	θ = rand(N)*2π
+	g(x) = x*(1-x)
+	Y = g.(X̄)
+	μ = g(p)
+	σ = sqrt(p*(1-p)/n)*ForwardDiff.derivative(g, p)
 
-	histogram((@. (X |> Finv |> sqrt) * cos(θ)), label = "Box-Muler Transform")
-	histogram!(rand(Normal(0,1), N), label = "Pure Normal Distribution")
+	println("σ²에 대한 90% 점근적 신뢰구간(시뮬레이션) : $((quantile(Y, 0.05), quantile(Y, 0.95)))")
+	println("σ²에 대한 90% 점근적 신뢰구간(델타 메소드) : $((quantile(Normal(μ, σ), 0.05), quantile(Normal(μ, σ), 0.95)))")
 end
 
-# ╔═╡ 7f14bfa0-6fcd-4c8a-aba7-44c7937a4ddd
-let 
-	rand(Exponential(1),10000) .|> (x -> 1-exp(-x)) |> histogram
-end
-
-# ╔═╡ 8bdcb86c-1767-4990-9bb4-731790c9f2b1
+# ╔═╡ 3a7b277d-15af-45b0-91db-e99cb9773795
 md"""
->  $F(X) = P(X ≤ X) = 1$이므로, 모든 지점에서 확률이 같다. 즉, Uniform Distribution이다?
+2.  $g(x)=\sin^{-1}(\sqrt{x})$ 일때 $p=0.2$에 대한 $g(\hat{p})$의 90% 점근적 신뢰구간을 시뮬레이션과 delta method를 이용하여 구하고 비교하라. 
+- 힌트: $\frac{d}{du}\sin^{-1}(u)=1/\sqrt{1-u^2}$.
 """
 
-# ╔═╡ 4379fd3f-3f92-4b0d-8d1a-a2cf17b189eb
-md"""
-### 5. 정규분포 : 표본평균의 분포
-"""
-
-# ╔═╡ 359d8ad8-a5a2-47c2-a62d-057ae7058c2a
-md"$$X₁, X_2, … , X_n \sim N(μ, σ^2) ⇒ X̄ \sim N(μ, \frac{σ^2}{n})$$"
-
-# ╔═╡ eaae015d-f8e4-404a-8c52-528f55f9843a
-md"""
-`-` $X_1, X_2, \dots, X_n \sim N(7, 5^2) \Rightarrow \bar{X} \sim N(7, \frac{5^2}{n})$
-"""
-
-# ╔═╡ 862e890f-6be2-4d97-9c56-84c557940e55
+# ╔═╡ 8c153b3c-44d9-4d1b-8789-ec1ce4b6e6f9
 let
-	N = 10000
-	n = 25
-	X̄ = [rand(Normal(7, 5), n) |> mean for i in 1:N]
-	Y = rand(Normal(7, 5/sqrt(n)), N)
+	p = 0.2
+	n = 1000
+	N = 1000
+	X̄ = [rand(Bernoulli(p), n) |> mean for i in 1:N]
 
-	histogram(X̄)
-	histogram!(Y)
+	g(x) = asin(sqrt(x))
+	Y = g.(X̄)
+	μ = g(p)
+	σ = sqrt(p*(1-p)/n)*ForwardDiff.derivative(g, p)
+
+	println("g(p̂)에 대한 90% 점근적 신뢰구간(시뮬레이션) : $((quantile(Y, 0.05), quantile(Y, 0.95)))")
+	println("g(p̂)에 대한 90% 점근적 신뢰구간(델타 메소드) : $((quantile(Normal(μ, σ), 0.05), quantile(Normal(μ, σ), 0.95)))")
 end
 
-# ╔═╡ cc5c0817-b290-471f-aa31-0a2905b45741
+# ╔═╡ 6c2998e8-9647-4859-b4db-07d5c2096346
 md"""
-`-` $X_1, X_2, \dots, X_{25} \sim N(μ, 10^2)$에서 $x̄ = 67.53$일 때, μ에 대한 95% 신뢰구간
+3. 임의의 $p$에 대한 $g(\hat{p})$에 대한 분산을 시뮬레이션과 delta method를 이용하여 구하고 비교하라.  $p$에 따른 분산변화가 있는가? 
 """
 
-# ╔═╡ 61907f88-fa58-49fc-ac22-d8b757b28e82
+# ╔═╡ f05cd0e7-984e-4982-8bae-18365cfd76a7
+md" $p$ = $(@bind p Slider(0.1:0.1:0.9, show_value = true, default = 0.2))"
+
+# ╔═╡ 8dadb32a-620d-4e53-8bbc-dae187ad1f6a
 let
-	N = 100000
-	n = 25
-	σ = 10
-	x̄ = 67.53
+	n = 1000
+	N = 1000
+	X̄ = [rand(Bernoulli(p), n) |> mean for i in 1:N]
 
-	X̄ = [rand(Normal(0, σ), n) |> mean for i in 1:N]
-	c = quantile(X̄, 0.975)
+	g(x) = asin(sqrt(x))
+	Y = g.(X̄)
+	μ = g(p)
+	σ = sqrt(p*(1-p)/n)*ForwardDiff.derivative(g, p)
 
-	println("μ에 대한 95% CI : $((x̄-c, x̄+c))")  ## 실험을 통해 얻은 값
+	println("g(p̂)의 분산(시뮬레이션) : $(var(Y))")
+	println("g(p̂)의 분산(델타 메소드) : $(σ^2)")
 end
 
-# ╔═╡ cccc3d9e-de04-4029-b0e0-d59d98b6bc77
-let
-	n = 25
-	x̄ = 67.53
-	σ = 10
-	c = quantile(Normal(0, σ/√n), 0.975)
-
-	println("μ에 대한 95% CI : $((x̄ - c, x̄ + c))")  ## 이론적인 값
-end
-
-# ╔═╡ a67234c9-94f6-4e5f-8c42-6f5cf4e1933d
+# ╔═╡ 0a9a1fdd-7610-4025-a22c-4585bc9b17b3
 md"""
-### 6. 카이제곱분포
-> 표준정규분포를 따르는 서로 독립인 확률변수의 제곱합
+>  $p$에 따른 분산변화는 없다.
 """
 
-# ╔═╡ 40871ab7-df22-4b9a-be07-0013cfbc656e
-md"$$(X \sim \chi^2(k)) \Rightarrow (there~exists X_1, X_2, \dots, X_k~s.t. (1) X_1, X_2, \dots, X_k \sim^{iid} N(0,1)~and~(2) X_1^2 + X_2^2 + \dots + X_k^2 = X)$$"
-
-# ╔═╡ f72c31a8-6065-465c-a0f8-62ca919094d4
-md"`-` 정규분포 이용 (균일 $\to$ 기하×단위시간의 차분 → 지수분포 → 정규분포(박스뮬러변환) → 카이제곱분포)"
-
-# ╔═╡ 29be535a-fa0b-44c5-9822-4fca701d021a
-let
-	N = 10000
-	n = 4
-	X = [rand(Normal(0, 1), n).^2 |> sum for i in 1:N]
-
-	histogram(X)
-	histogram!(rand(Chisq(n), N))
-end
-
-# ╔═╡ 50466eab-bd9c-47a5-903c-e1e7c99d3548
-md"`-` 지수분포 이용"
-
-# ╔═╡ 02242ed2-08df-49ee-91f5-61627dd28ecd
-let
-	N = 10000
-	n = 4
-	X = [rand(Exponential(2), Int64(n/2)) |> sum for i in 1:N]
-
-	histogram(X)
-	histogram!(rand(Chisq(n), N))
-end
-
-# ╔═╡ 1bcecc6e-c708-4cde-97f1-d21cbbe379f8
+# ╔═╡ a766461b-33e6-49d1-84d3-e281777318be
 md"""
-`-` 카이제곱분포의 합을 이용
+### 3. Delta Method 2
 """
 
-# ╔═╡ ff8e50a0-8afc-48ea-aba6-57cef582b7f4
-let
-	N = 10000
-	n = 12
-	X = [rand(Chisq(1), n) |> sum for i in 1:N]
-	X₂ = [rand(Chisq(2), Int64(n/2)) |> sum for i in 1:N]
-	X₃ = [rand(Chisq(3), Int64(n/3)) |> sum for i in 1:N]
-	X₄ = [rand(Chisq(4), Int64(n/4)) |> sum for i in 1:N]
-	X₅ = [rand(Chisq(6), Int64(n/6)) |> sum for i in 1:N]
-	X₆ = [rand(Chisq(12)) for i in 1:N]
+# ╔═╡ b0d770e3-26bb-41f2-8451-81cb29d40f13
+md"""
+ $X_1, X_2, \cdots, X_{1000} \overset{iid}{\sim} Poi(λ)$라고 하자. 모수의 추정치를 $\hat{\lambda} = \bar{X_n} = \frac1n\Sigma^{n}_{i = 1}X_i$라고 할 때, 아래의 물음에 답하여라.
+"""
 
-	histogram(X)
-	histogram!(X₂)
-	histogram!(X₃)
-	histogram!(X₄)
-	histogram!(X₅)
-	histogram!(X₆)
+# ╔═╡ f6fc74d0-41e4-4bf3-bcde-b9c0196e539f
+md"""
+1. 평균과 분산을 $\hat{\lambda}$라고 추정할 때, $\lambda = 2$인 경우 λ에 대한 95% 점근적 신뢰구간을 시뮬레이션과 Delta Method를 사용하여 구하여라.
+"""
+
+# ╔═╡ aa6da4c9-3701-46ca-9d5e-df6cfed432c1
+let
+	n = 1000
+	N = 1000
+	λ = 2
+	X̄ = [rand(Poisson(λ), n) |> mean for i in 1:N]
+
+	μ = λ
+	σ = sqrt(λ/n)
+
+	println("λ에 대한 95% 점근적 신뢰구간(시뮬레이션) : $((quantile(X̄, 0.025), quantile(X̄, 0.975)))")
+	println("λ에 대한 95% 점근적 신뢰구간(델타 메소드) : $((quantile(Normal(μ, σ), 0.025), quantile(Normal(μ, σ), 0.975)))")
 end
 
-# ╔═╡ f529499b-c961-4368-9a4d-a66ac7281d19
+# ╔═╡ 641c13e9-92e7-49f6-9754-3e2df2af771f
 md"""
-### 7. 감마분포
-> 모수가 같은 독립인 지수분포를 k개 합친 것
+2.  $g(x) = \sqrt{x}$일 때, λ = 2에 대한 $g(\hat{λ})$의 95% 점근적 신뢰구간을 시뮬레이션과 Delta Method를 사용하여 구하여라.
 """
 
-# ╔═╡ 1d5cf77b-e2f5-4927-8f98-da7babed96d3
-md"""
-$(X \sim \Gamma(k, θ)) \Rightarrow (there~exists X_1, \dots, X_k ~ s.t. (1) X_1, \dots, X_k \sim^{iid} Exp(θ)~and~(2) X_1 + \dots + X_k =^d X$
-"""
-
-# ╔═╡ daf035aa-2be1-4b0f-9b97-095e34350b0a
-md"`-` $\Gamma(3, 2)$를 생성하라"
-
-# ╔═╡ 2e34e170-aed1-446a-82d5-41455004a69c
-md"지수분포의 합"
-
-# ╔═╡ e41f0bad-3ed5-4298-8d22-14f443517978
+# ╔═╡ 864c9b59-a395-4dc4-ba6e-de6d6805a98e
 let
-	N = 10000
-	X = [rand(Exponential(2), 3) |> sum for i in 1:N]
-	histogram(X)
-	histogram!(rand(Gamma(3,2), N))
+	n = 1000
+	N = 1000
+	λ = 2
+	X̄ = [rand(Poisson(λ), n) |> mean for i in 1:N]
+
+	g(x) = sqrt(x)
+	Y = g.(X̄)
+	μ = g(λ)
+	σ = sqrt(λ/n)*ForwardDiff.derivative(g, λ)
+
+	println("g(λ̂)에 대한 95% 점근적 신뢰구간(시뮬레이션) : $((quantile(Y, 0.025), quantile(Y, 0.975)))")
+	println("g(λ̂)에 대한 95% 점근적 신뢰구간(델타 메소드) : $((quantile(Normal(μ, σ), 0.025), quantile(Normal(μ, σ), 0.975)))")
 end
 
-# ╔═╡ d0be677b-ebac-4408-bc45-8f09044476be
-md"카이제곱분포(정규분포 → 카이제곱분포 = 감마분포)"
+# ╔═╡ a0629129-57a6-4322-be5b-5073cadc407e
+md"""
+3. 임의의 $λ$에 대한 $g(\hat{λ})$의 분산을 시뮬레이션과 Delta method를 이용하여 구하고 비교하라. $\lambda$에 따른 분산변화가 있는가?
+"""
 
-# ╔═╡ b181dd35-8690-4ef6-9538-dcd2e67e9ddb
+# ╔═╡ 165c3c41-95f8-4716-b69a-1e1fcabbdb2c
+md"λ = $(@bind λ Slider(1:0.5:10, show_value = true, default = 2))"
+
+# ╔═╡ b19092ca-edc4-4c6d-ad44-8e207ad4f306
 let
-	N = 10000
-	X = rand(Chisq(6), N)
-	histogram(X)
-	histogram!(rand(Gamma(3,2), N))
+	n = 1000
+	N = 1000
+	X̄ = [rand(Poisson(λ), n) |> mean for i in 1:N]
+
+	g(x) = sqrt(x)
+	Y = g.(X̄)
+	μ = g(λ)
+	σ = sqrt(λ/n)*ForwardDiff.derivative(g, λ)
+
+	println("g(λ̂)의 분산(시뮬레이션) : $(var(Y))")
+	println("g(λ̂)의 분산(델타 메소드) : $(σ^2)")
 end
 
-# ╔═╡ ebf0bdbf-868e-400a-b7ae-1dcedad97f89
+# ╔═╡ c3976dc1-cb07-411a-a9be-e92aa7fa0ef4
 md"""
-> 감마분포의 합은 감마분포 & 감마분포의 곱도 감마분포
+> 없다.
 """
 
-# ╔═╡ ac52601f-714d-4657-b980-bc5c1f558163
-let
-	N = 10000
-	X = [rand(Gamma(3,2), 4) |> sum for i in 1:N]
-	X₂ = [rand(Gamma(6,2), 2) |> sum for i in 1:N]
-	X₃ = rand(Gamma(12, 2), N)
-
-	p1 = histogram(X); histogram!(X₂); histogram!(X₃); title!("더하기")
-
-	Y = rand(Gamma(3,2), N) .* 6
-	Y₂ = rand(Gamma(3,4), N) .* 3
-	Y₃ = rand(Gamma(3,12), N)
-
-	p2 = histogram(Y); histogram!(Y₂); histogram!(Y₃); title!("곱하기")
-
-	plot(p1, p2)
-end
-
-# ╔═╡ 9aa12753-7cb4-4370-ae10-9f99dfe01652
+# ╔═╡ 308b8f31-26aa-43ea-b576-6b8b62ad3c26
 md"""
-## 상상실험과 구간 추정
+### 4. 가설검정과 신뢰구간
 """
 
-# ╔═╡ 7462ae30-aa78-479d-aa68-25acba417169
-md"i₁ = $(@bind i₁ Slider(1:100, show_value = true, default = 1))"
-
-# ╔═╡ e0db18e0-9b04-4eb6-bb0d-2091b428a553
-let
-	Random.seed!(14107)
-	N = 100
-	μ₁, μ₂ = 1.2, 3.4
-	X = rand(Normal(μ₁, 1), N)
-	Y = rand(Normal(μ₂, 1), N)
-
-	scatter(X, Y, xlim = (-12, 14), ylim = (-9,9), alpha = 0.2)
-	scatter!([μ₁], [μ₂], marker=:cross, color = "red")
-	scatter!([X[i₁]], [Y[i]])
-end
-
-# ╔═╡ e98d6ef2-b836-4a7b-9beb-c24eed088abe
+# ╔═╡ 970b7880-a4ba-4758-bd2f-62d63651aa9b
 md"""
-> 중심을 기준으로 원을 그렸을 때 95%의 자료가 원 안에 들어가있도록 해보자.
-"""
+1. 확률변수 $X_1, X_2, \cdots, X_n$을 아래의 pdf에서 추출한 iid 랜덤샘플이라고 하자.
 
-# ╔═╡ 923eb57d-bf2a-4815-ba45-296685cf5f43
-md"r = $(@bind r Slider(0.1:0.01:3, show_value = true, default = 2))"
-
-# ╔═╡ 694ff7ac-f3e0-448b-9a47-d131c2d30650
-let
-	Random.seed!(1234)
-	N = 100
-	μ₁, μ₂ = 1.2, 3.4
-	X = rand(Normal(μ₁, 1), N)
-	Y = rand(Normal(μ₂, 1), N)
-	θ = 0:0.01:1 .* 2π
-	
-	println("r이 $(r)일 때, 원 안에는 점의 $((@. (X-μ₁)^2 + (Y-μ₂)^2 < r^2) |> sum |> x -> x/N)만큼이 있다.")
-
-	scatter(X, Y, xlim = (-12, 14), ylim = (-9,9), alpha = 0.2)
-	scatter!([μ₁], [μ₂], marker=:cross, color = "red")
-
-	plot!(r.*cos.(θ).+μ₁, r.*sin.(θ).+μ₂, color = "red")
-end
-
-# ╔═╡ 24332730-d9e4-45b2-8cc7-9bef7c0c3ec5
-let
-	Random.seed!(1234)
-	N = 100
-	μ₁, μ₂ = 1.2, 3.4
-	X = rand(Normal(μ₁, 1), N)
-	Y = rand(Normal(μ₂, 1), N)
-	
-
-	quantile((@. sqrt((X-μ₁)^2 + (Y-μ₂)^2)), 0.95)  ## 딱 걸치는 값이 얼마인지
-end
-
-# ╔═╡ f275e60c-912c-4feb-8010-e8449268a542
-md"""
-> 이론적인 수치는 아래와 같다.
-"""
-
-# ╔═╡ d220f49f-b652-4f9e-84d6-46c50497e719
-let
-	@show quantile(Exponential(2), 0.95) |> sqrt
-end
-
-# ╔═╡ a81e4c58-56e1-4f77-87de-ff26f070e77e
-md"""
-`-` 샘플의 수가 커지면 분산이 작아져 신뢰구간의 범위가 줄어든다.
-"""
-
-# ╔═╡ 3c1cbdb9-50f0-4429-ae50-b68de102cab7
-let
-	Random.seed!(1234)
-	N = 100
-	μ₁, μ₂ = 1.2, 3.4
-	X = rand(Normal(μ₁, 1), N)
-	Y = rand(Normal(μ₂, 1), N)
-	θ = 0:0.01:1 .* 2π
-
-	fig = scatter(X, Y, xlim = (-12, 14), ylim = (-9,9), alpha = 0.2)
-	scatter!([μ₁], [μ₂], marker=:cross, color = "red")
-	if (i != 1) & (i != 100)
-		scatter!([X[i₁-1], X[i₁], X[i₁+1]], [Y[i₁-1], Y[i₁], Y[i₁+1]])
-	elseif (i == 1)
-		scatter!([X[i₁], X[i₁+1], X[i₁+2]], [Y[i₁], Y[i₁+1], Y[i₁+2]])
-	else
-		scatter!([X[i₁-2], X[i₁-1], X[i₁]], [Y[i₁-2], Y[i₁-1], Y[i₁]])
-	end
-
-	X̄ = [rand(X, 3) |> mean for i in 1:5000]
-	Ȳ = [rand(Y, 3) |> mean for i in 1:5000]
-
-	R = @. sqrt((X̄ - μ₁)^2 + (Ȳ - μ₂)^2)
-
-	println(quantile(R, 0.95))
-
-	fig
-end
-
-# ╔═╡ 33776495-04c1-4b1b-8226-fa5816e5435f
-md"""
-`-` 반지름을 체계적으로 탐색하기
-"""
-
-# ╔═╡ 4ca2c50f-3696-444b-bab3-d7a41b0cdb1e
-md"""
-1. 총을 더 많이 쏘자...
-
-2.  $R^2$의 분포(박스뮬러 변환)를 이용하여 난수를 추출하자...
-
-3. 그냥 이론적으로 산출해버리자...
-"""
-
-# ╔═╡ bcefc93b-7898-4d91-b5a3-fb52f9636cb8
-let
-	println("1회 사격 시나리오 : $(quantile(Exponential(2), 0.95) |> sqrt)")
-	println("3회 사격 시나리오 : $(quantile(Exponential(2/3), 0.95) |> sqrt)")
-end
-
-# ╔═╡ 3a7e9d92-e59d-4d79-b25e-2f8bd95be5d5
-md"""
-## 가설 검정
-"""
-
-# ╔═╡ b7c77d64-cb49-4e34-b5ae-8caae8f89c6d
-md"""
-1. 일반적으로 알려진 사실에 대한 의문(귀무가설과 대립가설 설정)
-2. 실험 및 데이터 수집
-3. 검정통계량의 분포를 산출하고 p-value를 계산
-4. 결과에 따라 귀무가설 기각 여부 결정
-"""
-
-# ╔═╡ 59c38af3-37bc-458c-a55f-71a1d2d34b25
-md"
-### A. 지수분포의 평균 검정
-"
-
-# ╔═╡ 0ca7a8da-c99e-4c98-b258-ca6400d9040f
-md"""
-확률변수 $X_1, \dots, X_n$을 아래의 pdf에서 추출한 iid 랜덤샘플이라고 하자.
-
-$$f(x) = θexp(-xθ)I(x > 0)$$
-
-> 누가봐도 지수분포의 pdf...
+$$f(x) = θ exp(-θx) I(x > 0)$$
 
 이러한 샘플을 사용하여 아래의 가설을 검정하고자 한다.
 
-$$H_0 : θ = θ_0~vs.~H_1:θ ≠ θ_0$$
+$$H_0 : \theta = 2 ~ vs. ~ H_1 : \theta > 2$$
 
-샘플을 사용하여 적절한 검정통계량을 설정하고 θ에 대한 95% 신뢰구간을 구하라.
+이를 위하여 검정통계량으로 $\bar{x} = \frac1n\Sigma^{3}_{i=1}x_i = 3$을 얻었다고 하자. p-value의 이론값과 시뮬레이션값을 계산하고 비교하여라.
 """
 
-# ╔═╡ dcefd283-205d-447c-8ea8-188b619fe0e4
+# ╔═╡ ba5fa39e-61f7-47ac-a913-ce6e4e05b497
 md"""
-ΣX ∼ Γ(n, 1/θ) → $θΣX ∼ \Gamma(n, 1)$ → $2θΣX ∼ \Gamma(n,2) = χ^2(2n)$이므로,
-
-$$P(c_1 ≤ 2θΣX ≤ c_2) = 0.95$$
-
-인 $c_1, c_2$를 카이제곱분포에서 구한 뒤 변환하면 된다.
+X ~ Exp(1/θ), ΣX ∼ Γ(n, 1/θ), 2nθX̄ ∼ Γ(n, 2) = χ²(2n)
 """
 
-# ╔═╡ d35c8ebb-d261-4a21-8db7-ee49811670db
+# ╔═╡ 69605d43-fec9-4bb3-bf14-6094b775ecb9
 let
-	n = 20
-	θ = 5
-	c1 = quantile(Chisq(2n), 0.025)
-	c2 = quantile(Chisq(2n), 0.975)
-	@show c1, c2
+	θ = 2
+	n = 3
+	N = 1000
+	X̄ = [rand(Exponential(1/θ), n) |> mean for i in 1:1000]
 
-	# L = c1/2nX̄  ## x̄가 없어서 추정치가 아니라 확률변수
-	# U = c2/2nX̄
+	x̄ = 3
+	t = 2*n*θ*x̄
+
+	println("p-value의 이론값 : $(1-cdf(Chisq(2*n), t))")
+	println("p-value의 시뮬레이션값 : $((X̄ .>= x̄) |> mean)")
 end
 
-# ╔═╡ e1ed314b-5c1f-450e-85c1-dbb6362f4616
+# ╔═╡ f81d1a0f-ed4b-4676-a938-3d85f0a13c4e
 md"""
-`-` 시뮬레이션으로 확인
+2.  $X_1, X_2, \cdots, X_n \overset{iid}{\sim} N(\mu, 12^2)$이라고 하자. 구간 $(\bar{x} - 1, \bar{x} + 1)$이 μ에 대한 95% 신뢰구간으로 주어지기 위한 최소한의 표본크기 n을 구하여라.
 """
 
-# ╔═╡ f84bb31b-b320-4df7-a81d-218210eb9278
+# ╔═╡ ae9d3831-aaf1-447a-81e7-963ff41763c6
+md"n = $(@bind n Slider(550:560, show_value = true))"
+
+# ╔═╡ 261c5b7e-88ef-4b94-8377-509027de7e6a
+quantile(Normal(0, 12/sqrt(n)), 0.025), quantile(Normal(0, 12/sqrt(n)), 0.975)
+
+# ╔═╡ 26ac8f7a-0f87-4020-82af-168be00bc143
+md"""
+> 554
+"""
+
+# ╔═╡ a9ebce87-854a-4e65-9b9a-885cc66ea183
+md"""
+**(3)~(5)**
+
+ $X_1, \cdots, X_n \sim N(μ_x, 1)$이고, $Y_1, \cdots, Y_n \sim N(μ_y, 1)$이라고 하자. 아래를 test하고 싶다.
+
+$$H_0 : (μ_x, μ_y) = (0,0)$$
+
+$$H_1 : (μ_x, μ_y) \neq (0,0)$$
+
+이를 위한 검정통계량으로 $r^2 = \bar{x}^2 + \bar{y}^2$을 사용한다고 하자. 9개의 샘플을 관찰하여
+
+*  $\bar{x} = \frac19 \Sigma^9_{i=1}x_i = 0.6$
+*  $\bar{y} = \frac19 \Sigma^9_{i=1}y_i = 0.4$
+
+를 얻었다고 하자.
+
+3. 95%의 유의수준에서 귀무가설을 기각하기 위한 가장 작은 r의 이론값과 시뮬레이션 값을 각각 구하고 비교하라.
+"""
+
+# ╔═╡ c3c3e60f-3d98-4fc3-a264-e5841c64c4d3
 let
+	n = 9
 	N = 10000
-	θ = 5
-	n = 20
-	X̄ = [rand(Exponential(1/θ), n) |> mean for i in 1:N]  ## Γ(n, 1/nθ)를 따른다.
-	p = histogram(2n*θ*X̄)  ## Γ(n, 2) = χ²(2n)를 따른다.
+	X̄ = [rand(Normal(0, 1), n) |> mean for i in 1:N]
+	Ȳ = [rand(Normal(0, 1), n) |> mean for i in 1:N]
 
-	c1 = quantile(Chisq(2n), 0.025)
-	c2 = quantile(Chisq(2n), 0.975)
+	R = @. sqrt(X̄^2 + Ȳ^2)  ## Exponential(2/n)
 
-	L = @. c1/(2n*X̄)  ## 각 표본들의 하한
-	U = @. c2/(2n*X̄)  ## 각 표본들의 상한
-	
-	println((@. L ≤ θ ≤ U) |> mean)  ## 신뢰구간들 중 모수를 포함하는 것들의 비율
-	p
+	println("가장 작은 r의 이론값 : $(quantile(Exponential(2/n), 0.95) |> sqrt)")
+	println("가장 작은 r의 시뮬레이션값 : $(quantile(R, 0.95))")
 end
 
-# ╔═╡ 09c7c57a-e7fa-4678-aa2b-1da0e36e7d94
-md"""
-> N이 커질수록 모수를 포함하는 신뢰구간은 0.95에 더 가까워짐을 알 수 있다.
-"""
-
-# ╔═╡ 928a01f0-fd9b-4503-878f-33813b4cd46e
-md"""
-### B. 베르누이 분포를 따르는 표본에 대한 검정
-"""
-
-# ╔═╡ 91303a81-5209-4197-94bd-b67580da11e7
-md"""
-`-` 여학생만 선호하는 교수...?
-
-* 임용 이후 5명의 학생을 받았는데, 5명 모두 여학생이었다. 이 경우 여학생을 선호한다는 의혹은 사실일까...?
-"""
-
-# ╔═╡ 39ea95d0-57c6-4030-ac55-b0edd329e665
-md"""
-1. 가설 설정
-
- $p_x$ : 남학생을 받을 확률, $p_y$ : 여학생을 받을 확률이라 하자. 그러면 일반적으로 둘은 같으므로...
-
-$$H_0 : p_x = p_y ~ vs. ~ H_1 : p_x < p_y$$
-
-2. 검정통계량
-
-받을 대학원생의 성별을 남자일때 1, 여자일때 0이라 하는 확률변수를 X라 하면 $X \sim Bernoulli(0.5)$이고, $\Sigma_{i = 1}^{5} = X_1 + X_2 + \dots + X_5 \sim B(5, 0.5)$이므로, 검정통계량을 ΣX라고 하자.
-
-3. p-value
-
-$$p-value = P(ΣX ≤ 0) = \frac{1}{32} = 0.03125 ≤ 0.05$$
-
-4. 따라서 귀무가설을 기각하고, 대립가설을 수용한다. 즉, 해당 교수는 받는 대학원생으로 여성을 선호한다.
-<p>
-	<span style="color:grey;">(너무해...)</span>
-</p>
-"""
-
-# ╔═╡ 0909c30f-b7da-4ac7-9f77-162a13f222ef
-md"""
-## 테일러정리와 델타메소드
-"""
-
-# ╔═╡ 13c75cd9-ecc9-4e7f-9c13-874c94330055
-md"""
-### A. Derivative
-"""
-
-# ╔═╡ f1d29b76-63f9-45fb-b850-030ca53e75b3
-md"`ForwardDiff`"
-
-# ╔═╡ 5d13ce35-32f0-4bc9-a79b-901c7d83292e
+# ╔═╡ bb9f92a7-6138-485b-92ef-7a89990a1b34
 let
-	f(x) = x^2
-	ForwardDiff.derivative(f, 2)
-end
-
-# ╔═╡ 4739cd75-bdd2-4d99-bf7e-f3d3cdfe7026
-slope = ForwardDiff.derivative  ## 너무 기니까 인스턴스화
-
-# ╔═╡ 7eaa6784-4966-426e-9c55-9c5346ef4a97
-md"`-` 함수를 리턴하는 함수를 만들려면?"
-
-# ╔═╡ 4937a2e7-af3e-45fb-b54b-ab5197e1c392
-function ∂(f, m = 1)
-	if m == 0
-		return f
-	else
-		return x -> slope(∂(f, m-1), x)  ## 재귀하여 m차 미분을 고려
-	end
-end
-
-# ╔═╡ 80ebb5c5-0dc5-45eb-bf18-a762cb3cb8e0
-md"""
-### B. Tayler extension
-"""
-
-# ╔═╡ 11c1e3c8-b237-4285-b5b0-9edd0f4df1ac
-md"""
-a 근처에서 미분가능한 연속함수 f(x)를 m차 다항식을 이용하여 근사할 수 있다.
-
-$$f(x) \approx \frac{f(a)(x-a)^0}{0!} + \frac{f'(a)(x-a)^1}{1!} + \frac{f''(a)(x-a)^2}{2!} + \dots + \frac{f^{(m)}(a)(x-a)^m}{m!}$$
-"""
-
-# ╔═╡ e5fddf03-05fc-4459-b4fb-7a9927a907bf
-md"""
-a₁ = $(@bind a₁ Slider(-4:0.5:4, show_value = true, default = 0))
-
-m = $(@bind m Slider(0:8, show_value = true, default = 2))
-"""
-
-# ╔═╡ 08a6849a-5503-4376-88f9-3c11dd36f259
-f(x) = exp(x) / (1 + exp(x))  ## \euler쓰니까 어째선지 안됨
-
-# ╔═╡ 0f3f476b-6a2b-4c69-a4b6-1a1d92f6d666
-function f_approx(x)
-	coef = [∂(f, i)(a₁) for i in 0:m]  ## [f(a), f'(a), ...]
-	basis = [(x - a₁)^i/factorial(i) for i in 0:m]
-	return (coef .* basis) |> sum
-end
-
-# ╔═╡ 4c3a0b50-4161-4670-95cc-fcd48cd341c4
-let
-	plot(f, xlim = (-5, 5), ylim = (0, 1))
-	plot!(f_approx)
-	scatter!([a₁], [f(a₁)])
-end
-
-# ╔═╡ 1e322fc6-6463-4823-8dd1-d8d406657ffc
-md"""
-### C. Delta method
-"""
-
-# ╔═╡ c72cb6ce-260c-41db-800b-60050a460bb8
-md"""
-> 선형근사와 분포수렴을 이용하여 다른 분포를 정규분포로 근사한다.
-"""
-
-# ╔═╡ 49164c88-b2ee-4c65-b118-89b496e473e4
-let
+	n = 3
 	N = 10000
-	g(x) = √x
-	X = rand(Normal(5, 0.5), N)
-	Y = g.(X)
+	X̄ = [rand(Normal(0, 1), n) |> mean for i in 1:N]
+	Ȳ = [rand(Normal(0, 1), n) |> mean for i in 1:N]
 
-	p1 = plot(g, xlim = (0, 12))
-	scatter!(X, Y)
+	R = @. sqrt(X̄^2 + Ȳ^2)  ## Exponential(2/n)
 
-	p2 = histogram(Y)
-	histogram!(rand(Normal(g(5), 0.5*slope(g, 5)), N))
-
-	plot(p1, p2)
+	println("가장 작은 r의 이론값 : $(quantile(Exponential(2/n), 0.95) |> sqrt)")
+	println("가장 작은 r의 시뮬레이션값 : $(quantile(R, 0.95))")
 end
 
-# ╔═╡ ae9990d0-2440-4bfe-8de9-85913c19fd2b
+# ╔═╡ e6d32952-d79e-4bad-9356-6090604ac7f8
 md"""
-> 그래프에서 산점도가 직선과 유사하게 나타나면 선형근사를 통해 정규분포로 근사할 수 있다. μ근처에서 거의 선형이 아니더라도, X의 분산이 매우 작으면 g(X)는 μ 근처에서 거의 선형이라 해도 무방하다.
-
-$$g(X) \sim X(g(μ, (σ\times g'(μ))^2)$$
+4. 주어진 검정통계량의 p-value의 이론값과 시뮬레이션값을 각각 구하고 비교하라.
 """
 
-# ╔═╡ a708374e-a9f3-4be1-b967-5a231ffed615
-md"`-` CLT"
-
-# ╔═╡ 1a65a539-344d-40f4-b504-97d8381f5b4d
+# ╔═╡ 5346c174-f9e1-4b39-b9b2-30be3685187d
 let
-	p = 0.5
-	n = 10000
+	n = 9
 	N = 10000
-	Z̄ = [rand(Bernoulli(p), n) |> mean for i in 1:N]
-	σ = √(p*(1-p)/n)
+	X̄ = [rand(Normal(0, 1), n) |> mean for i in 1:N]
+	Ȳ = [rand(Normal(0, 1), n) |> mean for i in 1:N]
 
-	histogram(Z̄)
-	histogram!(rand(Normal(0.5, σ), N))
+	R_sq = @. X̄^2 + Ȳ^2  ## Exponential(2/n)
+	x̄ = 0.6
+	ȳ = 0.4
+	r_sq = x̄^2+ȳ^2
+
+	println("p-value의 이론값 : $(1-cdf(Exponential(2/n), r_sq))")
+	println("p-value의 시뮬레이션 값 : $((R_sq .>= r_sq) |> mean)")
 end
 
-# ╔═╡ 2fb55099-9959-44fd-8a45-8d76af65ebb7
+# ╔═╡ 7ef2a793-1e2c-4f3d-8136-76efe68292a6
 md"""
-표본의 크기가 커질 때, 표본평균의 분포는 정규분포에 근사된다.
+5. 샘플수가 100개일 경우 $\bar{x} = 0.6$, $\bar{y} = 0.4$를 얻었다면 p-value는 어떻게 되는가? 3의 p-value와 비교하여라.
 """
 
-# ╔═╡ 484618d9-85fc-4911-91ac-67d2ab56f764
-md"""
-`-` Delta method
-"""
-
-# ╔═╡ bc8cc076-4a68-4111-986a-a1952fa1d762
-md"""
-* 함수 g(x)가 μ 근처에서 대략 선형이라면 → 선형근사를 사용 가능
-
-* 선형이 아니더라도 n을 키운다면 중심극한정리에 의하여 통계량의 분산을 원하는 만큼 작게 만들 수 있으므로 → 근사적으로 정규분포를 따르게 할 수 있음
-"""
-
-# ╔═╡ 2b6d4bc6-b625-47fe-8476-c6860abc148e
+# ╔═╡ 27172f6a-5afd-4f45-9b1f-114dbf41e0c3
 let
+	n = 100
 	N = 10000
-	p = 0.2
-	n = 10000
-	
-	Z̄ = [rand(Bernoulli(p), n) |> mean for i in 1:N]
+	X̄ = [rand(Normal(0, 1), n) |> mean for i in 1:N]
+	Ȳ = [rand(Normal(0, 1), n) |> mean for i in 1:N]
 
-	g(x) = x*(1-x)
-	Y = g.(Z̄)
-	σ = √(p*(1-p)/n)
+	R_sq = @. X̄^2 + Ȳ^2  ## Exponential(2/n)
+	x̄ = 0.6
+	ȳ = 0.4
+	r_sq = x̄^2+ȳ^2
 
-	histogram(Y)
-	histogram!(rand(Normal(g(p), σ*slope(g, p)), N))
+	println("p-value의 이론값(n = 100) : $(1-cdf(Exponential(2/n), r_sq))")
+	println("p-value의 이론값(n = 9) : $(1-cdf(Exponential(2/9), r_sq))")
 end
 
-# ╔═╡ 939884e4-344d-49ba-9800-5b36f3d72a88
+# ╔═╡ 316527bb-b33e-4601-b7f7-93a291c43c73
 md"""
->  $S_n$이 n에 따라 달라지는 어떠한 통계량(보통 평균)이라고 하자. $S_n$의 분포가 n에 따라 분산이 줄어드는 정규분포를 따른다면, n이 커짐에 따라 임의의 미분가능한 함수 g는 $S_n$의 평균에서 거의
->
-> $$g(x) ≈ ax + b$$
-> 꼴의 선형함수로 근사할 수 있다. 이를 엄밀하게 쓰면 다음과 같다.
->
-> $$S_n \to^d N(\mu, \frac{\sigma^2}{n}) \Rightarrow g(S_n) \to^d N(g(\mu), \frac{\sigma^2}{n}\times[g'(\mu)]^2)$$
+> 현저히 작아진다. 즉, 대립가설을 더욱 강력히 지지한다.
 """
-
-# ╔═╡ 5a2e24b5-f452-406b-bf9c-946659df6c95
-md"""
-`-` $Z_1, Z_2, \dots, Z_n \sim^{iid} Ber(p)$라고 하고, 분산을
-
-$$\hat{p}(1-\hat{p}) = \bar{Z}(1-\bar{Z})$$
-
-로 추정한다고 하자. 이때, $\hat{p}(1-\hat{p})$의 점근분포를 활용하여 95% 신뢰구간을 구하라. $p = 0.5$일 경우에 신뢰구간이 어떻게 되는지 보이고, 왜 그런지 이유를 설명하라.
-"""
-
-# ╔═╡ 8787557d-134b-4365-bab7-ef1868911fb2
-md"""
-p₂ = $(@bind p₂ Slider(0.1:0.1:1, show_value = true, default = 0.2))
-
-n₂ = $(@bind n₂ Slider([100, 1000, 10000, 100000], show_value = true, default = 10000))
-"""
-
-# ╔═╡ 9ac8f2bc-31f7-449a-89c0-85e1d56feb56
-let
-	N = 10000
-	Z̄ = [rand(Bernoulli(p₂), n₂) |> mean for i in 1:N]
-
-	g(x) = x*(1-x)
-	Y = g.(Z̄)
-	μ = g(p₂)
-	σ = √(p₂*(1-p₂)/n₂) * slope(g, μ)
-
-	println("참값 : $(p₂*(1-p₂))")
-	println("L(시뮬) : $(quantile(Y, 0.025))")
-	println("U(시뮬) : $(quantile(Y, 0.975))")
-	println("L(이론) : $(quantile(Normal(μ, σ), 0.025))")
-	println("U(이론) : $(quantile(Normal(μ, σ), 0.975))")
-	
-	histogram(Y)
-	histogram!(rand(Normal(μ, σ), N))
-end
-
-# ╔═╡ c765d274-d9e9-4685-ab28-7ec96d1c4c97
-md"""
->  $g(x)$가 $S_n$의 평균에서 기울기가 0인 직선이라면, 델타 메소드를 사용할 수 없다. (분산이 0으로 감)
-"""
-
-# ╔═╡ dc1c5b25-84cf-4967-b915-7468955ffa24
-#=╠═╡
-a = 2  ## 전역으로 선언시 이전 셀 비활성화
-  ╠═╡ =#
-
-# ╔═╡ 7b9f0ebd-91fb-4bba-8cca-c1a515ff312e
-# ╠═╡ disabled = true
-#=╠═╡
-a = 1
-  ╠═╡ =#
 
 # ╔═╡ 00000000-0000-0000-0000-000000000001
 PLUTO_PROJECT_TOML_CONTENTS = """
@@ -1119,7 +530,7 @@ Random = "9a3f8284-a2c9-5f02-9a11-845980a1fd5c"
 [compat]
 Distributions = "~0.25.107"
 ForwardDiff = "~0.10.36"
-Plots = "~1.40.2"
+Plots = "~1.40.3"
 PlutoUI = "~0.7.58"
 """
 
@@ -1129,7 +540,7 @@ PLUTO_MANIFEST_TOML_CONTENTS = """
 
 julia_version = "1.10.2"
 manifest_format = "2.0"
-project_hash = "b9e5e9bd2ea40bb2afe824755aab26966734be2d"
+project_hash = "c136a6bee455cb819771638bb503b566812a3b9c"
 
 [[deps.AbstractPlutoDingetjes]]
 deps = ["Pkg"]
@@ -2356,166 +1767,83 @@ version = "1.4.1+1"
 """
 
 # ╔═╡ Cell order:
-# ╟─455a0811-d32e-4459-a1da-2dedae860d88
-# ╠═6f5e1250-e775-11ee-1994-e3c1b9e5584c
-# ╠═9f1e3085-6804-4631-aeba-04afdd1fd01e
-# ╠═abf78c62-9107-4aac-8113-9da0f95f5cde
-# ╟─1d41c736-6b1d-46d1-9df7-447b7c7a02ce
-# ╠═d0052329-8f0b-4fc3-998e-b8e5912d5536
-# ╟─e38a58bc-c110-4885-993a-7f25fb0166ef
-# ╠═4e593850-16ed-40ca-83fd-a486b18ec079
-# ╠═6efcbb0a-8ef3-4599-b874-0b4d02fa7518
-# ╠═a16b583b-9405-48ee-9c05-83e38533b68f
-# ╟─b29f68bf-3de5-4d7c-84f4-2bd2bd874537
-# ╠═a7de0a15-d975-418f-9a54-1f8441ae91ac
-# ╟─cec3fbdf-1b41-438c-b263-8fe140700b26
-# ╠═a65c8eef-f5b2-4ae5-8520-db338fe5780c
-# ╟─9ee8c5bc-5f7a-4833-a531-1007466ffda8
-# ╠═4997f438-a5ce-40bd-968c-32d70f07f801
-# ╠═8cc89254-26ff-4020-bbeb-0a248564bbef
-# ╟─b8ebbd63-f1ef-4892-9ef9-2f9286129f86
-# ╠═059cd126-a60a-4009-8c1c-74f2de00ca8c
-# ╟─0c8547d7-13e9-4215-b1a0-c4438a1127f7
-# ╠═58be869e-bc81-4232-932e-a54d3fe0b3e3
-# ╟─1df27dda-e79b-44bb-a8a3-5b6c48af4cc5
-# ╠═7b9f0ebd-91fb-4bba-8cca-c1a515ff312e
-# ╠═dc1c5b25-84cf-4967-b915-7468955ffa24
-# ╠═bd78e53c-d222-41b7-beb3-a10991feb09a
-# ╠═c00b097a-d5ae-4a5d-a384-bc06cbfdef08
-# ╠═dcea012a-3cef-4a3d-9fcd-1014baec2b8f
-# ╟─8dc0960a-99da-4a6b-b7b0-ffae32df16b4
-# ╠═45ff35d1-1ebd-4ea7-b72c-0eb4ddf6f58f
-# ╟─3f4e4892-a743-4bc5-8eb1-adaf684c61d5
-# ╟─c170c172-2a1c-49d1-914f-aaf23a0c6f1f
-# ╠═77c34287-881b-408b-9d9e-287318b5ba01
-# ╠═e2d79467-f780-404a-b084-f71de303d97f
-# ╠═668a0ce3-03ac-4f5e-8313-5fa3e741d9e9
-# ╟─cefde001-9774-4069-9dda-cee8271f4c1f
-# ╠═16feef51-3329-4289-a95d-59fa89576c73
-# ╠═38e95bf2-76f6-4ff8-b108-ac3cafa2f308
-# ╟─682518ab-28ad-4d98-93fe-3f9ba66380bf
-# ╟─623fe2c0-6e50-44f2-982a-a99f7c5cbead
-# ╠═9ab07c9f-4d3b-4109-8bda-cc29e99a40ef
-# ╠═7ebf832f-13eb-4b0f-9d7d-b84dd1fb660c
-# ╠═cb5eae90-aa93-4c04-9aff-dc4fd587e630
-# ╠═c71c0636-3c50-4775-8578-640c70cc9009
-# ╟─538ceafd-c3ad-4f58-8ef1-b8d2f7a80fb6
-# ╠═e03cc014-83c8-4659-8737-c44be8c6ae74
-# ╠═18afa3d2-517f-4c47-ac41-a8012079ada9
-# ╠═08e626a3-6bdf-4dec-9a44-f051ed68d745
-# ╟─3c403a5e-60cb-4f0b-a882-679cdfae1b6b
-# ╟─32336b49-3be3-48d7-9f5c-d9fad228c27b
-# ╟─db1b6061-2513-4ca3-9205-8242bd1c7472
-# ╠═0153b93a-6edd-4a64-a992-c2c2e0cfe06b
-# ╟─6f523ea7-cbae-47aa-a1c5-3480fbeaeedd
-# ╠═cfd3861e-3440-4822-a83d-9382bb2bc316
-# ╟─32f8f3a7-ab89-4188-aa6d-4d52cc084c21
-# ╟─e7caf6fc-e34c-42a5-93fe-a7b9d4605afa
-# ╠═a2c165b4-6459-4113-a25d-0c35e41f2e3c
-# ╠═7ef017b1-5822-48ae-9643-7960ebf4fdb0
-# ╟─3df97593-cea3-45d5-840b-9a9874abb8cc
-# ╠═43536bc0-599c-4180-87a5-6d3b02c77dd4
-# ╟─843fd1fa-3f42-41da-9254-34977df8d736
-# ╠═2afbbb9b-46a0-47a1-8599-8363f458755b
-# ╠═c0044d57-4bfc-4c8a-a8d9-9513fc9a1bef
-# ╟─daa6729a-5f5d-4547-a792-0e8c54bf597e
-# ╠═2a8cb317-2ccf-4d50-a005-6c4a3953febf
-# ╟─027c5b5d-5212-488f-beba-b3476c7cec54
-# ╟─f1f8dd40-c975-490b-9e91-7b49b84581ca
-# ╠═5baad307-94f3-453c-9878-57d0c0fb6150
-# ╟─032ddcbf-1edd-45fc-8ea7-c2c9a7c17b3a
-# ╠═1e75c5ab-c0ea-49fd-9cb0-da11d2ae6de8
-# ╠═cda2ef25-f70e-42a4-b721-882509c3b418
-# ╠═606d98c9-6ed3-42ad-a71f-e7960ac25a0f
-# ╟─337076ae-8469-4a0a-b1ea-c52ebc7a9027
-# ╠═9e2bc040-2a33-43b0-86a0-e610b98f5930
-# ╟─7ed313dd-830e-4381-8cfe-b8c98da4d002
-# ╟─5bb17acc-c570-4b62-a01a-6b7c00c35dde
-# ╠═ea41d446-be33-45f8-b372-2776119f4fda
-# ╟─a30d1531-bcb7-48d1-a369-460aced7cc4f
-# ╟─84bc5e5a-3c61-486c-b0b0-4e03d301690e
-# ╠═57e5b93d-2f3b-40a8-9e4c-11901d498d98
-# ╟─1304886c-ab78-4d23-80ce-6025d66640a8
-# ╠═ccc44a13-355f-403e-be45-d4a031ea1ce5
-# ╠═7f14bfa0-6fcd-4c8a-aba7-44c7937a4ddd
-# ╟─8bdcb86c-1767-4990-9bb4-731790c9f2b1
-# ╟─4379fd3f-3f92-4b0d-8d1a-a2cf17b189eb
-# ╟─359d8ad8-a5a2-47c2-a62d-057ae7058c2a
-# ╟─eaae015d-f8e4-404a-8c52-528f55f9843a
-# ╠═862e890f-6be2-4d97-9c56-84c557940e55
-# ╟─cc5c0817-b290-471f-aa31-0a2905b45741
-# ╠═61907f88-fa58-49fc-ac22-d8b757b28e82
-# ╠═cccc3d9e-de04-4029-b0e0-d59d98b6bc77
-# ╟─a67234c9-94f6-4e5f-8c42-6f5cf4e1933d
-# ╟─40871ab7-df22-4b9a-be07-0013cfbc656e
-# ╟─f72c31a8-6065-465c-a0f8-62ca919094d4
-# ╠═29be535a-fa0b-44c5-9822-4fca701d021a
-# ╟─50466eab-bd9c-47a5-903c-e1e7c99d3548
-# ╠═02242ed2-08df-49ee-91f5-61627dd28ecd
-# ╟─1bcecc6e-c708-4cde-97f1-d21cbbe379f8
-# ╠═ff8e50a0-8afc-48ea-aba6-57cef582b7f4
-# ╟─f529499b-c961-4368-9a4d-a66ac7281d19
-# ╟─1d5cf77b-e2f5-4927-8f98-da7babed96d3
-# ╟─daf035aa-2be1-4b0f-9b97-095e34350b0a
-# ╟─2e34e170-aed1-446a-82d5-41455004a69c
-# ╠═e41f0bad-3ed5-4298-8d22-14f443517978
-# ╟─d0be677b-ebac-4408-bc45-8f09044476be
-# ╠═b181dd35-8690-4ef6-9538-dcd2e67e9ddb
-# ╟─ebf0bdbf-868e-400a-b7ae-1dcedad97f89
-# ╠═ac52601f-714d-4657-b980-bc5c1f558163
-# ╟─9aa12753-7cb4-4370-ae10-9f99dfe01652
-# ╠═7462ae30-aa78-479d-aa68-25acba417169
-# ╠═e0db18e0-9b04-4eb6-bb0d-2091b428a553
-# ╟─e98d6ef2-b836-4a7b-9beb-c24eed088abe
-# ╟─923eb57d-bf2a-4815-ba45-296685cf5f43
-# ╠═694ff7ac-f3e0-448b-9a47-d131c2d30650
-# ╠═24332730-d9e4-45b2-8cc7-9bef7c0c3ec5
-# ╟─f275e60c-912c-4feb-8010-e8449268a542
-# ╠═d220f49f-b652-4f9e-84d6-46c50497e719
-# ╟─a81e4c58-56e1-4f77-87de-ff26f070e77e
-# ╠═3c1cbdb9-50f0-4429-ae50-b68de102cab7
-# ╟─33776495-04c1-4b1b-8226-fa5816e5435f
-# ╟─4ca2c50f-3696-444b-bab3-d7a41b0cdb1e
-# ╠═bcefc93b-7898-4d91-b5a3-fb52f9636cb8
-# ╟─3a7e9d92-e59d-4d79-b25e-2f8bd95be5d5
-# ╟─b7c77d64-cb49-4e34-b5ae-8caae8f89c6d
-# ╟─59c38af3-37bc-458c-a55f-71a1d2d34b25
-# ╟─0ca7a8da-c99e-4c98-b258-ca6400d9040f
-# ╟─dcefd283-205d-447c-8ea8-188b619fe0e4
-# ╠═d35c8ebb-d261-4a21-8db7-ee49811670db
-# ╟─e1ed314b-5c1f-450e-85c1-dbb6362f4616
-# ╠═f84bb31b-b320-4df7-a81d-218210eb9278
-# ╟─09c7c57a-e7fa-4678-aa2b-1da0e36e7d94
-# ╟─928a01f0-fd9b-4503-878f-33813b4cd46e
-# ╟─91303a81-5209-4197-94bd-b67580da11e7
-# ╟─39ea95d0-57c6-4030-ac55-b0edd329e665
-# ╟─0909c30f-b7da-4ac7-9f77-162a13f222ef
-# ╟─13c75cd9-ecc9-4e7f-9c13-874c94330055
-# ╟─f1d29b76-63f9-45fb-b850-030ca53e75b3
-# ╠═5d13ce35-32f0-4bc9-a79b-901c7d83292e
-# ╠═4739cd75-bdd2-4d99-bf7e-f3d3cdfe7026
-# ╟─7eaa6784-4966-426e-9c55-9c5346ef4a97
-# ╠═4937a2e7-af3e-45fb-b54b-ab5197e1c392
-# ╟─80ebb5c5-0dc5-45eb-bf18-a762cb3cb8e0
-# ╟─11c1e3c8-b237-4285-b5b0-9edd0f4df1ac
-# ╟─e5fddf03-05fc-4459-b4fb-7a9927a907bf
-# ╠═08a6849a-5503-4376-88f9-3c11dd36f259
-# ╠═0f3f476b-6a2b-4c69-a4b6-1a1d92f6d666
-# ╠═4c3a0b50-4161-4670-95cc-fcd48cd341c4
-# ╟─1e322fc6-6463-4823-8dd1-d8d406657ffc
-# ╟─c72cb6ce-260c-41db-800b-60050a460bb8
-# ╠═49164c88-b2ee-4c65-b118-89b496e473e4
-# ╟─ae9990d0-2440-4bfe-8de9-85913c19fd2b
-# ╟─a708374e-a9f3-4be1-b967-5a231ffed615
-# ╠═1a65a539-344d-40f4-b504-97d8381f5b4d
-# ╟─2fb55099-9959-44fd-8a45-8d76af65ebb7
-# ╟─484618d9-85fc-4911-91ac-67d2ab56f764
-# ╟─bc8cc076-4a68-4111-986a-a1952fa1d762
-# ╠═2b6d4bc6-b625-47fe-8476-c6860abc148e
-# ╟─939884e4-344d-49ba-9800-5b36f3d72a88
-# ╟─5a2e24b5-f452-406b-bf9c-946659df6c95
-# ╟─8787557d-134b-4365-bab7-ef1868911fb2
-# ╠═9ac8f2bc-31f7-449a-89c0-85e1d56feb56
-# ╟─c765d274-d9e9-4685-ab28-7ec96d1c4c97
+# ╟─7f38d5f0-1ad4-4823-8ef1-7c17a99360a4
+# ╠═ab0152d0-f702-11ee-2e44-7f0af5538000
+# ╠═df513dc1-426a-4058-ac20-d2cf99569f49
+# ╠═9daa8eb7-f86a-4512-9c0f-1c4fe0126ad1
+# ╟─dbfb330a-5d67-48f2-8a1c-69103f93af2e
+# ╟─93027762-b0c5-4bcf-a281-5a18ae2ac7d0
+# ╠═b1a7915b-60f2-4ab8-ac14-2a9fabf9e85c
+# ╟─1debdb0c-368a-4ebb-b27d-7f15327f21e6
+# ╠═92e7c09e-1ec9-4df9-9b28-231b43c01635
+# ╟─c369fc7c-a04e-47f6-9116-4d45ed106b4d
+# ╠═dc68e92f-79d9-4404-8ce0-66f426e6e4ad
+# ╟─5cf69bf9-b909-4ae1-9a54-436e8d6de88d
+# ╠═92b67f70-9ffa-4f4a-8269-28f8c0d0283b
+# ╟─40f0d141-571d-4cdd-83c2-3151bca514fc
+# ╠═5ec50e44-64cf-46ee-a385-8d6703a8b0be
+# ╟─42a2e19f-8076-4144-a875-8f4990551c92
+# ╠═67b19145-4de6-43ec-bed4-666e1a0d3c5d
+# ╟─d4f99fce-cfe3-440c-b529-2e99c13a33cc
+# ╠═b60f086b-36ab-4de4-932f-0ed596f822b3
+# ╟─4c256543-4363-4416-a3a6-55a4ff6e0d1a
+# ╠═a97098c3-1ac8-47bb-a30f-d15b344b0455
+# ╟─ad25c4a0-e646-46ac-9c59-77b5505e29b7
+# ╠═5da31915-4ae7-4b4a-9084-62c5741b6976
+# ╟─28226dec-8815-4e5d-8014-666656335fa4
+# ╠═274c42eb-2b4a-4ec6-bfdc-6cdd58d7fef0
+# ╟─9864922a-4dd7-49be-8250-9c2c51d7f9ba
+# ╠═3a1ce044-2b11-4ed2-bc5b-3aee78ccb451
+# ╟─6117a9bb-4ca4-4241-86c2-9fa1a6d8cf3b
+# ╠═e84e0fd0-65e1-4c64-8057-b483d504b2a2
+# ╟─57a0136a-6395-4b50-96f0-74c7185fa986
+# ╠═56593f2c-a253-42fa-9a35-c33ab82d3ca9
+# ╟─b47a30d7-380c-4c10-a9dc-b5c628e98941
+# ╠═8f483ed3-49bc-4b2f-85c0-2b88aa2c9b09
+# ╟─4460d9e2-8796-4dd6-9466-e96162db1bf2
+# ╠═23c77a9b-831d-4ba6-b80a-6df28a934a16
+# ╟─041af1b0-44ab-4c26-ba7b-00f64b13b0bf
+# ╠═08ab408b-5345-4487-b2d6-c4eefdbf5d31
+# ╟─66b0e59a-8185-42df-9bb6-a530db625e74
+# ╠═7612ed60-89fa-4813-af2b-4a5376bb77cd
+# ╟─778570ff-4c34-4e37-b52f-6870ba29d707
+# ╠═07decc24-9617-4521-ab43-89acf2b510ea
+# ╟─985ea030-823d-405f-99a4-64cf9fd8d863
+# ╟─59f322fc-178a-4aa7-9d53-f71baaf5cd26
+# ╟─646d0348-8569-4f35-91f3-14c6fcda104f
+# ╠═df2904cc-c4a1-47d4-8a17-5d810f22995b
+# ╠═de29e20a-abb2-4a37-8939-7586cefb1e94
+# ╟─3a7b277d-15af-45b0-91db-e99cb9773795
+# ╠═8c153b3c-44d9-4d1b-8789-ec1ce4b6e6f9
+# ╟─6c2998e8-9647-4859-b4db-07d5c2096346
+# ╟─f05cd0e7-984e-4982-8bae-18365cfd76a7
+# ╠═8dadb32a-620d-4e53-8bbc-dae187ad1f6a
+# ╟─0a9a1fdd-7610-4025-a22c-4585bc9b17b3
+# ╟─a766461b-33e6-49d1-84d3-e281777318be
+# ╟─b0d770e3-26bb-41f2-8451-81cb29d40f13
+# ╟─f6fc74d0-41e4-4bf3-bcde-b9c0196e539f
+# ╠═aa6da4c9-3701-46ca-9d5e-df6cfed432c1
+# ╟─641c13e9-92e7-49f6-9754-3e2df2af771f
+# ╠═864c9b59-a395-4dc4-ba6e-de6d6805a98e
+# ╟─a0629129-57a6-4322-be5b-5073cadc407e
+# ╟─165c3c41-95f8-4716-b69a-1e1fcabbdb2c
+# ╠═b19092ca-edc4-4c6d-ad44-8e207ad4f306
+# ╟─c3976dc1-cb07-411a-a9be-e92aa7fa0ef4
+# ╟─308b8f31-26aa-43ea-b576-6b8b62ad3c26
+# ╟─970b7880-a4ba-4758-bd2f-62d63651aa9b
+# ╟─ba5fa39e-61f7-47ac-a913-ce6e4e05b497
+# ╠═69605d43-fec9-4bb3-bf14-6094b775ecb9
+# ╟─f81d1a0f-ed4b-4676-a938-3d85f0a13c4e
+# ╠═ae9d3831-aaf1-447a-81e7-963ff41763c6
+# ╠═261c5b7e-88ef-4b94-8377-509027de7e6a
+# ╟─26ac8f7a-0f87-4020-82af-168be00bc143
+# ╟─a9ebce87-854a-4e65-9b9a-885cc66ea183
+# ╠═c3c3e60f-3d98-4fc3-a264-e5841c64c4d3
+# ╠═bb9f92a7-6138-485b-92ef-7a89990a1b34
+# ╟─e6d32952-d79e-4bad-9356-6090604ac7f8
+# ╠═5346c174-f9e1-4b39-b9b2-30be3685187d
+# ╟─7ef2a793-1e2c-4f3d-8136-76efe68292a6
+# ╠═27172f6a-5afd-4f45-9b1f-114dbf41e0c3
+# ╟─316527bb-b33e-4601-b7f7-93a291c43c73
 # ╟─00000000-0000-0000-0000-000000000001
 # ╟─00000000-0000-0000-0000-000000000002
