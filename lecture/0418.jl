@@ -4,6 +4,16 @@
 using Markdown
 using InteractiveUtils
 
+# This Pluto notebook uses @bind for interactivity. When running this notebook outside of Pluto, the following 'mock version' of @bind gives bound variables a default value (instead of an error).
+macro bind(def, element)
+    quote
+        local iv = try Base.loaded_modules[Base.PkgId(Base.UUID("6e696c72-6542-2067-7265-42206c756150"), "AbstractPlutoDingetjes")].Bonds.initial_value catch; b -> missing; end
+        local el = $(esc(element))
+        global $(esc(def)) = Core.applicable(Base.get, el) ? Base.get(el) : iv(el)
+        el
+    end
+end
+
 # ╔═╡ 92ea243c-d01d-11ec-2e47-031c31a5d6e6
 using PlutoUI,Images,Distributions,LinearAlgebra
 
@@ -290,7 +300,7 @@ md"""
 	- ``{\bf X}_{n\times p} = {\bf U}_{n\times p}{\bf D}_{p\times p} {\bf V}^\top_{p \times p}`` 
 	와 같이 분해된다. 
 	
-	(3) ``{\bf U}``와 ``{\bf V}``는 중 정사각형 모양인 행렬은 직교행렬이고, 직사각형 모양의 행렬은 거의 직교행렬이다. 즉 1. ``{\bf U}^\top {\bf U}``, 2. ``{\bf U} {\bf U}^\top``, 3. ``{\bf V}^\top {\bf V}``, 4. ``{\bf V}{\bf V}^\top``
+	(3) ``{\bf U}``와 ``{\bf V}``중 정사각형 모양인 행렬은 직교행렬이고, 직사각형 모양의 행렬은 거의 직교행렬이다. 즉 1. ``{\bf U}^\top {\bf U}``, 2. ``{\bf U} {\bf U}^\top``, 3. ``{\bf V}^\top {\bf V}``, 4. ``{\bf V}{\bf V}^\top``
 	의 계산중에서 차원이 (m,m)으로 나오는 것은 모두 단위행렬이 된다. 
 """
 
@@ -383,18 +393,24 @@ md"""
 """
 
 # ╔═╡ 40fbb9b3-8a88-470f-b0ab-7ca4528dc543
-let 
-	μ = [1,5,3]
-	Σ = [1 0 0.8 ; 0 1 0 ; 0.8 0 1]
-	X = rand(MultivariateNormal(μ,Σ),1000)'
-	#--#
-	U,d,V = svd(X)
-	U1,U2,U3 = eachcol(U)
-	d1,d2,d3 = d
-	V1,V2,V3 = eachcol(V)
-	#--#
-	[X U1*d1*V1'+ U2*d2*V2' + U3*d3*V3']
-end 
+let
+	μ = [1, 5, 3]
+	Σ = [1 0 0.8; 0 1 0; 0.8 0 1]
+	X = rand(MultivariateNormal(μ, Σ), 1000)' ## (1000, 3)
+
+	U, d, V = svd(X)  ## 특이값 분해
+	U1, U2, U3 = eachcol(U)  ## U는 n×m matrix인데, m = 3
+	d1, d2, d3 = d  ## 애초에 리스트로 나옴
+	V1, V2, V3 = eachcol(V)  ## V'는 m×p matrix인데, m = 3
+
+	@show d
+	[X U1*d1*V1'+U2*d2*V2'+U3*d3*V3']  ## 더하면 더할수록 X와 같아지다가 다 더하면 똑같음
+end
+
+# ╔═╡ 0bd671b0-d771-4977-b27a-8b401fc7a0df
+md"""
+> X를 만들 때, 일부들의 곱으로 나타냈을 때 X와 유사해지는 정도가 d의 크기가 커질수록 커졌다. 즉, D는 포함하고 있는 정보의 비중을 나타낸다.
+"""
 
 # ╔═╡ d7c052e1-c254-413c-898e-0e5babe5db1c
 md"""
@@ -411,30 +427,111 @@ md"""
 """
 
 # ╔═╡ 893040f2-7bc1-4772-9520-98b07b9d0510
-let 
-	X = rand(1000,10)
-	#--#
-	U,d,V = svd(X)
-	U1,U2 = U[:,1:6], U[:,7:10]
-	D1,D2 = Diagonal(d[1:6]), Diagonal(d[7:10])
-	V1,V2 = V[:,1:6], V[:,7:10]
-	#--#
-	X ≈ (U1*D1*V1'+ U2*D2*V2')
-end 
+let
+	X = rand(1000, 10)
+
+	U, d, V = svd(X)
+	U1, U2 = U[:, 1:6], U[:, 7:10]
+	D1, D2 = Diagonal(d[1:6]), Diagonal(d[7:10])
+	V1, V2 = V[:, 1:6], V[:, 7:10]
+
+	X ≈ U1*D1*V1' + U2*D2*V2'
+
+	## U1, U2를 아무렇게나 나눠도 결과는 동일하다.
+end
+
+# ╔═╡ 06dc41e0-e7ed-4a9f-b214-6841045cc6c6
+md"""
+> 정보를 나눠서 저장할 수 있다.
+"""
 
 # ╔═╡ 69225793-95a2-4ce0-be91-ec936f862ce3
 md"""
 ### C. 그리스국기
 """
 
-# ╔═╡ 9ebbf8a5-7406-4c54-80e8-50ec4cb05da0
-let 
-	(Ur,r,Vr),(Ug,g,Vg),(Ub,b,Vb) = eachslice(channelview(Greece),dims=1) .|> svd
-	R = Ur[:,1:3]*Diagonal(r[1:3])*Vr[:,1:3]'
-	G = Ug[:,1:3]*Diagonal(g[1:3])*Vg[:,1:3]'
-	B = Ub[:,1:3]*Diagonal(b[1:3])*Vb[:,1:3]'
-	colorview(RGB,R,G,B)
+# ╔═╡ ed43ce2a-0b3c-4304-8faf-59f37aee832d
+channelview(Greece)[1,:,:]  ## (3, 9, 13)
+
+# ╔═╡ 1507bef4-a88c-43dd-86c0-9ee5ae61d842
+md"""
+* R : (9,13) → svd(R) = Ur, dr, Vr
+* G : (9,13) → svd(G) = Ug, dg, Vg
+* B : (9,13) → svd(B) = Ub, db, Vb
+
+> 각 채널의 원소들을 특이값 분해한 뒤, 일부만 나타내보자.
+"""
+
+# ╔═╡ 3d5a0529-7ac6-4f6d-be94-2eb7881b6bf7
+md"k = $(@bind k Slider(1:9, show_value = true))"
+
+# ╔═╡ 50b9bf8b-1491-4d4a-afa8-31aeb552348f
+let
+	# R = channelview(Greece)[1, :,:]
+	# G = channelview(Greece)[2, :,:]
+	# B = channelview(Greece)[3, :,:]
+
+	R, G, B = eachslice(channelview(Greece), dims = 1)  ## (3, 9, 13)
+	(Ur, dr, Vr), (Ug, dg, Vg), (Ub, db, Vb) = eachslice(channelview(Greece), dims = 1) .|> svd
+
+	@show R ≈ Ur*Diagonal(dr)*Vr'
+	@show G ≈ Ug*Diagonal(dg)*Vg'
+	@show B ≈ Ub*Diagonal(db)*Vb'
+
+	R6 = Ur[:, 1:k]*Diagonal(dr[1:k])*Vr'[1:k,:]
+	G6 = Ug[:, 1:k]*Diagonal(dg[1:k])*Vg'[1:k,:]
+	B6 = Ub[:, 1:k]*Diagonal(db[1:k])*Vb'[1:k,:]
+	
+	colorview(RGB, R6, G6, B6)
+
+	@show dr
 end
+
+# ╔═╡ 3032732e-283d-497a-ab35-749d84be0380
+md"""
+> 3이상이면 사실상 똑같음
+"""
+
+# ╔═╡ 6df65426-89da-4443-a4cb-e374085db80a
+md"""
+### D. 하니
+"""
+
+# ╔═╡ 389d91e0-8d77-49c9-a739-4ba8918a3c3e
+hani = load(download("https://github.com/guebin/SC2022/blob/main/hani.jpeg?raw=true"))'
+
+# ╔═╡ ea657ad4-2d09-444b-b1e8-70fed700c3bb
+md"l = $(@bind l Slider(1:100, show_value = true, default = 10))"
+
+# ╔═╡ 92620601-10cd-4feb-894c-a50028c950d8
+let
+	(Ur, dr, Vr), (Ug, dg, Vg), (Ub, db, Vb) = eachslice(channelview(hani), dims = 1) .|> svd
+
+	R = Ur[:, 1:l]*Diagonal(dr[1:l])*Vr'[1:l, :]
+	G = Ug[:, 1:l]*Diagonal(dg[1:l])*Vg'[1:l, :]
+	B = Ub[:, 1:l]*Diagonal(db[1:l])*Vb'[1:l, :]
+
+	hani2 = colorview(RGB, R, G, B)
+	[hani hani2]
+end
+
+# ╔═╡ 4ef09081-2d7f-404b-8a51-3961b6da3d3a
+println("ratio = $((4032*l + l + l*3024)/(4032*3024))")  ## 0.058의 숫자만 가지고 표현 가능
+
+# ╔═╡ 821600e7-f534-4400-9eef-2b6c47f61907
+md"""
+* U : $4032\times l$
+* d : $l$
+* V : $l\times 3024$
+"""
+
+# ╔═╡ 4381ca41-4e03-42ca-a41e-a5482dba3b1f
+md"""
+`-` SVD를 이용하면 이미지를 압축하여 효율적으로 전달할 수 있음.
+
+* SVD는 행렬을 분해하는 알고리즘이지, 이미지를 압축하는 알고리즘은 아님.(이용할 수 있을 뿐.)
+* SVD는 훨씬 다재다능합니다...
+"""
 
 # ╔═╡ 00000000-0000-0000-0000-000000000001
 PLUTO_PROJECT_TOML_CONTENTS = """
@@ -1587,9 +1684,22 @@ version = "17.4.0+2"
 # ╟─dbc140aa-b913-445f-9560-da66cce2d1e6
 # ╟─eeb74143-d724-463d-aeee-b35db2759cb9
 # ╠═40fbb9b3-8a88-470f-b0ab-7ca4528dc543
+# ╟─0bd671b0-d771-4977-b27a-8b401fc7a0df
 # ╟─d7c052e1-c254-413c-898e-0e5babe5db1c
 # ╠═893040f2-7bc1-4772-9520-98b07b9d0510
+# ╟─06dc41e0-e7ed-4a9f-b214-6841045cc6c6
 # ╟─69225793-95a2-4ce0-be91-ec936f862ce3
-# ╠═9ebbf8a5-7406-4c54-80e8-50ec4cb05da0
+# ╠═ed43ce2a-0b3c-4304-8faf-59f37aee832d
+# ╟─1507bef4-a88c-43dd-86c0-9ee5ae61d842
+# ╠═3d5a0529-7ac6-4f6d-be94-2eb7881b6bf7
+# ╠═50b9bf8b-1491-4d4a-afa8-31aeb552348f
+# ╟─3032732e-283d-497a-ab35-749d84be0380
+# ╟─6df65426-89da-4443-a4cb-e374085db80a
+# ╠═389d91e0-8d77-49c9-a739-4ba8918a3c3e
+# ╠═ea657ad4-2d09-444b-b1e8-70fed700c3bb
+# ╠═92620601-10cd-4feb-894c-a50028c950d8
+# ╠═4ef09081-2d7f-404b-8a51-3961b6da3d3a
+# ╟─821600e7-f534-4400-9eef-2b6c47f61907
+# ╟─4381ca41-4e03-42ca-a41e-a5482dba3b1f
 # ╟─00000000-0000-0000-0000-000000000001
 # ╟─00000000-0000-0000-0000-000000000002
