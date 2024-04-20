@@ -14,512 +14,369 @@ macro bind(def, element)
     end
 end
 
-# ╔═╡ 6f5e1250-e775-11ee-1994-e3c1b9e5584c
-using PlutoUI, Plots, Distributions, Random
+# ╔═╡ a6609191-8981-4d00-a5ef-b311d8791a55
+using PlutoUI,Plots,Distributions,Random, ForwardDiff
 
-# ╔═╡ 455a0811-d32e-4459-a1da-2dedae860d88
+# ╔═╡ 771b13aa-2bdd-400a-87e3-cc5bae383cfe
 md"""
-### code and theorem review
+# 통계전산 2022 중간고사
 """
 
-# ╔═╡ 9f1e3085-6804-4631-aeba-04afdd1fd01e
-Plots.plotly()
-
-# ╔═╡ abf78c62-9107-4aac-8113-9da0f95f5cde
+# ╔═╡ 1b07bb22-3153-4364-9efd-640456e56851
 PlutoUI.TableOfContents()
 
-# ╔═╡ 1d41c736-6b1d-46d1-9df7-447b7c7a02ce
+# ╔═╡ 479e21fc-0662-47f4-ba3b-f36810c0bca9
+Plots.plotly()
+
+# ╔═╡ 0ccda176-3037-4c56-8d22-432597c8014b
 md"""
-### 기초지식
-
-
----
-
-
-
-`-` 이미 할당된 값들
+## 1. 줄리아문법 (5점)
 """
 
-# ╔═╡ d0052329-8f0b-4fc3-998e-b8e5912d5536
+# ╔═╡ 6f27a359-bf9e-48b8-a4fd-26c9d499ba8e
+md"""
+(1) ForwardDiff 를 이용하여 $f(x)=\frac{1}{2\pi}e^{-\frac{1}{2}x^2}$ 일때 $f'(0)$ 의 값을 계산하라. 
+"""
+
+# ╔═╡ 5f7c6cfc-878c-4266-953b-21419ba07686
+md"""
+(2) randn(100) 을 이용하여 Array를 생성하고 양수를 counting 하라. 
+"""
+
+# ╔═╡ 92dfb9c1-f1e9-4de7-8e91-d59384ebfb86
+md"""
+(3) 함수 $f(x)=\frac{e^x}{1+e^x}$ 를 (-5,5)의 범위에서 plot 하라. 
+"""
+
+# ╔═╡ 069d6e5e-f5a1-47c9-b4f3-c9de6233cff0
+md"""
+(4) 함수 $f(x) = \max(0,x)$ 를 (-5,5)의 범위에서 plot 하라. 
+"""
+
+# ╔═╡ ab443d25-6865-48e5-a5ff-998d8c743890
+md"""
+(5) 아래와 같은 수열을 100항까지 생성하라. 
+- 1, 1+2, 1+2+3,... 
+"""
+
+# ╔═╡ 018f278c-c373-11ec-1e5b-57380df5b3ff
+md"""
+## 2. 몬테카를로 적분 (10점)
+
+몬테카를로 방법을 활용하여 아래의 적분을 계산하라. 
+
+(1) $\int_{0}^{1}\sin(x)dx$ 
+
+(2) $\int_{0}^{\infty} \big(\frac{1}{2}\big)^xdx$
+
+(3) $\int_{3}^{\infty}e^{-x}dx$
+
+(4) $\int_{10000}^{\infty}e^{-x}dx / \int_{9999}^{\infty}e^{-x}dx$
+
+(5) $\int_{-1.96}^{1.96} \frac{1}{\sqrt{2\pi}}e^{-x^2/2}dx$ 
+
+"""
+
+# ╔═╡ aa306e3f-6e9a-413c-8e75-22f49fbc150a
+md"""
+## 3. 난수생성 (30점)
+"""
+
+# ╔═╡ e01cb295-9787-4c3e-9a4c-1db2013e963a
+md"(1) $U(0,1)$ 로 부터 $X_1,\dots, X_{1000} \overset{iid}{\sim} bin(5,0.4)$를 생성하라. "
+
+# ╔═╡ e49e59ac-6e09-4ec0-8ae9-5ef743d62897
+[sum(rand(5) .< 0.4) for i in 1:1000]
+
+# ╔═╡ 67ba0651-8876-42c7-9628-cc2e26381643
+md"(2) $Poi(1)$ 로 부터 $X_1,\dots, X_{1000} \overset{iid}{\sim} Poi(10)$을 생성하라. "
+
+# ╔═╡ 8a8c16bf-ef84-4fd3-ab6f-d62b19109334
+[rand(Poisson(1), 10) |> sum for i in 1:1000]
+
+# ╔═╡ 4344c9a0-c452-4319-aa05-5f88a8b04534
+md"(3) $Ber(0.01)$ 로 부터 $X_1, \dots, X_{1000} \overset{iid}{\sim} Poi(7)$을 근사적으로 생성하라. "
+
+# ╔═╡ 69a47363-c6c6-477c-83ec-9b406f9b3f16
+[rand(Bernoulli(0.01), Int64(7/0.01)) |> sum for i in 1:1000]
+
+# ╔═╡ 9622a002-573a-4bab-8c45-edf241b13da0
+md"(4) $\Gamma(\frac{1}{2},4)$ 로 부터 $X_1,\dots,X_{1000} \overset{iid}{\sim} \chi^2(56)$을 생성하라."
+
+# ╔═╡ 330419c5-f82c-4427-99ed-fd74b0e74e60
+[(rand(Gamma(1/2, 4), 56) .* 0.5) |> sum for i in 1:1000]
+
+# ╔═╡ 27e2ba82-45f7-4112-a316-8dea228c9bfd
+md"(5) $\Gamma(\frac{1}{2},4)$ 로 부터 $X_1,\dots, X_{1000} \overset{iid}{\sim} Exp(2)$를 생성하라."
+
+# ╔═╡ 2df33ae2-1a4b-4f92-a33c-6bf2c089603e
+[(rand(Gamma(1/2, 4), 2) .* 0.5) |> sum for i in 1:1000]
+
+# ╔═╡ 6c2774f0-e9e7-4a62-bc21-72d58b1e90a6
+md"(6) $Exp(2)$ 로 부터 $X_1,\dots,X_{1000} \overset{iid}{\sim} \Gamma(10,4)$를 생성하라."
+
+# ╔═╡ 6fdcc078-783e-45e4-b513-f6d9d7b659b7
+[(rand(Exponential(2), 10) .* 2) |> sum for i in 1:1000]
+
+# ╔═╡ 95eceaa6-2931-4379-ba72-05cd069914c7
+md"(7) $\chi^2(1)$ 로 부터 $X_1,\dots,X_{1000} \overset{iid}{\sim}Exp(10)$을 생성하라. 
+"
+
+# ╔═╡ 330e66f6-1904-4729-aaa0-9b70b56fc781
+[(rand(Chisq(1), 2) |> sum) * 5 for i in 1:1000]
+
+# ╔═╡ 7e7a48d3-80e2-4130-8172-5a1a8643432b
+md"(8) $U(0,1)$ 로 부터 $X_1, \dots, X_{1000} \overset{iid}{\sim} \Gamma(10,2)$을 생성하라."
+
+# ╔═╡ b36f3185-cc9f-47b3-823a-4f79ef170341
+[rand(10) .|> (x -> -2*log(1-x)) |> sum for i in 1:1000]
+
+# ╔═╡ 70a77021-e0b3-4098-832b-5c35789a7e0d
+md"(9) $U(0,1)$ 로 부터 $X_1,\dots,X_{1000} \overset{iid}{\sim} N(0,1)$ 을 생성하라. "
+
+# ╔═╡ 7c3956cb-97bd-4c16-aa6a-85e11d9e1cec
 let
-	println(π)  ## \pi
-	println(ℯ)  ## \euler
-end
+	Finv(x) = -2*log(1-x)
+	U = rand(1000)
+	θ = rand(1000)*2π
 
-# ╔═╡ e38a58bc-c110-4885-993a-7f25fb0166ef
-md"""
-`-` 새로운 연산자
-"""
-
-# ╔═╡ 4e593850-16ed-40ca-83fd-a486b18ec079
-1 ≈ 1.00000001  ## \approx, 이 이상부터는 다른 수라고 판단
-
-# ╔═╡ 6efcbb0a-8ef3-4599-b874-0b4d02fa7518
-1 ≤ 1.0  ## 보기 좋으라고...
-
-# ╔═╡ a16b583b-9405-48ee-9c05-83e38533b68f
-1 <= 1.0  ## 솔직히 이걸 쓰는 게 더 편하긴 하다.
-
-# ╔═╡ b29f68bf-3de5-4d7c-84f4-2bd2bd874537
-md"""
-`-` 편리한 함수사용
-"""
-
-# ╔═╡ a7de0a15-d975-418f-9a54-1f8441ae91ac
-let
-	f(x) = x+5
-	@show f(2)  ## 일반 함수 사용
-
-	g(x) = 2x
-	@show (g∘f)(1)  ## 함성함수, \circ
-
-	@show 1 |> f |> g  ## 파이프 연산자
-end
-
-# ╔═╡ cec3fbdf-1b41-438c-b263-8fe140700b26
-md"""
-`-` 모듈 없는 매트릭스 선언
-"""
-
-# ╔═╡ a65c8eef-f5b2-4ae5-8520-db338fe5780c
-let
-	X = [1 2
-		 3 4]
+	X = @. sqrt(Finv(U))*cos(θ)
 	X
 end
 
-# ╔═╡ 9ee8c5bc-5f7a-4833-a531-1007466ffda8
+# ╔═╡ 7608fa8e-1221-4e39-a675-07be817ac7bf
+md"(10) $N(0,1)$ 로 부터 $X_1,\dots,X_{1000} \overset{iid}{\sim} Exp(1)$ 을 생성하라. "
+
+# ╔═╡ 761b1b46-49e0-4a03-b586-b3202b288d2a
+[(randn(1).^2 + randn(1).^2) |> sum for i in 1:1000]
+
+# ╔═╡ 93dfe906-ceb8-477e-9146-dc952e2052c0
 md"""
-`-` 인덱스
+## 4. Delta Method (30점)
 """
 
-# ╔═╡ 4997f438-a5ce-40bd-968c-32d70f07f801
-lst = [11, 22, 33]
-
-# ╔═╡ 8cc89254-26ff-4020-bbeb-0a248564bbef
-lst[1]  ## 1부터 시작한다.
-
-# ╔═╡ b8ebbd63-f1ef-4892-9ef9-2f9286129f86
+# ╔═╡ aafae26c-8e6d-483a-b8ff-c18696c61744
 md"""
-`-` 컴프리헨션
+ $X_1,\dots,X_n \sim Ber(p)$이라고 하자. 모수의 추정치를 $\hat{p}=\bar{X}_n=\frac{1}{n}\sum_{i=1}^{n}X_n$라고 하자. 아래의 물음에 답하라. 
+
+(1) 평균은 $\hat{p}$로 분산은 $\hat{p}(1-\hat{p})$로 추정한다고 하자. $p=0.4$일 경우 $\mu$와 $\sigma^2$에 대한 95% 점근적 신뢰구간을 시뮬레이션과 delta method를 이용하여 구하고 비교하라. 
+
 """
 
-# ╔═╡ 059cd126-a60a-4009-8c1c-74f2de00ca8c
-[x^2 for x in [1,2,3]]  ## 파이썬과 동일하게 사용이 가능
-
-# ╔═╡ 0c8547d7-13e9-4215-b1a0-c4438a1127f7
-md"""
-`-` 튜플
-"""
-
-# ╔═╡ 58be869e-bc81-4232-932e-a54d3fe0b3e3
+# ╔═╡ 08fe4da1-0d2a-4058-88f7-db9e71f98591
 let
-	x1, x2, x3 = 1,2,3
-	print(x1, x2, x3)  ## 그 자체로 이어서 출력(sep 없음)
-	x1, x2  ## 튜플로 출력
-end
-
-# ╔═╡ 1df27dda-e79b-44bb-a8a3-5b6c48af4cc5
-md"""
-`-` 변수 할당 처리
-"""
-
-# ╔═╡ 7b9f0ebd-91fb-4bba-8cca-c1a515ff312e
-# ╠═╡ disabled = true
-#=╠═╡
-a = 1
-  ╠═╡ =#
-
-# ╔═╡ dc1c5b25-84cf-4967-b915-7468955ffa24
-a = 2  ## 전역으로 선언시 이전 셀 비활성화
-
-# ╔═╡ bd78e53c-d222-41b7-beb3-a10991feb09a
-@bind x Slider(0:0.1:2, show_value = true, default = 1)
-
-# ╔═╡ c00b097a-d5ae-4a5d-a384-bc06cbfdef08
-y = 2
-
-# ╔═╡ dcea012a-3cef-4a3d-9fcd-1014baec2b8f
-z = x + y  ## 변수 할당에 변수가 관여될 때, 해당 변수가 바뀌면 할당된 변수도 연쇄적으로 바뀜
-
-# ╔═╡ 8dc0960a-99da-4a6b-b7b0-ffae32df16b4
-md"""
-`-` 마크다운 셀 이용
-"""
-
-# ╔═╡ 45ff35d1-1ebd-4ea7-b72c-0eb4ddf6f58f
-name = "강신성"
-
-# ╔═╡ 3f4e4892-a743-4bc5-8eb1-adaf684c61d5
-md"이름 : 3학년 $(name)
-> f스트링처럼 \$( )를 통해 외부 변수를 집어넣을 수가 있다."
-
-# ╔═╡ c170c172-2a1c-49d1-914f-aaf23a0c6f1f
-md"""
-`-` 슬라이터와 인터렉티브 플롯
-"""
-
-# ╔═╡ 77c34287-881b-408b-9d9e-287318b5ba01
-begin
-	alpha_selector = @bind α Slider(-1:0.1:1, show_value = true, default = 0)
-	beta_selector = @bind β Slider(-1:0.1:1, show_value = true, default = 0)
-end
-
-# ╔═╡ e2d79467-f780-404a-b084-f71de303d97f
-md"""
-α = $(alpha_selector)
-
-β = $(beta_selector)
-"""  ## 마크다운 셀 응용
-
-# ╔═╡ 668a0ce3-03ac-4f5e-8313-5fa3e741d9e9
-let
-	f(x) = (x - α)*(x - β)*(x - y)
-	plot(-1:0.01:2, f)  ## x의 범위를 지정
-end
-
-# ╔═╡ cefde001-9774-4069-9dda-cee8271f4c1f
-md"""
-`-` 라디오 버튼
-"""
-
-# ╔═╡ 16feef51-3329-4289-a95d-59fa89576c73
-@bind vote Radio(["male", "female"], default = "male")  ## default가 없으면 nothing(null)
-
-# ╔═╡ 38e95bf2-76f6-4ff8-b108-ac3cafa2f308
-md"당신의 성별은 $(vote)입니다."
-
-# ╔═╡ 682518ab-28ad-4d98-93fe-3f9ba66380bf
-md"""
-### 함수식과 연산
-
----
-
-
-"""
-
-# ╔═╡ 623fe2c0-6e50-44f2-982a-a99f7c5cbead
-md"`-` 함수식 선언"
-
-# ╔═╡ 9ab07c9f-4d3b-4109-8bda-cc29e99a40ef
-f(x, y) = √(x^2+y^2); println(f(2,3))  ## 수학적 정의
-
-# ╔═╡ 7ebf832f-13eb-4b0f-9d7d-b84dd1fb660c
-(x -> 2x)(2)  ## 람다 수식 이용
-
-# ╔═╡ cb5eae90-aa93-4c04-9aff-dc4fd587e630
-function h(x)
-	return ℯ^x / (1 + ℯ^x)  ## 사용자 정의 함수 지정
-	return ℯ^x / (1 + ℯ^x)  ## 
-end
-
-# ╔═╡ c71c0636-3c50-4775-8578-640c70cc9009
-h(2)
-
-# ╔═╡ 538ceafd-c3ad-4f58-8ef1-b8d2f7a80fb6
-md"""
-### 이변량 정규분포
-
----
-"""
-
-# ╔═╡ 18afa3d2-517f-4c47-ac41-a8012079ada9
-md"""
-파라메터
--  $\rho$ = $(@bind ρ Slider(-0.99:0.01:0.99, show_value=true))
--  $\mu_X$ = $(@bind μ₁ Slider(-1:0.1:1, show_value=true))
--  $\mu_Y$ = $(@bind μ₂ Slider(-1:0.1:1, show_value=true))
--  $\sigma_X$ = $(@bind σ₁ Slider(0.01:0.01:2, show_value=true))
--  $\sigma_Y$ = $(@bind σ₂ Slider(0.01:0.01:2, show_value=true))
-"""
-
-# ╔═╡ e03cc014-83c8-4659-8737-c44be8c6ae74
-function pdf(x, y)
-	x = (x - μ₁)/σ₁
-	y = (y - μ₂)/σ₂
-	c₁ = 2π*σ₁*σ₂*√(1-ρ^2)
-	c₂ = 2(1-ρ^2)
-
-	return 1/c₁ * ℯ^(-1/c₂*(x^2 + y^2 - 2ρ*x*y))
-end
-
-# ╔═╡ 08e626a3-6bdf-4dec-9a44-f051ed68d745
-begin
-	p1 = plot(-5:0.1:5, -5:0.1:5, pdf, st=[:surface],legend=false);  ## surface : 입체도
-	p2 = plot(-5:0.1:5, -5:0.1:5, pdf, st=[:contour],legend=false);  ## contour : 등고선
-	plot(p1, p2)
-end
-
-# ╔═╡ 3c403a5e-60cb-4f0b-a882-679cdfae1b6b
-md"""
-# 분포 이론
-"""
-
-# ╔═╡ 32336b49-3be3-48d7-9f5c-d9fad228c27b
-md"모든 분포는 균일분포에서 비롯된다..."
-
-# ╔═╡ db1b6061-2513-4ca3-9205-8242bd1c7472
-md"""
-## 분포 생성 코드
-
----
-
-
-"""
-
-# ╔═╡ 0153b93a-6edd-4a64-a992-c2c2e0cfe06b
-let
-	N = 10
-	p = 0.5
-	distribution = Bernoulli(p)
-	rand(distribution, N)
-	@show distribution
-end
-
-# ╔═╡ 6f523ea7-cbae-47aa-a1c5-3480fbeaeedd
-md"""
-> 분포라는 개체 자체를 가지고 놀 수 있다...
-"""
-
-# ╔═╡ cfd3861e-3440-4822-a83d-9382bb2bc316
-@show Binomial(10, 0.5)
-
-# ╔═╡ 32f8f3a7-ab89-4188-aa6d-4d52cc084c21
-md"""
-## 난수 생성 알고리즘
-
----
-
-
-"""
-
-# ╔═╡ e7caf6fc-e34c-42a5-93fe-a7b9d4605afa
-md"""
-### 1. 이항분포
-
-> 확률이 같은 이항분포의 합은 이항분포이다.
-"""
-
-# ╔═╡ a2c165b4-6459-4113-a25d-0c35e41f2e3c
-md"""
-n = $(@bind n Slider(1:20, show_value = true, default = 10))
-
-p = $(@bind p Slider(0.1:0.1:1, show_value = true, default = 0.5))
-"""
-
-# ╔═╡ 7ef017b1-5822-48ae-9643-7960ebf4fdb0
-let
-	X = rand(Binomial(n, p), 100)
-	histogram(X)
-end
-
-# ╔═╡ 3df97593-cea3-45d5-840b-9a9874abb8cc
-md"""
-균일분포 → 베르누이분포 → 이항분포
-"""
-
-# ╔═╡ 43536bc0-599c-4180-87a5-6d3b02c77dd4
-let
-	N = 1000
-	n = 10
-	p = 0.5
-	X = [(rand(10) .< p) |> sum for i in 1:N]  ## 테이블 연산자가 논리 연산자보다 우선
-	histogram(X, xlim = (0, 11), bin = 12, label = "By Uniform")
-	histogram!(rand(Binomial(n, p), N), bin = 12, label = "Pure binomial")
-end
-
-# ╔═╡ 843fd1fa-3f42-41da-9254-34977df8d736
-md"""
-### 2. 포아송분포
-
-> 서로 다른 포아송분포의 합 → 포아송분포
-"""
-
-# ╔═╡ 2afbbb9b-46a0-47a1-8599-8363f458755b
-md"λ = $(@bind λ Slider(0.1:0.1:10, show_value = true, default = 1))"
-
-# ╔═╡ c0044d57-4bfc-4c8a-a8d9-9513fc9a1bef
-let
-	N = 100
-	X = rand(Poisson(λ), N)
-	histogram(X)
-end
-
-# ╔═╡ daa6729a-5f5d-4547-a792-0e8c54bf597e
-md"균일분포 → 베르누이분포 → 이항분포 ≈ 포아송분포"
-
-# ╔═╡ 2a8cb317-2ccf-4d50-a005-6c4a3953febf
-let
-	N = 1000
-	λ = 4
-	n = 1000
-	p = λ/n  ## np = lambda, p가 작고, n이 크면 포아송분포로 근사할 수 있음.
-
-	X = [(rand(n) .< p) |> sum for i in 1:N]
-	histogram(X, label = "By Uniform", xlim = (0, 60))
-	histogram!(rand(Poisson(λ), N), label = "Pure Poisson")
-end
-
-# ╔═╡ 027c5b5d-5212-488f-beba-b3476c7cec54
-md"""
-### 3. 지수분포
-
-> 지수분포에 양수를 곱하면 지수분포(척도모수)
-"""
-
-# ╔═╡ f1f8dd40-c975-490b-9e91-7b49b84581ca
-md"θ = $(@bind θ Slider(0.1:0.1:10, show_value = true, default = 2))"
-
-# ╔═╡ 5baad307-94f3-453c-9878-57d0c0fb6150
-let
-	X = rand(Exponential(θ), 100)
-	histogram(X)
-end
-
-# ╔═╡ 032ddcbf-1edd-45fc-8ea7-c2c9a7c17b3a
-md"균일분포 → 베르누이분포 → 기하분포 → 지수분포"
-
-# ╔═╡ 1e75c5ab-c0ea-49fd-9cb0-da11d2ae6de8
-function GEO(p)
-	if (rand() < p)
-		X = 1
-	else
-		X = 1
-		while (rand() >= p)
-			X = X + 1
-		end
-	end
+	n = 10000
+	p = 0.4
+	X̄ = [rand(Bernoulli(p), n) |> mean for i in 1:n]
+
+	g(x) = x*(1-x)
 	
-	return X
+	μ = g(p)
+	σ = sqrt(g(p)/n)*ForwardDiff.derivative(g, p)
+	
+	Y = g.(X̄)
+
+	print("μ에 대한 점근적 신뢰구간(시뮬) : $((quantile(X̄, 0.975), quantile(X̄, 0.025)))\n")
+	print("μ에 대한 점근적 신뢰구간(델타메소드) : $((quantile(Normal(p, sqrt(g(p)/n)), 0.975), quantile(Normal(p, sqrt(g(p)/n)), 0.025)))\n")
+
+	print("σ²에 대한 점근적 신뢰구간(시뮬) : $((quantile(Y, 0.975), quantile(Y, 0.025)))\n")
+	print("σ²에 대한 점근적 신뢰구간(델타메소드) : $((quantile(Normal(μ, σ), 0.975), quantile(Normal(μ, σ), 0.025)))")
 end
 
-# ╔═╡ cda2ef25-f70e-42a4-b721-882509c3b418
+# ╔═╡ 045e8fde-29f2-4cf4-97f7-c53af4c7be61
+md"""
+(2) $g(x)=\sin^{-1}(\sqrt{x})$ 일때 $p=0.4$에 대한 $g(\hat{p})$의 95% 점근적 신뢰구간을 시뮬레이션과 delta method를 이용하여 구하고 비교하라. 
+- 힌트: $\frac{d}{du}\sin^{-1}(u)=1/\sqrt{1-u^2}$.
+"""
+
+# ╔═╡ ee57f691-9663-4482-874d-89083844f352
 let
-	N = 10000
-	λ = 1/θ
+	g(x) = asin(sqrt(x))
+	p = 0.4
 	n = 1000
-	p = λ/n
-	Δt = 1/n  ## 단위시간분의 n
 
-	X = [GEO(p)*Δt for i in 1:N]
-	histogram(X, label = "By Uniform")
-	histogram!(rand(Exponential(θ), N), label = "Pure Exponential")
+	X̄ = [rand(Bernoulli(p), n) |> mean for i in 1:n]
+
+	μ = g(p)
+	σ = sqrt(p*(1-p)/n)*ForwardDiff.derivative(g, p)
+	Y = g.(X̄)
+
+	print("g(p̂)의 95% 점근적 신뢰구간(시뮬) : $((quantile(Y, 0.975), quantile(Y, 0.025)))\n")
+	print("g(p̂)의 95% 점근적 신뢰구간(시뮬) : $((quantile(Normal(μ, σ), 0.975), quantile(Normal(μ, σ), 0.025)))")
 end
 
-# ╔═╡ 337076ae-8469-4a0a-b1ea-c52ebc7a9027
-md"지수분포의 누적분포함수의 역함수(균일분포) → 지수분포"
+# ╔═╡ fcdb21a6-ebbc-4797-9239-87cdc0eeaf73
+md"""
+(3) 임의의 $p$에 대한 $g(\hat{p})$에 대한 분산을 시뮬레이션과 delta method를 이용하여 구하고 비교하라.  $p$에 따른 분산변화가 있는가? 
+"""
 
-# ╔═╡ 9e2bc040-2a33-43b0-86a0-e610b98f5930
+# ╔═╡ e016ba38-c0db-47a5-997f-57faeaa476f2
+md"p = $(@bind p Slider(0.1:0.1:0.9, show_value = true, default = 0.4))"
+
+# ╔═╡ 94cbe925-dd36-49a5-9d44-2cc6e680a402
 let
-	f(x) = 1/θ * exp(-x/θ)
-	F(x) = 1-exp(-x/θ)
-	Finv(x) = -θ*log(1-x)
+	g(x) = asin(sqrt(x))
+	n = 10000
+	X̄ = [rand(Bernoulli(p), n) |> mean for i in 1:n]
 
+	μ = g(p)
+	σ = (p*(1-p)/n)*ForwardDiff.derivative(g, p)^2
+	Y = g.(X̄)
+
+	println("g(p̂)의 분산(시뮬레이션) : $(var(Y))")
+	println("g(p̂)의 분산(델타 메소드) : $(σ)")
+end
+
+# ╔═╡ 3cbaa153-6a09-414f-beaf-40d50faa01b4
+md"""
+## 5. 가설검정과 신뢰구간 (25점) 
+
+
+--- 
+
+
+"""
+
+# ╔═╡ a3ed79d0-e1b2-432d-914e-cd89c6f1d3a4
+md"""
+(1) $X_1\dots X_n \overset{iid}{\sim} N(\mu,1)$ 에서 아래를 test하고 싶다고 하자. 
+
+$H_0: \mu=0$
+
+$H_1:\mu>0$
+
+이를 위하여 검정통계량으로 $\bar{x}=\frac{1}{30}\sum_{i=1}^{30}x_i=0.01$을 얻었다고 하자. $p$-value의 이론값과 시뮬레이션 값을 계산하고 비교하여라.
+"""
+
+# ╔═╡ b6e1446d-73d7-449c-98ed-0373f033b420
+let
+	n = 30
 	N = 10000
-	histogram(rand(N) .|> Finv, label = "By Inverse Func")
-	histogram!(rand(Exponential(θ), N), label = "Pure Exponential")
+	x̄ = 0.01
+
+	X̄ = [rand(Normal(0, 1), n) |> mean for i in 1:N]
+
+	println("p-value(시뮬) : $((X̄ .>= 0.01) |> mean)")
+	println("p-value(이론) : $(1-cdf(Normal(0, 1/sqrt(30)), 0.01))")
 end
 
-# ╔═╡ 7ed313dd-830e-4381-8cfe-b8c98da4d002
-md"Memoryless Property : 지수분포, 기하분포"
-
-# ╔═╡ 5bb17acc-c570-4b62-a01a-6b7c00c35dde
+# ╔═╡ 0f1001b6-d94e-41d6-8dea-9784433e8b77
 md"""
-t = $(@bind t Slider(0.01:0.01:5, show_value = true, default = 1))
-
-s = $(@bind s Slider(0.01:0.01:5, show_value = true, default = 2))
+(2) $X_1,\dots,X_n \overset{iid}{\sim} N(\mu,15^2)$ 이라고 하자. 구간 $(\bar{x}-1,\bar{x}+1)$이 $\mu$에 대한 95% 신뢰구간으로 주어지기 위한 표본크기 $n$을 구하여라. (95%이상의 신뢰구간을 만드는 가장 작은 $n$을 구할 것)
 """
 
-# ╔═╡ ea41d446-be33-45f8-b372-2776119f4fda
+# ╔═╡ 1f12b5eb-c92e-4d23-b72a-b3b8778e65f2
+md"n = $(@bind n Slider(860:880, show_value = true))"
+
+# ╔═╡ 8b912bea-586a-4ffc-94d7-35bf76eca371
 let
-	N = 10000000
-	X = rand(Exponential(5), N)
-	println("P(X > t) = $(sum(X .> t) / N)")
-	println("P(X > t+s | X > t) = $(sum(X .> s+t) / sum(X .> s))")
+	println("95% CI : $((quantile(Normal(0, 15/sqrt(n)), 0.025), quantile(Normal(0, 15/sqrt(n)), 0.975)))")
 end
 
-# ╔═╡ a30d1531-bcb7-48d1-a369-460aced7cc4f
+# ╔═╡ f02fa562-ba06-4867-b95a-e4f58686e919
 md"""
-### 4. 정규분포 : 박스뮬러변환
-
-> 이변량 정규분포와 지수분포의 관계를 이용
+> 865
 """
 
-# ╔═╡ 84bc5e5a-3c61-486c-b0b0-4e03d301690e
-md"i = $(@bind i Slider(1:1:3000, show_value = true, default = 1))"
+# ╔═╡ 22e43bf1-9877-4fee-b7e5-42ce555c1b86
+md"""
+**(3)-(5)**
 
-# ╔═╡ 57e5b93d-2f3b-40a8-9e4c-11901d498d98
+ $X_1, \dots, X_n \sim N(\mu_x,1)$ 이고 $Y_1, \dots, Y_n \sim N(\mu_y,1)$이라고 하자. 아래를 test 하고 싶다고 하자. 
+
+$H_0: (\mu_x,\mu_y)=(0,0)$
+
+$H_1: (\mu_x,\mu_y)\neq (0,0)$
+
+이를 위한 검정통계량으로 $r^2=\bar{x}^2 + \bar{y}^2$ 을 사용한다고 하자. 3개의 샘플을 관찰하여 
+
+-  $\bar{x}=\frac{1}{3}\sum_{i=1}^{3}x_i=0.8$ 
+-  $\bar{y}=\frac{1}{3}\sum_{i=1}^{3}y_i=0.7$ 
+
+을 얻었다고 하자. 
+
+(3) 90%의 유의수준에서 귀무가설을 기각 (= $H_1$을 채택) 하기 위한 가장 작은 $r$의 이론값과 시뮬레이션 값을 각각 구하고 비교하라. 
+"""
+
+# ╔═╡ 14e567fb-12cd-4bae-834e-9d3186cc415a
 let
-	Random.seed!(14107)
-	N = 3000
-	R = rand(Exponential(2), N) .|> sqrt
-	θ = rand(N)*2*π
-	X = (@. R*cos(θ))
-	Y = (@. R*sin(θ))
-	Z = rand(Normal(0, 1), N).^2 + rand(Normal(0, 1), N).^2
+	n = 3
+	N = 1000
+	X̄ = [rand(Normal(0, 1), n) |> mean for i in 1:N]
+	Ȳ = [rand(Normal(0, 1), n) |> mean for i in 1:N]
 
-	p1 = scatter(X, Y, alpha = 0.1); ylims!(-5, 5)
-	scatter!([0, X[i]], [0, Y[i]]); plot!([0, X[i]], [0, Y[i]], linewidth = 5);
-	p2 = histogram(Z, label = "Box-Muler transform"); histogram!(rand(Exponential(2), N), label = "Pure Exponential");
+	R = @. sqrt(X̄^2 + Ȳ^2)  ## n×R² ~ χ²(2)
 
-	plot(p1, p2)
+	println("가장 작은 r의 시뮬레이션 값 ; $(quantile(R, 0.9))")
+	println("가장 작은 r의 이론값 : $(sqrt(quantile(Chisq(2), 0.9)/n))")
 end
 
-# ╔═╡ 1304886c-ab78-4d23-80ce-6025d66640a8
+# ╔═╡ e31e5380-ee2e-4d63-a754-325e5e229d82
 md"""
-박스뮬러변환 : 지수분포 → 정규분포
+(4) 주어진 검정통계량의 $p$-value의 이론값과 시뮬레이션값을 각각 구하고 비교하라. 
 """
 
-# ╔═╡ ccc44a13-355f-403e-be45-d4a031ea1ce5
+# ╔═╡ 88185647-d669-4fc5-8f40-586b7f655e6d
 let
-	N = 10000
-	Finv(x) = -2*log(1-x)
+	N = 1000
+	n = 3
+	X̄ = [rand(Normal(0, 1), n) |> mean for i in 1:N]
+	Ȳ = [rand(Normal(0, 1), n) |> mean for i in 1:N]
 
-	X = rand(N)
-	θ = rand(N)*2π
+	R = @. sqrt(X̄^2 + Ȳ^2)
 
-	histogram((@. (X |> Finv |> sqrt) * cos(θ)), label = "Box-Muler Transform")
-	histogram!(rand(Normal(0,1), N), label = "Pure Normal Distribution")
+	x̄ = 0.8
+	ȳ = 0.7
+	r_sq = x̄^2 + ȳ^2  ## n×R² ~ χ²(2)
+	t = n*r_sq
+
+	println("p-value(이론값) : $(1-cdf(Chisq(2), t))")
+	println("p-value(시뮬레이션 값) : $((R .> sqrt(r_sq)) |> mean)")
 end
 
-# ╔═╡ 7f14bfa0-6fcd-4c8a-aba7-44c7937a4ddd
-let 
-	rand(Exponential(1),10000) .|> (x -> 1-exp(-x)) |> histogram
+# ╔═╡ 49497ce6-6669-4a10-9938-74c8c60ef4d6
+md"""
+(5) 샘플수가 30개 일 경우 $\bar{x}=\frac{1}{30}\sum_{i=1}^{30}x_i=0.8$ 과 $\bar{y}=\frac{1}{30}\sum_{i=1}^{30}y_i=0.7$ 을 얻었다면 $p$-value는 어떻게 되는가? (3)의 $p$-value와 비교하여라. 
+-  $n=30$일 경우 $p$-value는 이론, 시뮬레이션중 어떠한 하나의 방식으로 계산하여도 무방함. 
+"""
+
+# ╔═╡ 9df7bbea-f9ca-48a9-97f2-8bbfef6c8ebc
+let
+	N = 1000
+	n = 30
+	X̄ = [rand(Normal(0, 1), n) |> mean for i in 1:N]
+	Ȳ = [rand(Normal(0, 1), n) |> mean for i in 1:N]
+
+	R = @. sqrt(X̄^2 + Ȳ^2)
+
+	x̄ = 0.8
+	ȳ = 0.7
+	r_sq = x̄^2 + ȳ^2  ## n×R² ~ χ²(2)
+	t = n*r_sq
+	t3 = 3*r_sq
+
+	println("p-value 이론값(n = 30) : $(1-cdf(Chisq(2), t))")
+	println("p-value 이론값(n = 3) : $(1-cdf(Chisq(2), t3))")
 end
 
-# ╔═╡ 8bdcb86c-1767-4990-9bb4-731790c9f2b1
+# ╔═╡ af897cf2-ec2b-4af5-a8f6-0720e2556000
 md"""
->  $F(X) = P(X ≤ X) = 1$이므로, 모든 지점에서 확률이 같다. 즉, Uniform Distribution이다?
+> p-value의 값은 감소하였다.
 """
-
-# ╔═╡ 9aa12753-7cb4-4370-ae10-9f99dfe01652
-md"""
-## 분포의 특징
-"""
-
-# ╔═╡ e0db18e0-9b04-4eb6-bb0d-2091b428a553
-
-
-# ╔═╡ d220f49f-b652-4f9e-84d6-46c50497e719
-
-
-# ╔═╡ a81e4c58-56e1-4f77-87de-ff26f070e77e
-
-
-# ╔═╡ 33776495-04c1-4b1b-8226-fa5816e5435f
-
 
 # ╔═╡ 00000000-0000-0000-0000-000000000001
 PLUTO_PROJECT_TOML_CONTENTS = """
 [deps]
 Distributions = "31c24e10-a181-5473-b8eb-7969acd0382f"
+ForwardDiff = "f6369f11-7733-5829-9624-2563aa707210"
 Plots = "91a5bcdd-55d7-5caf-9e0b-520d859cae80"
 PlutoUI = "7f904dfe-b85e-4ff6-b463-dae2292396a8"
 Random = "9a3f8284-a2c9-5f02-9a11-845980a1fd5c"
 
 [compat]
 Distributions = "~0.25.107"
-Plots = "~1.40.2"
+ForwardDiff = "~0.10.36"
+Plots = "~1.40.3"
 PlutoUI = "~0.7.58"
 """
 
@@ -529,7 +386,7 @@ PLUTO_MANIFEST_TOML_CONTENTS = """
 
 julia_version = "1.10.2"
 manifest_format = "2.0"
-project_hash = "da51eb5aee2df34b33641f7058dba29267f9e43f"
+project_hash = "c136a6bee455cb819771638bb503b566812a3b9c"
 
 [[deps.AbstractPlutoDingetjes]]
 deps = ["Pkg"]
@@ -604,6 +461,12 @@ git-tree-sha1 = "fc08e5930ee9a4e03f84bfb5211cb54e7769758a"
 uuid = "5ae59095-9a9b-59fe-a467-6f913c188581"
 version = "0.12.10"
 
+[[deps.CommonSubexpressions]]
+deps = ["MacroTools", "Test"]
+git-tree-sha1 = "7b8a93dba8af7e3b42fecabf646260105ac373f7"
+uuid = "bbf7d656-a473-5ed7-a52c-81e309532950"
+version = "0.3.0"
+
 [[deps.Compat]]
 deps = ["TOML", "UUIDs"]
 git-tree-sha1 = "c955881e3c981181362ae4088b35995446298b80"
@@ -626,9 +489,9 @@ uuid = "f0e56b4a-5159-44fe-b623-3e5288b988bb"
 version = "2.4.1"
 
 [[deps.Contour]]
-git-tree-sha1 = "d05d9e7b7aedff4e5b51a029dced05cfb6125781"
+git-tree-sha1 = "439e35b0b36e2e5881738abc8857bd92ad6ff9a8"
 uuid = "d38c429a-6771-53c6-b99e-75d170b6e991"
-version = "0.6.2"
+version = "0.6.3"
 
 [[deps.DataAPI]]
 git-tree-sha1 = "abe83f3a2f1b857aac70ef8b269080af17764bbe"
@@ -650,6 +513,18 @@ deps = ["Mmap"]
 git-tree-sha1 = "9e2f36d3c96a820c678f2f1f1782582fcf685bae"
 uuid = "8bb1440f-4735-579b-a4ab-409b98df4dab"
 version = "1.9.1"
+
+[[deps.DiffResults]]
+deps = ["StaticArraysCore"]
+git-tree-sha1 = "782dd5f4561f5d267313f23853baaaa4c52ea621"
+uuid = "163ba53b-c6d8-5494-b064-1a9d43ac40c5"
+version = "1.1.0"
+
+[[deps.DiffRules]]
+deps = ["IrrationalConstants", "LogExpFunctions", "NaNMath", "Random", "SpecialFunctions"]
+git-tree-sha1 = "23163d55f885173722d1e4cf0f6110cdbaf7e272"
+uuid = "b552c78f-8df3-52c6-915a-8e097449b14b"
+version = "1.15.1"
 
 [[deps.Distributions]]
 deps = ["FillArrays", "LinearAlgebra", "PDMats", "Printf", "QuadGK", "Random", "SpecialFunctions", "Statistics", "StatsAPI", "StatsBase", "StatsFuns"]
@@ -742,9 +617,21 @@ uuid = "a3f928ae-7b40-5064-980b-68af3947d34b"
 version = "2.13.93+0"
 
 [[deps.Format]]
-git-tree-sha1 = "f3cf88025f6d03c194d73f5d13fee9004a108329"
+git-tree-sha1 = "9c68794ef81b08086aeb32eeaf33531668d5f5fc"
 uuid = "1fa38f19-a742-5d3f-a2b9-30dd87b9d5f8"
-version = "1.3.6"
+version = "1.3.7"
+
+[[deps.ForwardDiff]]
+deps = ["CommonSubexpressions", "DiffResults", "DiffRules", "LinearAlgebra", "LogExpFunctions", "NaNMath", "Preferences", "Printf", "Random", "SpecialFunctions"]
+git-tree-sha1 = "cf0fe81336da9fb90944683b8c41984b08793dad"
+uuid = "f6369f11-7733-5829-9624-2563aa707210"
+version = "0.10.36"
+
+    [deps.ForwardDiff.extensions]
+    ForwardDiffStaticArraysExt = "StaticArrays"
+
+    [deps.ForwardDiff.weakdeps]
+    StaticArrays = "90137ffa-7385-5640-81b9-e52037218182"
 
 [[deps.FreeType2_jll]]
 deps = ["Artifacts", "Bzip2_jll", "JLLWrappers", "Libdl", "Zlib_jll"]
@@ -801,9 +688,9 @@ version = "1.0.2"
 
 [[deps.HTTP]]
 deps = ["Base64", "CodecZlib", "ConcurrentUtilities", "Dates", "ExceptionUnwrapping", "Logging", "LoggingExtras", "MbedTLS", "NetworkOptions", "OpenSSL", "Random", "SimpleBufferStream", "Sockets", "URIs", "UUIDs"]
-git-tree-sha1 = "995f762e0182ebc50548c434c171a5bb6635f8e4"
+git-tree-sha1 = "8e59b47b9dc525b70550ca082ce85bcd7f5477cd"
 uuid = "cd3eb016-35fb-5094-929b-558a96fad6f3"
-version = "1.10.4"
+version = "1.10.5"
 
 [[deps.HarfBuzz_jll]]
 deps = ["Artifacts", "Cairo_jll", "Fontconfig_jll", "FreeType2_jll", "Glib_jll", "Graphite2_jll", "JLLWrappers", "Libdl", "Libffi_jll", "Pkg"]
@@ -1093,9 +980,9 @@ version = "1.4.2"
 
 [[deps.OpenSSL_jll]]
 deps = ["Artifacts", "JLLWrappers", "Libdl"]
-git-tree-sha1 = "60e3045590bd104a16fefb12836c00c0ef8c7f8c"
+git-tree-sha1 = "3da7367955dcc5c54c1ba4d402ccdc09a1a3e046"
 uuid = "458c3c95-2e84-50aa-8efc-19380b2a3a95"
-version = "3.0.13+0"
+version = "3.0.13+1"
 
 [[deps.OpenSpecFun_jll]]
 deps = ["Artifacts", "CompilerSupportLibraries_jll", "JLLWrappers", "Libdl", "Pkg"]
@@ -1161,9 +1048,9 @@ version = "1.4.1"
 
 [[deps.Plots]]
 deps = ["Base64", "Contour", "Dates", "Downloads", "FFMPEG", "FixedPointNumbers", "GR", "JLFzf", "JSON", "LaTeXStrings", "Latexify", "LinearAlgebra", "Measures", "NaNMath", "Pkg", "PlotThemes", "PlotUtils", "PrecompileTools", "Printf", "REPL", "Random", "RecipesBase", "RecipesPipeline", "Reexport", "RelocatableFolders", "Requires", "Scratch", "Showoff", "SparseArrays", "Statistics", "StatsBase", "UUIDs", "UnicodeFun", "UnitfulLatexify", "Unzip"]
-git-tree-sha1 = "3c403c6590dd93b36752634115e20137e79ab4df"
+git-tree-sha1 = "3bdfa4fa528ef21287ef659a89d686e8a1bcb1a9"
 uuid = "91a5bcdd-55d7-5caf-9e0b-520d859cae80"
-version = "1.40.2"
+version = "1.40.3"
 
     [deps.Plots.extensions]
     FileIOExt = "FileIO"
@@ -1312,6 +1199,11 @@ version = "2.3.1"
     [deps.SpecialFunctions.weakdeps]
     ChainRulesCore = "d360d2e6-b24c-11e9-a2a3-2a2ae2dbcce4"
 
+[[deps.StaticArraysCore]]
+git-tree-sha1 = "36b3d696ce6366023a0ea192b4cd442268995a0d"
+uuid = "1e83bf80-4336-4d27-bf5d-d5a4f845583c"
+version = "1.4.2"
+
 [[deps.Statistics]]
 deps = ["LinearAlgebra", "SparseArrays"]
 uuid = "10745b16-79ce-11e8-11f9-7d13ad32a3b2"
@@ -1373,9 +1265,9 @@ deps = ["InteractiveUtils", "Logging", "Random", "Serialization"]
 uuid = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
 
 [[deps.TranscodingStreams]]
-git-tree-sha1 = "a09c933bebed12501890d8e92946bbab6a1690f1"
+git-tree-sha1 = "71509f04d045ec714c4748c785a59045c3736349"
 uuid = "3bb67fe8-82b1-5028-8e26-92a6c54297fa"
-version = "0.10.5"
+version = "0.10.7"
 weakdeps = ["Random", "Test"]
 
     [deps.TranscodingStreams.extensions]
@@ -1449,9 +1341,9 @@ version = "1.31.0+0"
 
 [[deps.XML2_jll]]
 deps = ["Artifacts", "JLLWrappers", "Libdl", "Libiconv_jll", "Zlib_jll"]
-git-tree-sha1 = "07e470dabc5a6a4254ffebc29a1b3fc01464e105"
+git-tree-sha1 = "532e22cf7be8462035d092ff21fada7527e2c488"
 uuid = "02c8fc9c-b97f-50b9-bbe4-9be30ff0a78a"
-version = "2.12.5+0"
+version = "2.12.6+0"
 
 [[deps.XSLT_jll]]
 deps = ["Artifacts", "JLLWrappers", "Libdl", "Libgcrypt_jll", "Libgpg_error_jll", "Libiconv_jll", "Pkg", "XML2_jll", "Zlib_jll"]
@@ -1461,9 +1353,9 @@ version = "1.1.34+0"
 
 [[deps.XZ_jll]]
 deps = ["Artifacts", "JLLWrappers", "Libdl"]
-git-tree-sha1 = "31c421e5516a6248dfb22c194519e37effbf1f30"
+git-tree-sha1 = "ac88fb95ae6447c8dda6a5503f3bafd496ae8632"
 uuid = "ffd25f8a-64ca-5728-b0f7-c24cf3aae800"
-version = "5.6.1+0"
+version = "5.4.6+0"
 
 [[deps.Xorg_libICE_jll]]
 deps = ["Libdl", "Pkg"]
@@ -1616,9 +1508,9 @@ version = "1.2.13+1"
 
 [[deps.Zstd_jll]]
 deps = ["Artifacts", "JLLWrappers", "Libdl"]
-git-tree-sha1 = "49ce682769cd5de6c72dcf1b94ed7790cd08974c"
+git-tree-sha1 = "e678132f07ddb5bfa46857f0d7620fb9be675d3b"
 uuid = "3161d3a3-bdf6-5164-811a-617609db77b4"
-version = "1.5.5+0"
+version = "1.5.6+0"
 
 [[deps.eudev_jll]]
 deps = ["Artifacts", "JLLWrappers", "Libdl", "Pkg", "gperf_jll"]
@@ -1721,92 +1613,59 @@ version = "1.4.1+1"
 """
 
 # ╔═╡ Cell order:
-# ╟─455a0811-d32e-4459-a1da-2dedae860d88
-# ╠═6f5e1250-e775-11ee-1994-e3c1b9e5584c
-# ╠═9f1e3085-6804-4631-aeba-04afdd1fd01e
-# ╠═abf78c62-9107-4aac-8113-9da0f95f5cde
-# ╟─1d41c736-6b1d-46d1-9df7-447b7c7a02ce
-# ╠═d0052329-8f0b-4fc3-998e-b8e5912d5536
-# ╟─e38a58bc-c110-4885-993a-7f25fb0166ef
-# ╠═4e593850-16ed-40ca-83fd-a486b18ec079
-# ╠═6efcbb0a-8ef3-4599-b874-0b4d02fa7518
-# ╠═a16b583b-9405-48ee-9c05-83e38533b68f
-# ╟─b29f68bf-3de5-4d7c-84f4-2bd2bd874537
-# ╠═a7de0a15-d975-418f-9a54-1f8441ae91ac
-# ╟─cec3fbdf-1b41-438c-b263-8fe140700b26
-# ╠═a65c8eef-f5b2-4ae5-8520-db338fe5780c
-# ╟─9ee8c5bc-5f7a-4833-a531-1007466ffda8
-# ╠═4997f438-a5ce-40bd-968c-32d70f07f801
-# ╠═8cc89254-26ff-4020-bbeb-0a248564bbef
-# ╟─b8ebbd63-f1ef-4892-9ef9-2f9286129f86
-# ╠═059cd126-a60a-4009-8c1c-74f2de00ca8c
-# ╟─0c8547d7-13e9-4215-b1a0-c4438a1127f7
-# ╠═58be869e-bc81-4232-932e-a54d3fe0b3e3
-# ╟─1df27dda-e79b-44bb-a8a3-5b6c48af4cc5
-# ╠═7b9f0ebd-91fb-4bba-8cca-c1a515ff312e
-# ╠═dc1c5b25-84cf-4967-b915-7468955ffa24
-# ╠═bd78e53c-d222-41b7-beb3-a10991feb09a
-# ╠═c00b097a-d5ae-4a5d-a384-bc06cbfdef08
-# ╠═dcea012a-3cef-4a3d-9fcd-1014baec2b8f
-# ╟─8dc0960a-99da-4a6b-b7b0-ffae32df16b4
-# ╠═45ff35d1-1ebd-4ea7-b72c-0eb4ddf6f58f
-# ╟─3f4e4892-a743-4bc5-8eb1-adaf684c61d5
-# ╟─c170c172-2a1c-49d1-914f-aaf23a0c6f1f
-# ╠═77c34287-881b-408b-9d9e-287318b5ba01
-# ╠═e2d79467-f780-404a-b084-f71de303d97f
-# ╠═668a0ce3-03ac-4f5e-8313-5fa3e741d9e9
-# ╟─cefde001-9774-4069-9dda-cee8271f4c1f
-# ╠═16feef51-3329-4289-a95d-59fa89576c73
-# ╠═38e95bf2-76f6-4ff8-b108-ac3cafa2f308
-# ╟─682518ab-28ad-4d98-93fe-3f9ba66380bf
-# ╟─623fe2c0-6e50-44f2-982a-a99f7c5cbead
-# ╠═9ab07c9f-4d3b-4109-8bda-cc29e99a40ef
-# ╠═7ebf832f-13eb-4b0f-9d7d-b84dd1fb660c
-# ╠═cb5eae90-aa93-4c04-9aff-dc4fd587e630
-# ╠═c71c0636-3c50-4775-8578-640c70cc9009
-# ╟─538ceafd-c3ad-4f58-8ef1-b8d2f7a80fb6
-# ╠═e03cc014-83c8-4659-8737-c44be8c6ae74
-# ╠═18afa3d2-517f-4c47-ac41-a8012079ada9
-# ╠═08e626a3-6bdf-4dec-9a44-f051ed68d745
-# ╟─3c403a5e-60cb-4f0b-a882-679cdfae1b6b
-# ╟─32336b49-3be3-48d7-9f5c-d9fad228c27b
-# ╟─db1b6061-2513-4ca3-9205-8242bd1c7472
-# ╠═0153b93a-6edd-4a64-a992-c2c2e0cfe06b
-# ╟─6f523ea7-cbae-47aa-a1c5-3480fbeaeedd
-# ╠═cfd3861e-3440-4822-a83d-9382bb2bc316
-# ╟─32f8f3a7-ab89-4188-aa6d-4d52cc084c21
-# ╟─e7caf6fc-e34c-42a5-93fe-a7b9d4605afa
-# ╠═a2c165b4-6459-4113-a25d-0c35e41f2e3c
-# ╠═7ef017b1-5822-48ae-9643-7960ebf4fdb0
-# ╟─3df97593-cea3-45d5-840b-9a9874abb8cc
-# ╠═43536bc0-599c-4180-87a5-6d3b02c77dd4
-# ╟─843fd1fa-3f42-41da-9254-34977df8d736
-# ╠═2afbbb9b-46a0-47a1-8599-8363f458755b
-# ╠═c0044d57-4bfc-4c8a-a8d9-9513fc9a1bef
-# ╟─daa6729a-5f5d-4547-a792-0e8c54bf597e
-# ╠═2a8cb317-2ccf-4d50-a005-6c4a3953febf
-# ╟─027c5b5d-5212-488f-beba-b3476c7cec54
-# ╟─f1f8dd40-c975-490b-9e91-7b49b84581ca
-# ╠═5baad307-94f3-453c-9878-57d0c0fb6150
-# ╟─032ddcbf-1edd-45fc-8ea7-c2c9a7c17b3a
-# ╠═1e75c5ab-c0ea-49fd-9cb0-da11d2ae6de8
-# ╠═cda2ef25-f70e-42a4-b721-882509c3b418
-# ╟─337076ae-8469-4a0a-b1ea-c52ebc7a9027
-# ╠═9e2bc040-2a33-43b0-86a0-e610b98f5930
-# ╟─7ed313dd-830e-4381-8cfe-b8c98da4d002
-# ╟─5bb17acc-c570-4b62-a01a-6b7c00c35dde
-# ╠═ea41d446-be33-45f8-b372-2776119f4fda
-# ╟─a30d1531-bcb7-48d1-a369-460aced7cc4f
-# ╟─84bc5e5a-3c61-486c-b0b0-4e03d301690e
-# ╠═57e5b93d-2f3b-40a8-9e4c-11901d498d98
-# ╟─1304886c-ab78-4d23-80ce-6025d66640a8
-# ╠═ccc44a13-355f-403e-be45-d4a031ea1ce5
-# ╠═7f14bfa0-6fcd-4c8a-aba7-44c7937a4ddd
-# ╟─8bdcb86c-1767-4990-9bb4-731790c9f2b1
-# ╟─9aa12753-7cb4-4370-ae10-9f99dfe01652
-# ╠═e0db18e0-9b04-4eb6-bb0d-2091b428a553
-# ╠═d220f49f-b652-4f9e-84d6-46c50497e719
-# ╠═a81e4c58-56e1-4f77-87de-ff26f070e77e
-# ╠═33776495-04c1-4b1b-8226-fa5816e5435f
+# ╟─771b13aa-2bdd-400a-87e3-cc5bae383cfe
+# ╠═a6609191-8981-4d00-a5ef-b311d8791a55
+# ╠═1b07bb22-3153-4364-9efd-640456e56851
+# ╠═479e21fc-0662-47f4-ba3b-f36810c0bca9
+# ╟─0ccda176-3037-4c56-8d22-432597c8014b
+# ╟─6f27a359-bf9e-48b8-a4fd-26c9d499ba8e
+# ╟─5f7c6cfc-878c-4266-953b-21419ba07686
+# ╟─92dfb9c1-f1e9-4de7-8e91-d59384ebfb86
+# ╟─069d6e5e-f5a1-47c9-b4f3-c9de6233cff0
+# ╟─ab443d25-6865-48e5-a5ff-998d8c743890
+# ╟─018f278c-c373-11ec-1e5b-57380df5b3ff
+# ╟─aa306e3f-6e9a-413c-8e75-22f49fbc150a
+# ╟─e01cb295-9787-4c3e-9a4c-1db2013e963a
+# ╠═e49e59ac-6e09-4ec0-8ae9-5ef743d62897
+# ╟─67ba0651-8876-42c7-9628-cc2e26381643
+# ╠═8a8c16bf-ef84-4fd3-ab6f-d62b19109334
+# ╟─4344c9a0-c452-4319-aa05-5f88a8b04534
+# ╠═69a47363-c6c6-477c-83ec-9b406f9b3f16
+# ╟─9622a002-573a-4bab-8c45-edf241b13da0
+# ╠═330419c5-f82c-4427-99ed-fd74b0e74e60
+# ╟─27e2ba82-45f7-4112-a316-8dea228c9bfd
+# ╟─2df33ae2-1a4b-4f92-a33c-6bf2c089603e
+# ╟─6c2774f0-e9e7-4a62-bc21-72d58b1e90a6
+# ╟─6fdcc078-783e-45e4-b513-f6d9d7b659b7
+# ╟─95eceaa6-2931-4379-ba72-05cd069914c7
+# ╠═330e66f6-1904-4729-aaa0-9b70b56fc781
+# ╟─7e7a48d3-80e2-4130-8172-5a1a8643432b
+# ╠═b36f3185-cc9f-47b3-823a-4f79ef170341
+# ╟─70a77021-e0b3-4098-832b-5c35789a7e0d
+# ╟─7c3956cb-97bd-4c16-aa6a-85e11d9e1cec
+# ╟─7608fa8e-1221-4e39-a675-07be817ac7bf
+# ╠═761b1b46-49e0-4a03-b586-b3202b288d2a
+# ╟─93dfe906-ceb8-477e-9146-dc952e2052c0
+# ╟─aafae26c-8e6d-483a-b8ff-c18696c61744
+# ╠═08fe4da1-0d2a-4058-88f7-db9e71f98591
+# ╟─045e8fde-29f2-4cf4-97f7-c53af4c7be61
+# ╠═ee57f691-9663-4482-874d-89083844f352
+# ╟─fcdb21a6-ebbc-4797-9239-87cdc0eeaf73
+# ╟─e016ba38-c0db-47a5-997f-57faeaa476f2
+# ╠═94cbe925-dd36-49a5-9d44-2cc6e680a402
+# ╠═3cbaa153-6a09-414f-beaf-40d50faa01b4
+# ╟─a3ed79d0-e1b2-432d-914e-cd89c6f1d3a4
+# ╠═b6e1446d-73d7-449c-98ed-0373f033b420
+# ╟─0f1001b6-d94e-41d6-8dea-9784433e8b77
+# ╠═1f12b5eb-c92e-4d23-b72a-b3b8778e65f2
+# ╠═8b912bea-586a-4ffc-94d7-35bf76eca371
+# ╟─f02fa562-ba06-4867-b95a-e4f58686e919
+# ╟─22e43bf1-9877-4fee-b7e5-42ce555c1b86
+# ╠═14e567fb-12cd-4bae-834e-9d3186cc415a
+# ╟─e31e5380-ee2e-4d63-a754-325e5e229d82
+# ╠═88185647-d669-4fc5-8f40-586b7f655e6d
+# ╟─49497ce6-6669-4a10-9938-74c8c60ef4d6
+# ╠═9df7bbea-f9ca-48a9-97f2-8bbfef6c8ebc
+# ╟─af897cf2-ec2b-4af5-a8f6-0720e2556000
 # ╟─00000000-0000-0000-0000-000000000001
 # ╟─00000000-0000-0000-0000-000000000002
