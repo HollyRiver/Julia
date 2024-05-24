@@ -344,6 +344,52 @@ md"""
 	와 같이 부른다. 또한 ${\bf Z}$ 의 각 원소를 principal component 라고 부른다. 따라서 ${\bf Z}_{n \times p}$ 에는 $np$ 개의 principal component score 가 있다. 그리고 ${\bf V}$ 는 rotation matrix 혹은 loading matrix 라고 부른다. 마지막으로 원래의 자료 ${\bf X}$를 그대로 분석하것이 아니라, ${\bf X}$를 ${\bf Z}$로 바꾼뒤에 분석하는 일련의 기법 (즉 ${\bf X}$의 주성분을 분석하는 기법)을 통칭하여 주성분분석이라고 한다. 
 """
 
+# ╔═╡ 870b0a9f-2661-4db9-a0fa-1481c9b771cf
+md"""
+ex) iris data
+"""
+
+# ╔═╡ f754cdd2-4aeb-4529-b119-20da8306a2f6
+begin
+	iris = dataset("datasets", "iris")
+	X, y = Array(iris[:, 1:4]), iris[:, 5]  ## features, target
+end
+
+# ╔═╡ 9a80b3c5-b2b0-4467-9fe9-6e0c9f55f3a6
+let
+	U, d, V = svd(X)  ## rank(X) = 4, dataframe은 svd 불가
+	U1, U2 = U[:, 1:2], U[:, 3:4]
+	D1, D2 = Diagonal(d[1:2]), Diagonal(d[3:4])
+	V1, V2 = V[:, 1:2], V[:, 3:4]
+	Z = U1*D1  ## (150, 2)
+
+	[X Z*V1']
+end
+
+# ╔═╡ c3bee2ec-474f-40cc-a4f8-cfca65d2150a
+md"""
+> 복원하였을 때 거의 흡사한 것을 확인할 수 있음.
+"""
+
+# ╔═╡ 2987a979-dd5a-485f-aafa-e0e8b4d83487
+md"""
+`-` 주성분을 활용한 시각화
+"""
+
+# ╔═╡ c926ad48-e020-43f6-b141-36803c8caccf
+let
+	U,d,V = svd(X) # (150,4)
+	U1,U2,U3,U4 = eachcol(U)
+	d1,d2,d3,d4 = d
+	V1,V2,V3,V4 = eachcol(V)
+	#Z1,Z2 = U1*d1, U2*d2
+	PC1,PC2 = U1*d1, U2*d2  ## 두 개의 주성분을 사용하여 시각화
+	@show unique(y)
+	scatter(PC1[y .== "setosa"],PC2[y .== "setosa"],label="setosa")
+	scatter!(PC1[y .== "versicolor"],PC2[y .== "versicolor"],label="versicolor")
+	scatter!(PC1[y .== "virginica"],PC2[y .== "virginica"],label="virginica")
+end 
+
 # ╔═╡ 00000000-0000-0000-0000-000000000001
 PLUTO_PROJECT_TOML_CONTENTS = """
 [deps]
@@ -2459,5 +2505,11 @@ version = "1.4.1+1"
 # ╟─757acf58-11bb-4abd-9444-15cb9bb310fd
 # ╟─0e804e95-56b9-4f13-b37a-7f5bb15ce879
 # ╟─916827a4-2a9f-4b9a-93ee-1eeeb50461ab
+# ╟─870b0a9f-2661-4db9-a0fa-1481c9b771cf
+# ╠═f754cdd2-4aeb-4529-b119-20da8306a2f6
+# ╠═9a80b3c5-b2b0-4467-9fe9-6e0c9f55f3a6
+# ╟─c3bee2ec-474f-40cc-a4f8-cfca65d2150a
+# ╟─2987a979-dd5a-485f-aafa-e0e8b4d83487
+# ╠═c926ad48-e020-43f6-b141-36803c8caccf
 # ╟─00000000-0000-0000-0000-000000000001
 # ╟─00000000-0000-0000-0000-000000000002
