@@ -15,7 +15,7 @@ macro bind(def, element)
 end
 
 # ╔═╡ e7c0312a-a5b9-495a-a44b-6ae292313ea9
-using PlutoUI, Plots, Images, Statistics, Distributions, LinearAlgebra, RDatasets
+using PlutoUI, Plots, Images, Statistics, Distributions, LinearAlgebra, RDatasets, HTTP, CSV
 
 # ╔═╡ 56d6b120-11b8-11ef-0a96-813d616625a0
 md"""
@@ -674,15 +674,192 @@ md"""
 """
 
 # ╔═╡ 8d92734b-6b76-4eae-b44d-d36fbc9932f2
+md"""
+## 4. 회귀분석
+---
+"""
 
+# ╔═╡ 1abb20ed-28f6-4ddb-9881-f576ea3793e6
+ic1 = DataFrame(CSV.File(HTTP.get("https://raw.githubusercontent.com/guebin/SC2024/main/ic1.csv").body))
+
+# ╔═╡ 4febe3b0-b6bb-4c80-a815-fbdc7d0a9efe
+md"""
+### **A. 회귀분석(SVD 활용)**
+"""
 
 # ╔═╡ ff4500cb-02b8-48e2-9514-8420bb1f5bd3
+md"""
+!!! info "SVD를 활용한 회귀계수 구하기"
+	회귀분석에서 $\hat{\boldsymbol \beta}$은 아래와 같이 구해진다. 
 
+	$\hat{\boldsymbol \beta} = ({\bf X}^\top {\bf X})^{-1}{\bf X}^\top {\bf y}$
+
+	그런데 ${\bf X}={\bf U}{\bf D}{\bf V}^\top$의 표현을 이용하면, 
+
+	$\hat{\boldsymbol \beta} = {\bf V}{\bf D}^{-1}{\bf U}^\top {\bf y}$
+
+	로 정리할 수 있다. 
+"""
+
+# ╔═╡ edc34495-5bb4-4c56-a580-ee4a6ee8469e
+md"""
+> X가 full-rank가 아니여도(범주형 자료 처리에서 하나를 드롭하지 않아도) 동일하게 분석된다. 회귀계수의 해석만 조금 바뀐다.
+"""
+
+# ╔═╡ d316a617-2f59-45f7-90d9-1b243165b5af
+md"""
+*--sklearn 에서의 로직 대충 요약--*
+1. ``{\bf X} := \begin{bmatrix}{\boldsymbol X}_1 & {\boldsymbol X}_2 & \dots & {\boldsymbol X}_p \end{bmatrix}`` 를 centering 하여 ``{\bf Z}``를 만든다. 
+2. `svd(Z)`를 이용하여 $X_j$ 에 대응하는 coef 계산. (이것이 $\hat{\beta}_1,\dots,\hat{\beta}_p$가 된다.)
+3. 2를 이용하여 $\hat{\bf y}$을 구하고 $\text{mean}\big({\bf y}-\hat{\bf y}\big)$을 계산하여 bias-term ($=\hat{\beta}_0$) 을 맞춘다.($\text{mean}(y - ŷ)$이 0이 되도록)
+"""
+
+# ╔═╡ 15875303-0a13-49ae-b0d2-e70625315a1b
+md"""
+### **B. 다중공선성**
+"""
+
+# ╔═╡ f5589ea2-d055-4b8b-8575-f60f5d821745
+df = DataFrame(CSV.File(HTTP.get("https://raw.githubusercontent.com/guebin/SC2024/main/toeic.csv").body))
+
+# ╔═╡ 5a4cf8cd-f2da-482c-9a66-c911e8a01a82
+md"""
+> toeic ≈ teps인 상황이다.
+"""
+
+# ╔═╡ 08d81543-3a3e-4f3a-99ed-e8c5586c8353
+let
+	n = 5000
+	X1,X2,X3 = eachcol(df)
+	X = [X1 X2 X3] 
+	for i in 1:10
+		y = 600*X1 + 5*X2 + 300*randn(n)
+		β̂ = inv(X'X)X'y 
+		_,β̂2,β̂3 = β̂
+		@show β̂
+		@show β̂2+β̂3 # 지 나름대로의 규칙은 있었음 
+		println("--")
+	end
+end
+
+# ╔═╡ 03eb6cb3-4b6c-4179-bdde-f4510d277b31
+md"""
+> 다중공선성이 있는 설명변수의 계수는 불안정하나(분산이 엄청 크다.), 둘의 합은 5 근처에서 안정적이다.
+"""
+
+# ╔═╡ 24fb1cb7-2c64-4fac-a76f-a6a1c2a43023
+md"""
+`-` 다중공선성의 문제점
+
+1. 해석 불가능한 (혹은 해석이 매우 어려운) 계수값을 모형이 추정한다.
+*  $X_2, X_3$가 서로 종속되어 있으면, $\hat\beta_2, \hat\beta_3$의 추정치도 서로 종속되어 있어 계수값 해석에는 이러한 종속관계를 이해하여 해석해야 함.
+
+2. 추정값의 분산이 매우 크다.
+*  $\hat\beta_1$은 잘 추정되는 편이나, $\hat\beta_2, \hat\beta_3$의 값은 뭐가 나올지 전혀 예측할 수 없다.
+*  $\hat\beta_2 + \hat\beta_3 \approx 5$라는 규칙만 있다면 대충 어떤 값을 찍어도 사실상 "수학적으로는 참모형"이다.
+* 관측치가 조금만 바뀌어도 (새로운 데이터가 몇개 추가되기만 해도) 기존에 추정했던 계수값이 다 깨짐.
+"""
+
+# ╔═╡ fdab6d81-ba42-4625-ac2f-b1ac8ed4a88c
+let 
+	n = 5000
+	N = 10000
+	X1,X2,X3 = eachcol(df)
+	X = [X1 X2 X3] 
+	E = 300*randn(n,N)
+	Y = (600*X1 + 5*X2) .+ E
+	B̂ = inv(X'X)X'Y
+	β̂1s,β̂2s,β̂3s = eachrow(B̂)
+	p1 = histogram(β̂1s,alpha=0.5,label="β̂1")
+	p2 = histogram(β̂2s,alpha=0.5,label="β̂2")
+	p3 = histogram(β̂3s,alpha=0.5,label="β̂3")
+	plot(p1,p2,p3)
+end
+
+# ╔═╡ ea6409f1-dd41-4310-bd0a-dbe070dfa58a
+md"""
+> 분포의 분산이 엄청나게 큰 것을 시뮬레이션으로 확인할 수 있음.
+
+상상실험: 주어진 train에서 계수값을 추정한 결과, 토익을 1점 올리면 연봉이 5005만원 상승하고, 텝스를 1점 올리면 연봉이 5000만원 감소하는 법칙을 발견했다고 가정하자.
+
+이제 test에서 아래와 세명의 학생을 만났다고 가정하자.
+
+* 학생1: 토익 805, 텝스 805
+
+* 학생2: 토익 800, 텝스 810
+
+* 학생3: 토익 810, 텝스 800
+
+토익,텝스점수만으로 결정한 학생1,2,3 의 연봉은 아래와 같다.
+
+* 학생1의 연봉 = 4025
+
+* 학생2의 연봉 = -46000
+
+* 학생3의 연봉 = 54050
+
+상상실험의 결론: train 에서는 수학적으로 토익1점당 연봉이 5005 상승, 텝스1점당 연봉 5000 감소와 같이 모형이 적합되었다고 해도, test 에서 그 모형은 완전히 설득력을 잃을 수도 있다.
+"""
+
+# ╔═╡ c0ee5dee-6b1a-4199-9085-d9355d618381
+md"""
+> 다중공선성의 해결방안은 전통적으로 PCA나 손실함수에 벌점함수를 추가하는 방법(Ridge, Lasso)이 있다. (회귀분석에서는 변수선택, 능형회귀추정량, 주성분분석을 추천하고 있다.)
+"""
+
+# ╔═╡ ae3531fb-1f81-49fb-9fcf-8dd5cc823094
+md"""
+### **C. 다중공선성의 해결 : 능형회귀**
+"""
+
+# ╔═╡ d258f0d9-1dbf-4eb6-8815-ab0b82c8a6fa
+md"""
+## 5. 벡터 미분
+
+---
+"""
+
+# ╔═╡ f69077db-13ed-4e90-9dd4-663da453c67b
+md"""
+!!! info "벡터미분" 
+	임의의 벡터 ${\bf y}_{n \times 1}$를 고려하자. 벡터미분은 아래와 같은 **벡터비슷한것**으로 정의한다. 
+	
+	$$\frac{\partial}{\partial \bf y}=\begin{bmatrix} \frac{\partial}{\partial y_1} \\ \frac{\partial}{\partial y_{2}} \\ \dots  \\ \frac{\partial}{\partial y_n} \end{bmatrix}$$
+
+	대부분의 경우에서 $\frac{\partial}{\partial \bf y}$ 은 (n,1) col-vector 처럼 생각해도 무방하다. (그렇지만 col-vector 자체는 아니다) 
+"""
+
+# ╔═╡ cd8c801f-6f97-4fb5-85b3-4119a0ba10c9
+md"""
+!!! warning "공식 억지로 외울필요 없음"
+	언급하였듯이 그냥 $\frac{\partial}{\partial \bf y}$자체를 $n\times 1$ 매트릭스로 생각하고 $\bf z^\top$를 $1\times n$ 매트릭스로 생각하는 것이 속편하다. 즉 아래와 같이 생각하자. 
+	
+	$$\frac{\partial }{\partial \bf y}{\bf z}^\top=
+	\begin{bmatrix}
+	\frac{\partial}{\partial y_1}\\
+	\dots\\
+	\frac{\partial}{\partial y_n}\\
+	\end{bmatrix}
+	[z_1,\dots,z_n]=\begin{bmatrix} 
+	\frac{\partial z_1}{\partial y_1} & \frac{\partial z_2}{\partial y_1} & \dots  & \frac{\partial z_n}{\partial y_1} \\
+	\frac{\partial z_1}{\partial y_2} & \frac{\partial z_2}{\partial y_2} & \dots  & \frac{\partial z_n}{\partial y_2} \\
+	\dots & \dots & \dots  & \dots \\
+	\frac{\partial z_1}{\partial y_n} & \frac{\partial z_2}{\partial y_n} & \dots  & \frac{\partial z_n}{\partial y_n}
+	\end{bmatrix}$$
+
+	이러면 공식 안외워도 된다.
+"""
+
+# ╔═╡ 5e7e945f-6e1f-4e2a-bdee-29b28b3956ba
+md"""
+**벡터 미분도 곱의 미분법과 Chain Rule을 따른다는 사실을 명심할 것!!!**
+"""
 
 # ╔═╡ 00000000-0000-0000-0000-000000000001
 PLUTO_PROJECT_TOML_CONTENTS = """
 [deps]
+CSV = "336ed68f-0bac-5ca0-87d4-7b16caf5d00b"
 Distributions = "31c24e10-a181-5473-b8eb-7969acd0382f"
+HTTP = "cd3eb016-35fb-5094-929b-558a96fad6f3"
 Images = "916415d5-f1e6-5110-898d-aaa5f9f070e0"
 LinearAlgebra = "37e2e46d-f89d-539d-b4ee-838fcccc9c8e"
 Plots = "91a5bcdd-55d7-5caf-9e0b-520d859cae80"
@@ -691,7 +868,9 @@ RDatasets = "ce6b1742-4840-55fa-b093-852dadbb1d8b"
 Statistics = "10745b16-79ce-11e8-11f9-7d13ad32a3b2"
 
 [compat]
+CSV = "~0.10.14"
 Distributions = "~0.25.108"
+HTTP = "~1.10.8"
 Images = "~0.26.1"
 Plots = "~1.40.4"
 PlutoUI = "~0.7.58"
@@ -704,7 +883,7 @@ PLUTO_MANIFEST_TOML_CONTENTS = """
 
 julia_version = "1.10.2"
 manifest_format = "2.0"
-project_hash = "d0487283cab4984f56fe3fb75d666c48b1304c5d"
+project_hash = "859e6ad5c767380ae240e1c5ba9fc226b8559103"
 
 [[deps.AbstractFFTs]]
 deps = ["LinearAlgebra"]
@@ -2843,7 +3022,25 @@ version = "1.4.1+1"
 # ╠═6568552c-c7ff-4f3f-a891-be9a801861ba
 # ╟─07bcaec5-f414-476f-a403-7feecf5b956f
 # ╟─1a0cbbc6-5f5b-4e15-90d5-7d1613405c25
-# ╠═8d92734b-6b76-4eae-b44d-d36fbc9932f2
-# ╠═ff4500cb-02b8-48e2-9514-8420bb1f5bd3
+# ╟─8d92734b-6b76-4eae-b44d-d36fbc9932f2
+# ╠═1abb20ed-28f6-4ddb-9881-f576ea3793e6
+# ╟─4febe3b0-b6bb-4c80-a815-fbdc7d0a9efe
+# ╟─ff4500cb-02b8-48e2-9514-8420bb1f5bd3
+# ╟─edc34495-5bb4-4c56-a580-ee4a6ee8469e
+# ╟─d316a617-2f59-45f7-90d9-1b243165b5af
+# ╟─15875303-0a13-49ae-b0d2-e70625315a1b
+# ╠═f5589ea2-d055-4b8b-8575-f60f5d821745
+# ╟─5a4cf8cd-f2da-482c-9a66-c911e8a01a82
+# ╠═08d81543-3a3e-4f3a-99ed-e8c5586c8353
+# ╟─03eb6cb3-4b6c-4179-bdde-f4510d277b31
+# ╟─24fb1cb7-2c64-4fac-a76f-a6a1c2a43023
+# ╠═fdab6d81-ba42-4625-ac2f-b1ac8ed4a88c
+# ╟─ea6409f1-dd41-4310-bd0a-dbe070dfa58a
+# ╟─c0ee5dee-6b1a-4199-9085-d9355d618381
+# ╟─ae3531fb-1f81-49fb-9fcf-8dd5cc823094
+# ╟─d258f0d9-1dbf-4eb6-8815-ab0b82c8a6fa
+# ╟─f69077db-13ed-4e90-9dd4-663da453c67b
+# ╟─cd8c801f-6f97-4fb5-85b3-4119a0ba10c9
+# ╟─5e7e945f-6e1f-4e2a-bdee-29b28b3956ba
 # ╟─00000000-0000-0000-0000-000000000001
 # ╟─00000000-0000-0000-0000-000000000002
