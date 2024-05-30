@@ -811,6 +811,35 @@ md"""
 ### **C. 다중공선성의 해결 : 능형회귀**
 """
 
+# ╔═╡ e625a1f5-d1f2-4082-b238-9644084d2591
+md"""
+ $\bf y = X\boldsymbol \beta + \boldsymbol\epsilon, ~ \boldsymbol \epsilon \overset{i.i.d}{\sim} N(0, \sigma^2)$라고 할 때, 오차제곱합을 최소로 하는 선형회귀분석에서의 회귀계수 추정량 $\boldsymbol{\hat \beta} = \bf (X^{\top}X)^{-1}X^{\top}y$의 평균제곱합 $MSE(\boldsymbol{\hat \beta})$는 다음과 같다.
+
+$$\begin{align}
+MSE(\boldsymbol{\hat \beta}) & = \bf E[\boldsymbol{\hat \beta - E(\boldsymbol{\hat\beta})}]^{\top}[\boldsymbol{\hat \beta - E(\boldsymbol{\hat\beta})}] + \text{Bias}[E(\boldsymbol{\hat\beta}) - \beta]^{\top}[E(\boldsymbol{\hat\beta}) - \beta] \\
+& = tr(Var(\boldsymbol{\hat \beta})) \\
+& = tr((X^{\top}X)^{-1}\sigma^2)
+\end{align}$$
+
+이 때, $\bf X$를 특이값 분해(SVD) 형태로 나타내면 $\bf X = UDV^{\top}$이고, 위 수식은 아래와 같이 나타낼 수 있다.
+
+$$\begin{align}
+MSE(\boldsymbol{\hat \beta}) & = tr(\bf (VDU^{\top}UDV^{\top})^{-1}\sigma^2) \\
+& = tr(\bf VD^{-2}V^{\top}\sigma^2) \\
+& = \sigma^2 tr(\bf D^{-2}V^{\top}V) \\
+& = \sigma^2 \sum_{j = 1}^{p}\frac{1}{d_j^2}
+\end{align}$$
+"""
+
+# ╔═╡ be2737cf-17bd-423f-a0c9-a774b072c22a
+md"""
+설명변수 간 다중공선성이 존재하면 작은 특이값이 0에 가까워지게 되는데, 이에 따라 회귀계수의 분산이 커지게 된다. 따라서 이러한 문제를 해결하고자 $\boldsymbol{\hat\beta}$에 대한 L2 패널티 항을 아래와 같이 기존 손실함수에 추가한다.
+
+$loss_{\text{L}^2} := \big({\bf y}-{\bf X}{\boldsymbol \beta} \big)^\top \big({\bf y}-{\bf X}{\boldsymbol \beta}  \big) + \lambda {\boldsymbol \beta}^\top{\boldsymbol \beta}$
+
+이 손실함수를 최소화하는 추정량 $\boldsymbol{\hat \beta}^R = \bf(X^{\top}X - \lambda I)^{-1}X^{\top}y$을 능형회귀 추정량(Ridge estimator)라고 하며, 이를 
+"""
+
 # ╔═╡ d258f0d9-1dbf-4eb6-8815-ab0b82c8a6fa
 md"""
 ## 5. 벡터 미분
@@ -3038,6 +3067,8 @@ version = "1.4.1+1"
 # ╟─ea6409f1-dd41-4310-bd0a-dbe070dfa58a
 # ╟─c0ee5dee-6b1a-4199-9085-d9355d618381
 # ╟─ae3531fb-1f81-49fb-9fcf-8dd5cc823094
+# ╟─e625a1f5-d1f2-4082-b238-9644084d2591
+# ╟─be2737cf-17bd-423f-a0c9-a774b072c22a
 # ╟─d258f0d9-1dbf-4eb6-8815-ab0b82c8a6fa
 # ╟─f69077db-13ed-4e90-9dd4-663da453c67b
 # ╟─cd8c801f-6f97-4fb5-85b3-4119a0ba10c9
