@@ -135,14 +135,14 @@ let
 	D = Diagonal(d)
 	@show d
 	base_plot = () -> scatter(X1,X2,alpha=0.5,xlim=(-4,4),ylim=(-3,3))
-	p1 = base_plot(); title!(p1,"X")
-	p2 = base_plot(); title!(p2,"X*U")
+	p1 = base_plot(); title!(p1,"X")  ## 원래 자료
+	p2 = base_plot(); title!(p2,"X*U")  ## 직교변환, 모양 그대로
 		Z = X*(U); Z1,Z2 = eachcol(Z)
 		scatter!(p2,Z1,Z2)
-	p3 = base_plot(); title!(p3,"X*(UD)")
+	p3 = base_plot(); title!(p3,"X*(UD)")  ## 변환으로 정의된 축에서 대각행렬로 스케일링
 		Z = X*(U*D); Z1,Z2 = eachcol(Z)
 		scatter!(p3,Z1,Z2)
-	p4 = base_plot(); title!(p4,"X*(UDV')")
+	p4 = base_plot(); title!(p4,"X*(UDV')")  ## 다시 직교변환
 		Z = X*(U*D*V'); Z1,Z2 = eachcol(Z)
 		scatter!(p4,Z1,Z2)
 	plot(p1,p2,p3,p4,legend=false)
@@ -172,9 +172,9 @@ let
 		 0.7 2.0]
 	X = rand(MvNormal(μ,Σ),n)'
 	X1,X2 = eachcol(X)
-	Σ̂ = cov(X)
-	λ,Ψ = eigen(Σ̂)
-	A = Ψ*Diagonal(.√(1 ./λ))
+	Σ̂ = cov(X)  ## X'X
+	λ,Ψ = eigen(Σ̂)  ## X'X의 고유값(D²)과 고유벡터(V)
+	A = Ψ*Diagonal(.√(1 ./λ))  ## V*D⁻¹
 	#---#
 	U,d,V = svd(A)
 	D = Diagonal(d)
@@ -289,7 +289,7 @@ let
 	iris_plot(X)
 	iris_plot(X*V)  ## 직교 변환
 	iris_plot(X*V*D̃)  ## Z축을 스케일링(없애버림), 변수를 축소하는 효과를 나타냄
-	iris_plot(X*Ṽ)
+	iris_plot(X*Ṽ)  ## 위와 똑같은 코드
 end
 
 # ╔═╡ 9502bcef-147d-4dfc-bb34-e9064aeeef49
