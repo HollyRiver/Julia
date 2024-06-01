@@ -1086,6 +1086,46 @@ md"""
 - 각도보전: $\frac{{\boldsymbol x}_1^\top \cdot {\boldsymbol x}_2^{\top}}{\|{\boldsymbol x}_1^\top\|\|{\boldsymbol x}_2^\top\|}=\frac{({\boldsymbol x}_1^\top{\bf A})\cdot ({\boldsymbol x}_2^\top{\bf A})}{\|{\boldsymbol x}_1^\top {\bf A}\|\|{\boldsymbol x}_2^\top{\bf A}\|} = \cos(\theta)$ 이므로 각도도 보존 ( $x_1 ㆍ x_2 = ||x_1||||x_2|| \cos (\theta)$)
 """
 
+# ╔═╡ 1febfd39-c8af-4c26-80df-0d7b5e96d61e
+md"""
+`-` 주성분분석의 이득(직교화의 관점, $\bf UD$는 차원축소의 관점)
+
+$$\begin{align}
+\bf Z & = \bf XV = \bf X[V_1 ~ V_2 ~ V_3] = [Z_1 ~ Z_2 ~ Z_3] \\
+& = \bf [XV_1 ~ XV_2 ~ XV_3] \\
+\bf Z^{\top}Z & = \bf V^{\top}X^{\top}XV = V^{\top}VDU^{\top}UDV^{\top}V \\
+& = \bf D^2 ~ : ~ \text{대각원소를 제외하고 모두 0. 즉, 직교}
+\end{align}$$
+
+>  $X = [X_1 ~ X_2 ~ X_3]$에서 $X_1, X_2, X_3$는 반드시 직교하는 건 아님.
+>
+> 그런데 $\bf XV = [XV_1 ~ XV_2 ~ XV_3] = [Z_1 ~ Z_2 ~ Z_3]$에서 $Z_1, Z_2, Z_3$는 반드시 직교. 이러한 수직인 성질이 보장되어 설명변수 간 상관이 깨짐. 따라서 데이터를 설명하는 데 유리할 수 있다.
+"""
+
+# ╔═╡ dd0edca3-b0a4-4be1-979c-0e3a59aba997
+let 
+	X1,X2,X3,_,y = eachcol(iris)
+	X = [X1 X2 X3]
+	function iris_plot(X)
+		X1,X2,X3 = eachcol(X)
+		fig = scatter3d()
+		for i in ["setosa","versicolor","virginica"]
+			scatter3d!(X1[y .== i],X2[y .== i],X3[y .== i],alpha=1,label=i)
+		end 
+		return fig
+	end
+	U,d,V = svd(X)
+	d1,d2,d3 = d
+	@show d
+	V1,V2,V3 = eachcol(V)
+	D̃ = Diagonal([d1,d2,0])
+	Ṽ = [V1 V2 V3*0]
+	iris_plot(X)
+	#iris_plot(X*V)
+	# iris_plot(X*V*D̃)  ## 원래 D대로 스케일링하는 것
+	iris_plot(X*Ṽ)  ## 직교변환만 하고, 하나를 0으로 만드는 것
+end
+
 # ╔═╡ 00000000-0000-0000-0000-000000000001
 PLUTO_PROJECT_TOML_CONTENTS = """
 [deps]
@@ -3294,5 +3334,7 @@ version = "1.4.1+1"
 # ╠═760aac93-6928-4030-ab9b-f7aed9e85544
 # ╟─ecba1cf4-b706-4761-a134-6d4f6a2982d8
 # ╟─022a7914-92c7-4ce0-89bd-4870a665574c
+# ╟─1febfd39-c8af-4c26-80df-0d7b5e96d61e
+# ╠═dd0edca3-b0a4-4be1-979c-0e3a59aba997
 # ╟─00000000-0000-0000-0000-000000000001
 # ╟─00000000-0000-0000-0000-000000000002
