@@ -837,7 +837,24 @@ md"""
 
 $loss_{\text{L}^2} := \big({\bf y}-{\bf X}{\boldsymbol \beta} \big)^\top \big({\bf y}-{\bf X}{\boldsymbol \beta}  \big) + \lambda {\boldsymbol \beta}^\top{\boldsymbol \beta}$
 
-이 손실함수를 최소화하는 추정량 $\boldsymbol{\hat \beta}^R = \bf(X^{\top}X - \lambda I)^{-1}X^{\top}y$을 능형회귀 추정량(Ridge estimator)라고 하며, 이를 
+이 손실함수를 최소화하는 추정량 $\boldsymbol{\hat \beta}^R = \bf(X^{\top}X + \lambda I)^{-1}X^{\top}y$을 능형회귀 추정량(Ridge estimator)라고 하며, $\bf X^{\top}X$가 양반정치행렬이고 $\lambda > 0$이므로, $\bf(X^{\top}X + \lambda I_p)^{\top}$은 양정치행렬이 되고, 역행렬이 항상 존재한다.
+
+또한 $\boldsymbol{\hat\beta}^R$의 MSE는 다음과 같이 나타낼 수 있다.
+
+$$\begin{align}
+\text{MSE}(\boldsymbol{\hat\beta}^R) & = tr(Var(\boldsymbol{\hat \beta}^R)) + \big(E(\boldsymbol{\hat\beta}^R) - \boldsymbol\beta \big)^{\top}\big(E(\boldsymbol{\hat\beta}^R) - \boldsymbol\beta \big) \\
+& = tr\bigg(\bf \big(( VD^2V^{\top} + \lambda V I V^{\top} )^{-1}\big)VDU^{\top}\sigma^2 I UDV^{\top}\big(( VD^2V^{\top} + \lambda V I V^{\top} )^{-1}\big)^{\top}\bigg) \\
+& + \big(\bf (VD^2V^{\top} + \lambda VIV^{\top})^{-1}VD^2V^{\top}\boldsymbol \beta - \boldsymbol \beta\big)^{\top}\big(\bf (VD^2V^{\top} + \lambda VIV^{\top})^{-1}VD^2V^{\top}\boldsymbol \beta - \boldsymbol \beta\big) \\
+& = tr\bigg(\bf (V(D^2 + \lambda I)V^{\top})^{-1}VD^2V^{\top}\big((V(D^2 + \lambda I)V^{\top})^{-1}\big)^{\top} \bigg)\sigma^2 \\
+& + \bf \bigg(V\big((D^2+\lambda I)^{-1}D^2 - I\big)V^{\top}\boldsymbol \beta\bigg)^{\top}\bigg(V\big((D^2+\lambda I)^{-1}D^2 - I\big)V^{\top}\boldsymbol \beta\bigg) \\
+& = tr\bigg(\bf V\big(D^2 + \lambda I \big)^{-1}D^2\big(D^2 + \lambda I \big)^{-1}V^{\top}\bigg)\sigma^2 + \boldsymbol \beta^{\top} \bf V(-\lambda I)(D^2 + \lambda I)^{-2}(-\lambda I)V^{\top}\boldsymbol \beta \\
+& = \sigma^2\sum_{j = 1}^{p}\frac{d_j^2}{(d_j^2 + \lambda)^2} + \sum_{j = 1}^{p}\frac{\lambda^2}{(d_j^2+\lambda)^2}(\boldsymbol \beta^{\top}V_j)^2
+\end{align}$$
+"""
+
+# ╔═╡ 68a139a9-59d9-41cc-9702-7f534846e7db
+md"""
+설명변수 간 다중공선성이 존재하여 작은 특이값 몇이 0에 가깝다고 한다면, $MSE(\boldsymbol{\hat \beta})$에서의 분모가 작아져 그 값이 커지게 되지만, $MSE(\boldsymbol{\hat \beta^R})$의 경우 그 값은 $\lambda$에도 의존하기 때문에 능형회귀에서의 MSE가 더 작다는 관점에서 $\boldsymbol{\hat \beta^R}$는 더 좋은 추정량이 된다.
 """
 
 # ╔═╡ d258f0d9-1dbf-4eb6-8815-ab0b82c8a6fa
@@ -3069,6 +3086,7 @@ version = "1.4.1+1"
 # ╟─ae3531fb-1f81-49fb-9fcf-8dd5cc823094
 # ╟─e625a1f5-d1f2-4082-b238-9644084d2591
 # ╟─be2737cf-17bd-423f-a0c9-a774b072c22a
+# ╟─68a139a9-59d9-41cc-9702-7f534846e7db
 # ╟─d258f0d9-1dbf-4eb6-8815-ab0b82c8a6fa
 # ╟─f69077db-13ed-4e90-9dd4-663da453c67b
 # ╟─cd8c801f-6f97-4fb5-85b3-4119a0ba10c9
