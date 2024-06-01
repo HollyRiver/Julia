@@ -15,7 +15,7 @@ macro bind(def, element)
 end
 
 # ╔═╡ e7c0312a-a5b9-495a-a44b-6ae292313ea9
-using PlutoUI, Plots, Images, Statistics, Distributions, LinearAlgebra, RDatasets, HTTP, CSV
+using PlutoUI, Plots, Images, Statistics, Distributions, LinearAlgebra, RDatasets, HTTP, CSV, Random
 
 # ╔═╡ 56d6b120-11b8-11ef-0a96-813d616625a0
 md"""
@@ -900,6 +900,192 @@ md"""
 **벡터 미분도 곱의 미분법과 Chain Rule을 따른다는 사실을 명심할 것!!!**
 """
 
+# ╔═╡ a13213a6-08c9-4037-a7f1-1409ec568401
+md"""
+## 6. 변환을 의미하는 행렬
+"""
+
+# ╔═╡ 7789fdd2-4ea8-417b-bbfb-2e5f2fdc0370
+md"""
+### **A. 열 단위 변환**
+"""
+
+# ╔═╡ a1ca3cf4-13e4-419d-b202-bcb8579d2f48
+md"""
+`-` 변환을 의미하는 행렬 $\bf A$가 데이터를 의미하는 행렬 $\bf X$앞에 곱해지는 경우, $\bf A$는 $\bf X$의 열별로 정의되는 선형변환을 의미한다.
+
+$$\bf AX = \begin{bmatrix} \bf AX_1 & \bf AX_2 & \cdots & \bf AX_p\end{bmatrix}$$
+"""
+
+# ╔═╡ 4dfe627b-d2a6-4515-a19c-dacec57de21c
+md"""
+`-` 예시
+
+* 열별로 평균 계산 : $\frac1n j_n^{\top}$
+
+$\frac1n j_n^{\top}\bf X = [\bar x_1 ~ \bar x_2 ~ \cdots ~ \bar x_p]$
+
+* 전체값 센터링 : $\bf \bar C_n$
+
+$\bf (I - \frac1n J_n)X = \begin{bmatrix}
+	x_{11} - \bar x_1 & x_{12} - \bar x_2 & \cdots & x_{1p} - \bar x_p \\
+	x_{21} - \bar x_1 & x_{22} - \bar x_2 & \cdots & x_{2p} - \bar x_p \\
+	\vdots & \vdots & \ddots & \vdots \\
+	x_{n1} - \bar x_1 & x_{n2} - \bar n_2 & \cdots & x_{np} - \bar x_p \\
+\end{bmatrix}$
+
+* 공분산행렬(센터링 응용) : $\bf X^{\top}\bar C_n X$
+
+$\frac{1}{n-1}\bf X^{\top}(I - \frac1n J_n)^{\top}(I - \frac1n J_n)X = \frac{1}{n-1}X^{\top}(I - \frac1n J_n)X = \Sigma$
+
+* 총제곱합(SST) : $\bf y^{\top}\bar C_n y$
+
+$\text{SST} = \bf y^{\top}(I - \frac1n J_n)y$
+
+* 이동평균(Running Average)
+
+$\bf M = \begin{bmatrix}
+	1 & 1 & 0 & 0 & 0 & \cdots & 0 & 0\\
+	1 & 1 & 1 & 0 & 0 & \cdots & 0 & 0\\
+	0 & 1 & 1 & 1 & 0 & \cdots & 0 & 0\\
+	\vdots & \vdots & \vdots & \vdots & \vdots & \ddots & \vdots & \vdots \\
+	0 & 0 & 0 & 0 & 0 & \cdots & 1 & 1
+\end{bmatrix}/3$
+"""
+
+# ╔═╡ cea7c29a-5f46-4ab3-b8b2-c43969f460e2
+let 
+	Random.seed!(43052)
+	n = 100
+	t = (1:n)/n
+	y = sin.(2π*t) + randn(n)*0.2
+	scatter(t,y,alpha=0.2,color="gray")
+	dl,d,du = ones(n-1)/3, ones(n)/3, ones(n-1)/3
+	M = Tridiagonal(dl,d,du)
+	k = 20
+	@show k  ## M이란 변환을 반복할수록 더 스무딩이 됨.
+	plot!(t,(M^k)*y,linewidth=2, color="red")
+end
+
+# ╔═╡ 7357ef6c-f53d-41d7-97c3-8cd03114c020
+md"""
+### **B. 행 단위 변환**
+"""
+
+# ╔═╡ def5636e-cb44-4e1b-bc90-ac4ca93826d3
+md"""
+`-` 변환을 의미하는 행렬 $\bf A$가 데이터를 의미하는 행렬 $\bf X$ 뒤에 곱해지는 경우 $\bf A$는 $\bf X$의 행별로 적용되는 어떠한 선형변환을 의미한다.
+
+$$\bf XA = \begin{bmatrix}
+	x_1^{\top}A \\
+	x_2^{\top}A \\
+	\vdots \\
+	x_n^{\top}A \\
+\end{bmatrix}$$
+"""
+
+# ╔═╡ f104e097-1a5f-4a8a-b0ff-935da248aa3a
+md"""
+아래와 같은 n×2 matrix를 가져오자.
+"""
+
+# ╔═╡ a169e60a-050a-4009-b9bb-d0c6d604cf04
+default(markerstrokewidth = 0, alpha = 0.5)
+
+# ╔═╡ 921b4657-c6fd-46f9-85d3-f13a2e966e69
+begin
+	url = "https://raw.githubusercontent.com/guebin/2021IR/master/_notebooks/round2.csv"
+	dt = CSV.File(download(url))
+	Y1,Y2 = dt.x[1:30:end], dt.y[1:30:end]
+	Y = [Y1 Y2]
+	scatter(
+		Y1,Y2,
+		xlim=(-1000,2000),ylim=(-750,1500),
+		label = "Y"
+	)
+end
+
+# ╔═╡ 72dcd5f2-ed09-4f2b-8346-9bf030a329ab
+md"""
+`-` 스케일링하는 변환 : $A = \begin{bmatrix} d_1 & 0 \\ 0 & d_2 \end{bmatrix}$
+
+ $x$축으로 $d_1$배, $y$축으로 $d_2$배
+
+`-` 한 축으로 사영(한쪽 스케일을 0으로) : $A = \begin{bmatrix} 1 & 0 \\ 0 & 0 \end{bmatrix} ~ \text{or} ~ \begin{bmatrix} 0 & 0 \\ 0 & 1 \end{bmatrix}$
+
+`-` 대칭이동 : $A = \begin{bmatrix} -1 & 0 \\ 0 & 1 \end{bmatrix} ~ \text{or(y축 대칭)} ~ \begin{bmatrix} 1 & 0 \\ 0 & -1 \end{bmatrix} ~ \text{or(x축 대칭)} ~ \begin{bmatrix} -1 & 0 \\ 0 & -1 \end{bmatrix} ~ \text{대각}$
+
+`-` 회전이동 : $A = \begin{bmatrix} \cos(\theta) & -\sin(\theta) \\ \sin(\theta) & \cos(\theta) \end{bmatrix}$
+"""
+
+# ╔═╡ 593dd552-2e10-4c78-bfa2-7f9e9acb80bf
+let
+	## x축으로 2배, y축으로 0.5배 스케일링
+	# A = [2.0 0
+	# 	 0 	 0.5]
+	## x축으로 정사영
+	# A = [1 0
+	# 	 0 0]
+	## y축으로 정사영
+	# A = [0 0
+	# 	 0 1]
+	## x, y축 대칭
+	# A = [-1  0
+	# 	  0 -1]
+	## 회전이동
+	θ = 0.2π
+	A = [ cos(θ) -sin(θ)
+		  sin(θ)  cos(θ)]
+	Z = Y*A
+	Z1, Z2 = eachcol(Z)
+	scatter(Y1,Y2, xlim=(-1000,2000),ylim=(-750,1500),label="Y")	
+	scatter!(Z1,Z2,label="YA")
+end
+
+# ╔═╡ 4bb31695-2b0b-4c57-89f0-b6c7bf8113cc
+md"""
+`-` **디커플링** : $\bf A = \Psi\Lambda^{-\frac12} = VD^{-1} \Leftarrow \bf X^{\top}X = \Psi\Lambda\Psi^{\top} = VDU^{\top}UDV^{\top} = VD^2V^{\top}$
+"""
+
+# ╔═╡ 760aac93-6928-4030-ab9b-f7aed9e85544
+let 
+	Random.seed!(43052)
+	n = 500
+	μ = [0,0]
+	Σ = [1.0 0.7
+		 0.7 2.0]
+	X = rand(MvNormal(μ,Σ),n)'
+	X1,X2 = eachcol(X)
+	p1 = scatter(X1,X2,alpha=0.2,xlim=(-5,5),ylim=(-6,6),label="X")
+	Σ̂ = cov(X)
+	λ,Ψ = eigen(Σ̂)
+	A = Ψ*Diagonal(.√(1 ./λ))  ## XVD^{-1}, X를 직교하게 만들고 스케일링을 수행
+	Z = X*A 
+	Z1,Z2 = eachcol(Z)
+	p2 = scatter(Z1,Z2,alpha=0.2,xlim=(-5,5),ylim=(-6,6),label="XA")
+	plot(p1,p2)
+end 
+
+# ╔═╡ ecba1cf4-b706-4761-a134-6d4f6a2982d8
+md"""
+### **C. 직교행렬**
+"""
+
+# ╔═╡ 022a7914-92c7-4ce0-89bd-4870a665574c
+md"""
+* 데이터를 나타내는 행렬이 직교행렬이라면, 각 열들의 공분산(내적)이 모두 0이 되므로 각 데이터들이 서로 다른 정보를 가지고 있다고 볼 수 있다.
+
+* 어떠한 벡터에 직교행렬이 변환으로 적용되면, 그 벡터는 크기와 각도가 모두 보존된다. 즉, 벡터들에 직교행렬을 곱한다는 것은 벡터들이 가지는 정보를 모두 보존한 상태에서 자료를 보는 관점을 변화시키는 변환이라고 볼 수 있다.
+
+**열벡터에 적용되는 경우**
+- 크기보존: $\|{\boldsymbol X}_1\|^2=\|{\bf A} {\boldsymbol X}_1\|^2$ 이므로 크기가 보존 
+- 각도보전: $\frac{{\boldsymbol X}_1 \cdot {\boldsymbol X}_2}{\|{\boldsymbol X}_1\|\|{\boldsymbol X}_2\|}=\frac{({\bf A}{\boldsymbol X}_1)\cdot ({\bf A}{\boldsymbol X}_2)}{\|{\bf A}{\boldsymbol X}_1\|\|{\bf A}{\boldsymbol X}_2\|}$(이거 분자 행렬곱이 아니라 내적임) 이므로 각도도 보존 
+
+**행벡터에 적용되는 경우**
+- 크기보존: $\|{\boldsymbol x}_1^\top\|^2=\|{\boldsymbol x}_1^\top {\bf A} \|^2$ 이므로 크기가 보존
+- 각도보전: $\frac{{\boldsymbol x}_1^\top \cdot {\boldsymbol x}_2^{\top}}{\|{\boldsymbol x}_1^\top\|\|{\boldsymbol x}_2^\top\|}=\frac{({\boldsymbol x}_1^\top{\bf A})\cdot ({\boldsymbol x}_2^\top{\bf A})}{\|{\boldsymbol x}_1^\top {\bf A}\|\|{\boldsymbol x}_2^\top{\bf A}\|} = \cos(\theta)$ 이므로 각도도 보존 ( $x_1 ㆍ x_2 = ||x_1||||x_2|| \cos (\theta)$)
+"""
+
 # ╔═╡ 00000000-0000-0000-0000-000000000001
 PLUTO_PROJECT_TOML_CONTENTS = """
 [deps]
@@ -911,6 +1097,7 @@ LinearAlgebra = "37e2e46d-f89d-539d-b4ee-838fcccc9c8e"
 Plots = "91a5bcdd-55d7-5caf-9e0b-520d859cae80"
 PlutoUI = "7f904dfe-b85e-4ff6-b463-dae2292396a8"
 RDatasets = "ce6b1742-4840-55fa-b093-852dadbb1d8b"
+Random = "9a3f8284-a2c9-5f02-9a11-845980a1fd5c"
 Statistics = "10745b16-79ce-11e8-11f9-7d13ad32a3b2"
 
 [compat]
@@ -929,7 +1116,7 @@ PLUTO_MANIFEST_TOML_CONTENTS = """
 
 julia_version = "1.10.2"
 manifest_format = "2.0"
-project_hash = "859e6ad5c767380ae240e1c5ba9fc226b8559103"
+project_hash = "fd16ec0ac632f38c89b815fc4cd424a4ab9d3ef1"
 
 [[deps.AbstractFFTs]]
 deps = ["LinearAlgebra"]
@@ -3091,5 +3278,21 @@ version = "1.4.1+1"
 # ╟─f69077db-13ed-4e90-9dd4-663da453c67b
 # ╟─cd8c801f-6f97-4fb5-85b3-4119a0ba10c9
 # ╟─5e7e945f-6e1f-4e2a-bdee-29b28b3956ba
+# ╟─a13213a6-08c9-4037-a7f1-1409ec568401
+# ╟─7789fdd2-4ea8-417b-bbfb-2e5f2fdc0370
+# ╟─a1ca3cf4-13e4-419d-b202-bcb8579d2f48
+# ╟─4dfe627b-d2a6-4515-a19c-dacec57de21c
+# ╠═cea7c29a-5f46-4ab3-b8b2-c43969f460e2
+# ╟─7357ef6c-f53d-41d7-97c3-8cd03114c020
+# ╟─def5636e-cb44-4e1b-bc90-ac4ca93826d3
+# ╟─f104e097-1a5f-4a8a-b0ff-935da248aa3a
+# ╠═a169e60a-050a-4009-b9bb-d0c6d604cf04
+# ╠═921b4657-c6fd-46f9-85d3-f13a2e966e69
+# ╟─72dcd5f2-ed09-4f2b-8346-9bf030a329ab
+# ╠═593dd552-2e10-4c78-bfa2-7f9e9acb80bf
+# ╟─4bb31695-2b0b-4c57-89f0-b6c7bf8113cc
+# ╠═760aac93-6928-4030-ab9b-f7aed9e85544
+# ╟─ecba1cf4-b706-4761-a134-6d4f6a2982d8
+# ╟─022a7914-92c7-4ce0-89bd-4870a665574c
 # ╟─00000000-0000-0000-0000-000000000001
 # ╟─00000000-0000-0000-0000-000000000002
