@@ -62,6 +62,7 @@ begin
 		return fig
 	end
 	function toeic_data()
+		Random.seed!(43052)
 		df = DataFrame(CSV.File(HTTP.get("https://raw.githubusercontent.com/guebin/SC2024/main/toeic.csv").body))
 		n,_ = size(df)
 		X1,X2,X3 = eachcol(df)
@@ -73,7 +74,7 @@ begin
 		y = X*β + ϵ
 		return X,y
 	end	
-end 
+end
 
 # ╔═╡ f876268e-6e21-4c08-9019-93f9907c64e1
 md"""
@@ -200,6 +201,71 @@ md"""
 > 막 600, -995, 1000으로 수렴될 수도 있음. 이렇게 수렴된 추정값은 문제가 됨. → 릿지 등으로 손실함수를 변경하거나, 초기값을 0 근처에서 뿌림.
 
 PCA에서의 방법은 계수가 0근처에서 형성되기 때문에 좋음.
+"""
+
+# ╔═╡ d995ad84-54c4-4c6a-93ce-9780baf81fb4
+md"""
+!!! info "다중공선성과 PCR (이론)"
+	다중공선성이 있는 상황이면 모형을 아래와 같이 가정할 수 있다. 이때 ${\boldsymbol \epsilon} \sim N({\bf 0}, \sigma^2 {\bf I})$ 를 가정한다. 
+
+	$\begin{align}
+	{\bf y} &= {\bf X}{\boldsymbol \beta} + {\boldsymbol \epsilon}\\
+	&\approx {\bf U}_1{\bf D}_1 {\bf V}_1^\top{\boldsymbol \beta}  + {\boldsymbol \epsilon}\\
+	&= {\bf Z} {\boldsymbol \alpha} + {\boldsymbol \epsilon}
+	\end{align}$
+
+	여기에서 ${\bf Z}_{n \times q}={\bf U}_1{\bf D}_1$ 이고, ${\boldsymbol \alpha}_{q \times 1} = {\bf V}_1^\top {\boldsymbol \beta}$ 이다. 논의한대로 ${\boldsymbol \beta}$는 
+	
+	$$\hat{\boldsymbol \beta}^{PCR}={\bf V}_1\hat{\boldsymbol \alpha}$$
+
+	와 같이 추정할 수 있다. (단 여기에서 $\hat{\boldsymbol \alpha}=({\bf Z}^\top{\bf Z})^{-1}{\bf Z}^\top{\bf y}$) 이제 이렇게 추정된 $\hat{\boldsymbol \beta}^{PCR}$ 이 일반적인 $\hat{\boldsymbol \beta}=({\bf X}^\top{\bf X})^{-1}{\bf X}^\top {\bf y}$ 보다 우수함을 보이자. 즉 아래를 보이면 된다. 
+
+	$$\text{MSE}(\hat{\boldsymbol \beta}^{PCR}) \leq \text{MSE}(\hat{\boldsymbol \beta})$$
+
+	아래를 체크하자. (계산과정이 좀 있는 경우도 있지만 대부분 어렵지 않게 체크할 수 있다)
+	
+	(1) ``\text{MSE}(\hat{\boldsymbol \beta})=\mathbb{V}(\hat{\boldsymbol \beta})=\sigma^2\sum_{j=1}^{p}\frac{1}{d_j^2}`` (-- 12wk-2 강의노트 참고)
+	
+	(2) ``\mathbb{E}(\hat{\boldsymbol \alpha})=({\bf Z}^\top{\bf Z})^{-1}{\bf Z}^\top{\bf X}{\boldsymbol \beta}={\bf V}_1^\top {\boldsymbol \beta}``
+	
+	(3) ``\mathbb{V}(\hat{\boldsymbol \alpha})=({\bf Z}^\top{\bf Z})^{-1}\sigma^2= {\bf D}_1^{-2}\sigma^2``
+
+	(4) ``\mathbb{E}(\hat{\boldsymbol \beta}^{PCR})={\bf V}_1{\bf V}_1^\top {\boldsymbol \beta}``
+
+	(5) ``\mathbb{V}(\hat{\boldsymbol \beta}^{PCR})={\bf V}_1{\bf D}_1^{-2}{\bf V}_1^\top \sigma^2``
+
+	(6) ``{\boldsymbol \beta}-\mathbb{E}(\hat{\boldsymbol \beta}^{PCR})={\bf V}_2{\bf V}_2^\top {\boldsymbol \beta}``
+
+	(7) ``\text{tr}\big(\mathbb{V}(\hat{\boldsymbol \beta}^{PCR})\big)=\sigma^2\sum_{j=1}^{q}\frac{1}{d_j^2}``
+
+	여기에서 (1)에서 첫등식은 ``\hat{\boldsymbol \beta}`` 이 unbiased estimator 이기 때문에 성립한다. (1) 을 관찰하면 다중공선성이 있는 상황에서 (즉 for some $j$에 대하여 $d_j\approx0$ 인상황) ``\text{MSE}(\hat{\boldsymbol \beta})`` 은 무한대로 커질 수 있음을 관찰할 수 있고 이는 이미 12wk-2에서 다룬내용이다. (4)에서 ${\bf V}_1{\bf V}_1^\top \neq {\bf I}$ 이므로 ``\hat{\boldsymbol \beta}^{PCR}``은 biased estimator 임을 알 수 있다. (4)와 (7)을 비교하면 다중공선성이 있는 상황에서 ``\hat{\boldsymbol \beta}^{PCR}`` 이 ``\hat{\boldsymbol \beta}`` 보다 분산면에서 우수함을 알 수 있다. (6)-(7)을 정리하면 아래와 같다. 
+
+	$$\text{MSE}(\hat{\boldsymbol \beta}^{PCR})= {\boldsymbol \beta}^\top {\bf V}_2{\bf V}_2^\top {\boldsymbol \beta} + \sigma^2\sum_{j=1}^{q}\frac{1}{d_j^2}$$
+
+	이 수식을 살펴보면 bias-term은 bounded 되어 있으므로 공선성이 존재하는 경우에 ``\hat{\boldsymbol \beta}^{PCR}`` 이 우수함을 쉽게 눈치챌 수 있다. 
+"""
+
+# ╔═╡ 63c4e95c-367b-40f2-8b2a-102c2c60bc60
+md"""
+!!! warning "PCR과 능형회귀"
+	
+	아래의 수식을 좀 더 생각해보자. 
+
+	$$\text{MSE}(\hat{\boldsymbol \beta}^{PCR})= {\boldsymbol \beta}^\top {\bf V}_2{\bf V}_2^\top {\boldsymbol \beta} + \sigma^2\sum_{j=1}^{q}\frac{1}{d_j^2}$$
+
+	(1) 만약에 ${\bf V}_1={\bf V}$ 으로 설정한다면 (즉 ${\bf D}$의 모든 대각선을 버리지 않는다면) ${\bf V}_2$ 는 소멸하고 결과적으로 
+	
+	$\text{MSE}(\hat{\boldsymbol \beta}^{PCR})=\text{MSE}(\hat{\boldsymbol \beta})$ 
+	
+	와 같이 될 것이다. 이는 능형회귀에서 $\lambda$를 0으로 설정한 것과 같은 효과이다. 
+	
+	(2) 만약 ${\bf V}_2={\bf V}$ 로 설정한다면, (즉 ${\bf D}$의 모든 대각선을 버린다면) 분산텀은 소멸하고 
+
+	$\text{MSE}({\boldsymbol \beta}^{PCR})={\boldsymbol \beta}^\top{\boldsymbol \beta}$ 
+	
+	가 된다. 이것은 ${\boldsymbol \beta}$를 ${\bf 0}$으로 추정했을 경우 생기는 bias-term 이며 이는 능형회귀에서 $\lambda$를 무한대로 설정했을 경우와 같은 효과이다. 
+
+	결국 능형회귀에서는 $\lambda$ 를 이용해 bias-term과 variance-term을 조정하고 최종적으로 MSE를 줄여보려고 노력하는 모형이고 PCR은 ${\bf D}$의 대각원소를 통하여 bias-term과 variance-term을 조정하고 최종적으로 MSE를 줄여보려고 노력하는 모형이라 볼 수 있다. 
 """
 
 # ╔═╡ 3f217bb7-6767-4eb2-b816-956b796c5d7d
@@ -593,26 +659,6 @@ version = "0.10.8"
     SentinelArrays = "91c51154-3ec4-41a3-a24f-3f23e20d615c"
     StructTypes = "856f2bd8-1eba-4b0a-8007-ebc267875bd4"
 
-[[deps.ChainRulesCore]]
-deps = ["Compat", "LinearAlgebra"]
-git-tree-sha1 = "575cd02e080939a33b6df6c5853d14924c08e35b"
-uuid = "d360d2e6-b24c-11e9-a2a3-2a2ae2dbcce4"
-version = "1.23.0"
-weakdeps = ["SparseArrays"]
-
-    [deps.ChainRulesCore.extensions]
-    ChainRulesCoreSparseArraysExt = "SparseArrays"
-
-[[deps.ChangesOfVariables]]
-deps = ["LinearAlgebra", "Test"]
-git-tree-sha1 = "2fba81a302a7be671aefe194f0525ef231104e7f"
-uuid = "9e997f8a-9a97-42d5-a9f1-ce6bfc15e2c0"
-version = "0.1.8"
-weakdeps = ["InverseFunctions"]
-
-    [deps.ChangesOfVariables.extensions]
-    ChangesOfVariablesInverseFunctionsExt = "InverseFunctions"
-
 [[deps.CodecZlib]]
 deps = ["TranscodingStreams", "Zlib_jll"]
 git-tree-sha1 = "59939d8a997469ee05c4b4944560a820f9ba0d73"
@@ -668,20 +714,6 @@ git-tree-sha1 = "6cbbd4d241d7e6579ab354737f4dd95ca43946e1"
 uuid = "f0e56b4a-5159-44fe-b623-3e5288b988bb"
 version = "2.4.1"
 
-[[deps.ConstructionBase]]
-deps = ["LinearAlgebra"]
-git-tree-sha1 = "260fd2400ed2dab602a7c15cf10c1933c59930a2"
-uuid = "187b0558-2788-49d3-abe0-74a17ed4e7c9"
-version = "1.5.5"
-
-    [deps.ConstructionBase.extensions]
-    ConstructionBaseIntervalSetsExt = "IntervalSets"
-    ConstructionBaseStaticArraysExt = "StaticArrays"
-
-    [deps.ConstructionBase.weakdeps]
-    IntervalSets = "8197267c-284f-5f27-9208-e0e47529a953"
-    StaticArrays = "90137ffa-7385-5640-81b9-e52037218182"
-
 [[deps.Contour]]
 git-tree-sha1 = "439e35b0b36e2e5881738abc8857bd92ad6ff9a8"
 uuid = "d38c429a-6771-53c6-b99e-75d170b6e991"
@@ -724,23 +756,21 @@ git-tree-sha1 = "9e2f36d3c96a820c678f2f1f1782582fcf685bae"
 uuid = "8bb1440f-4735-579b-a4ab-409b98df4dab"
 version = "1.9.1"
 
-[[deps.DensityInterface]]
-deps = ["InverseFunctions", "Test"]
-git-tree-sha1 = "80c3e8639e3353e5d2912fb3a1916b8455e2494b"
-uuid = "b429d917-457f-4dbc-8f4c-0cc954292b1d"
-version = "0.4.0"
-
 [[deps.Distributions]]
 deps = ["AliasTables", "FillArrays", "LinearAlgebra", "PDMats", "Printf", "QuadGK", "Random", "SpecialFunctions", "Statistics", "StatsAPI", "StatsBase", "StatsFuns"]
 git-tree-sha1 = "22c595ca4146c07b16bcf9c8bea86f731f7109d2"
 uuid = "31c24e10-a181-5473-b8eb-7969acd0382f"
 version = "0.25.108"
-weakdeps = ["ChainRulesCore", "DensityInterface", "Test"]
 
     [deps.Distributions.extensions]
     DistributionsChainRulesCoreExt = "ChainRulesCore"
     DistributionsDensityInterfaceExt = "DensityInterface"
     DistributionsTestExt = "Test"
+
+    [deps.Distributions.weakdeps]
+    ChainRulesCore = "d360d2e6-b24c-11e9-a2a3-2a2ae2dbcce4"
+    DensityInterface = "b429d917-457f-4dbc-8f4c-0cc954292b1d"
+    Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
 
 [[deps.DocStringExtensions]]
 deps = ["LibGit2"]
@@ -941,16 +971,6 @@ version = "1.4.0"
 deps = ["Markdown"]
 uuid = "b77e0a4c-d291-57a0-90e8-8db25a27a240"
 
-[[deps.InverseFunctions]]
-deps = ["Test"]
-git-tree-sha1 = "e7cbed5032c4c397a6ac23d1493f3289e01231c4"
-uuid = "3587e190-3f89-42d0-90ee-14403ec27112"
-version = "0.1.14"
-weakdeps = ["Dates"]
-
-    [deps.InverseFunctions.extensions]
-    DatesExt = "Dates"
-
 [[deps.InvertedIndices]]
 git-tree-sha1 = "0dc7b50b8d436461be01300fd8cd45aa0274b038"
 uuid = "41ab1584-1d38-5bbf-9106-f11c6c58b48f"
@@ -1117,12 +1137,16 @@ deps = ["DocStringExtensions", "IrrationalConstants", "LinearAlgebra"]
 git-tree-sha1 = "18144f3e9cbe9b15b070288eef858f71b291ce37"
 uuid = "2ab3a3ac-af41-5b50-aa03-7779005ae688"
 version = "0.3.27"
-weakdeps = ["ChainRulesCore", "ChangesOfVariables", "InverseFunctions"]
 
     [deps.LogExpFunctions.extensions]
     LogExpFunctionsChainRulesCoreExt = "ChainRulesCore"
     LogExpFunctionsChangesOfVariablesExt = "ChangesOfVariables"
     LogExpFunctionsInverseFunctionsExt = "InverseFunctions"
+
+    [deps.LogExpFunctions.weakdeps]
+    ChainRulesCore = "d360d2e6-b24c-11e9-a2a3-2a2ae2dbcce4"
+    ChangesOfVariables = "9e997f8a-9a97-42d5-a9f1-ce6bfc15e2c0"
+    InverseFunctions = "3587e190-3f89-42d0-90ee-14403ec27112"
 
 [[deps.Logging]]
 uuid = "56ddb016-857b-54e1-b83d-db4d58db5568"
@@ -1273,9 +1297,9 @@ version = "1.10.0"
 
 [[deps.PlotThemes]]
 deps = ["PlotUtils", "Statistics"]
-git-tree-sha1 = "6e55c6841ce3411ccb3457ee52fc48cb698d6fb0"
+git-tree-sha1 = "1f03a2d339f42dca4a4da149c7e15e9b896ad899"
 uuid = "ccf2f8ad-2431-5c83-bf29-c5338b663b6a"
-version = "3.2.0"
+version = "3.1.0"
 
 [[deps.PlotUtils]]
 deps = ["ColorSchemes", "Colors", "Dates", "PrecompileTools", "Printf", "Random", "Reexport", "Statistics"]
@@ -1329,9 +1353,9 @@ version = "1.4.3"
 
 [[deps.PrettyTables]]
 deps = ["Crayons", "LaTeXStrings", "Markdown", "PrecompileTools", "Printf", "Reexport", "StringManipulation", "Tables"]
-git-tree-sha1 = "66b20dd35966a748321d3b2537c4584cf40387c7"
+git-tree-sha1 = "88b895d13d53b5577fd53379d913b9ab9ac82660"
 uuid = "08abe8d2-0d0c-5749-adfa-8a2ac140af0d"
-version = "2.3.2"
+version = "2.3.1"
 
 [[deps.Printf]]
 deps = ["Unicode"]
@@ -1464,10 +1488,12 @@ deps = ["IrrationalConstants", "LogExpFunctions", "OpenLibm_jll", "OpenSpecFun_j
 git-tree-sha1 = "2f5d4697f21388cbe1ff299430dd169ef97d7e14"
 uuid = "276daf66-3868-5448-9aa4-cd146d93841b"
 version = "2.4.0"
-weakdeps = ["ChainRulesCore"]
 
     [deps.SpecialFunctions.extensions]
     SpecialFunctionsChainRulesCoreExt = "ChainRulesCore"
+
+    [deps.SpecialFunctions.weakdeps]
+    ChainRulesCore = "d360d2e6-b24c-11e9-a2a3-2a2ae2dbcce4"
 
 [[deps.Statistics]]
 deps = ["LinearAlgebra", "SparseArrays"]
@@ -1491,11 +1517,14 @@ deps = ["HypergeometricFunctions", "IrrationalConstants", "LogExpFunctions", "Re
 git-tree-sha1 = "cef0472124fab0695b58ca35a77c6fb942fdab8a"
 uuid = "4c63d2b9-4356-54db-8cca-17b64c39e42c"
 version = "1.3.1"
-weakdeps = ["ChainRulesCore", "InverseFunctions"]
 
     [deps.StatsFuns.extensions]
     StatsFunsChainRulesCoreExt = "ChainRulesCore"
     StatsFunsInverseFunctionsExt = "InverseFunctions"
+
+    [deps.StatsFuns.weakdeps]
+    ChainRulesCore = "d360d2e6-b24c-11e9-a2a3-2a2ae2dbcce4"
+    InverseFunctions = "3587e190-3f89-42d0-90ee-14403ec27112"
 
 [[deps.StringManipulation]]
 deps = ["PrecompileTools"]
@@ -1597,11 +1626,14 @@ deps = ["Dates", "LinearAlgebra", "Random"]
 git-tree-sha1 = "dd260903fdabea27d9b6021689b3cd5401a57748"
 uuid = "1986cc42-f94f-5a68-af5c-568840ba703d"
 version = "1.20.0"
-weakdeps = ["ConstructionBase", "InverseFunctions"]
 
     [deps.Unitful.extensions]
     ConstructionBaseUnitfulExt = "ConstructionBase"
     InverseFunctionsUnitfulExt = "InverseFunctions"
+
+    [deps.Unitful.weakdeps]
+    ConstructionBase = "187b0558-2788-49d3-abe0-74a17ed4e7c9"
+    InverseFunctions = "3587e190-3f89-42d0-90ee-14403ec27112"
 
 [[deps.UnitfulLatexify]]
 deps = ["LaTeXStrings", "Latexify", "Unitful"]
@@ -1940,6 +1972,8 @@ version = "1.4.1+1"
 # ╠═baa5aa93-405b-4338-b344-4a6cb4a1a7e0
 # ╟─946e2c17-28af-4754-b9e7-eb3b1144807e
 # ╟─6eddca19-fa11-4392-ae80-5eabd3482d7a
+# ╟─d995ad84-54c4-4c6a-93ce-9780baf81fb4
+# ╟─63c4e95c-367b-40f2-8b2a-102c2c60bc60
 # ╟─3f217bb7-6767-4eb2-b816-956b796c5d7d
 # ╟─c3572856-994e-44df-a742-a8213d9d902d
 # ╟─c90734f2-2aae-4ca2-9cb0-b96a23168a7c
