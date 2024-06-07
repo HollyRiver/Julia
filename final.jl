@@ -28,15 +28,18 @@ md"""
 # ╔═╡ e4569d07-7366-4df1-8dc5-b7e49fa4099f
 md"""
 
-<답>
+### <답>
+"""
 
-### 1. 행렬로 이루어진 데이터 자료의 압축
+# ╔═╡ 6b12b718-308a-4c61-beae-8beb405549c1
+md"""
+#### 1. 행렬로 이루어진 데이터 자료의 압축
 
-### 2. 주성분분석에서의 활용(다중공선성의 해소)
+#### 2. 주성분분석에서의 활용(다중공선성의 해소)
 
-### 3. 회귀분석에서의 활용
+#### 3. 회귀분석에서의 활용
 
-### 4. 사영행렬의 분해
+#### 4. 사영행렬의 분해
 """
 
 # ╔═╡ aa306e3f-6e9a-413c-8e75-22f49fbc150a
@@ -62,13 +65,15 @@ ref: <https://www.kdnuggets.com/2022/08/biasvariance-tradeoff.html>
 
 # ╔═╡ 89cc2422-b577-4489-b48e-4d268477d2b6
 md"""
-<답>
+**<답>**
 
- 주어진 자료에 대해서 선형회귀로 계수를 추정하는 것은 세 번째 그림(중심점은 과녁의 중앙이지만, 퍼진 정도가 큰 그림)과 관련이 있다.
+* 주어진 자료에 대해서 선형회귀로 계수를 추정하는 것은 세 번째 그림(중심점은 과녁의 중앙이지만, 퍼진 정도가 큰 그림)과 관련이 있다.
 
- 실제로 토익, 텝스, 학점 세 개의 설명변수만이 연봉의 결정에 관여한다고 하자. 이 때, 토익과 텝스점수는 서로 비슷하므로 다중공선성의 문제가 발생하게 된다.
 
- $\bf y = X\boldsymbol \beta + \boldsymbol\epsilon, ~ \boldsymbol \epsilon \sim N(\bf 0_n, \sigma^2 I_n)$라고 할 때, 최소제곱추정량 $\boldsymbol{\hat \beta} = \bf (X^{\top}X)^{-1}X^{\top}y$의 평균제곱오차 $MSE(\boldsymbol{\hat \beta})$는 다음과 같이 표현할 수 있다.
+* 실제로 토익, 텝스, 학점 세 개의 설명변수만이 연봉의 결정에 관여한다고 하자. 이 때, 토익과 텝스점수는 서로 비슷하므로 다중공선성의 문제가 발생하게 된다.
+
+
+*  $\bf y = X\boldsymbol \beta + \boldsymbol\epsilon, ~ \boldsymbol \epsilon \sim N(\bf 0_n, \sigma^2 I_n)$라고 할 때, 최소제곱추정량 $\boldsymbol{\hat \beta} = \bf (X^{\top}X)^{-1}X^{\top}y$의 평균제곱오차 $MSE(\boldsymbol{\hat \beta})$는 다음과 같이 표현할 수 있다.
 
 $$\begin{align}
 \text{MSE}(\boldsymbol{\hat \beta}) & = \bf \mathbb{E}[\boldsymbol{\hat \beta - \mathbb{E}(\boldsymbol{\hat\beta})}]^{\top}[\boldsymbol{\hat \beta - \mathbb{E}(\boldsymbol{\hat\beta})}] + \text{Bias}[\mathbb{E}(\boldsymbol{\hat\beta}) - \beta]^{\top}[\mathbb{E}(\boldsymbol{\hat\beta}) - \boldsymbol\beta] \\
@@ -76,7 +81,8 @@ $$\begin{align}
 & = \text{tr}(\bf (X^{\top}X)^{-1}\sigma^2)
 \end{align}$$
 
- 이 때, $\bf X$를 $\bf X = UDV^{\top}$이고, $\boldsymbol{D} = \text{diag}\{d_1, d_2, \cdots, d_p\}$인 SVD형태로 나타내면 위 수식은 아래와 같이 재표현할 수 있다.
+* 이 때, $\bf X$를 $\bf X = UDV^{\top}$이고, $\boldsymbol{D} = \text{diag}\{d_1, d_2, \cdots, d_p\}$인 SVD형태로 나타내면 위 수식은 아래와 같이 재표현할 수 있다.
+
 
 $$\begin{align}
 \text{MSE}(\boldsymbol{\hat \beta}) & = \text{tr}(\bf (VDU^{\top}UDV^{\top})^{-1}\sigma^2) \\
@@ -85,9 +91,10 @@ $$\begin{align}
 & = \sigma^2 \sum_{j = 1}^{p}\frac{1}{d_j^2}
 \end{align}$$
 
- 설명변수 간 다중공선성이 존재하면 작은 특이값이 $0$에 가까워지게 되는데, 새롭게 나타낸 수식에 이를 대입해보면 분모인 $d_j^2$가 작아져서 평균제곱오차가 커지게 된다. 최소제곱추정량의 평균제곱오차는 분산의 대각합과 같고, 편향은 $\mathbb{E}(\boldsymbol{\hat\beta}) = \boldsymbol \beta$이므로 unbiased estimator이다.
+* 설명변수 간 다중공선성이 존재하면 작은 특이값이 $0$에 가까워지게 되는데, 새롭게 나타낸 수식에 이를 대입해보면 분모인 $d_j^2$가 작아져서 평균제곱오차가 커지게 된다. 최소제곱추정량의 평균제곱오차는 분산의 대각합과 같고, 편향은 $\mathbb{E}(\boldsymbol{\hat\beta}) = \boldsymbol \beta$이므로 unbiased estimator이다.
 
- 결론적으로, 선형회귀를 사용하여 계수(토익, 텝스, 학점이 연봉에 미치는 영향)를 추정할 때 각 회귀계수의 분포는 모수를 중심으로 하지만 분산은 상당히 큰 정규분포를 따르게 된다. 이는 과녁에 쏘인 화살을 생각할 때, 맞은 화살들의 중심은 과녁의 중앙이지만 퍼진 정도가 상당히 큰 상황에 비유할 수 있다. 즉, 좌측 아래의 그림과 관련이 있다고 여겨진다.
+
+* 결론적으로, 선형회귀를 사용하여 계수(토익, 텝스, 학점이 연봉에 미치는 영향)를 추정할 때 각 회귀계수의 분포는 모수를 중심으로 하지만 분산은 상당히 큰 정규분포를 따르게 된다. 이는 과녁에 쏘인 화살을 생각할 때, 맞은 화살들의 중심은 과녁의 중앙이지만 퍼진 정도가 상당히 큰 상황에 비유할 수 있다. 즉, 좌측 아래의 그림과 관련이 있다고 여겨진다.
 
 ---
 """
@@ -99,31 +106,35 @@ md"""
 
 # ╔═╡ f6f6a2c1-ee78-4467-8f7f-3de1476d853c
 md"""
-<답>
+**<답>**
 
-먼저 그림을 위에서 아래 방향으로, 왼쪽에서 오른쪽으로 1, 2, 3, 4라 번호를 매길 때, 능형회귀추정량에서 $\lambda$의 값이 커짐에 따른 양상을 3, 4, 2, 1의 순서로 대응시킬 수 있겠다.
+* 먼저 그림을 위에서 아래 방향으로, 왼쪽에서 오른쪽으로 1, 2, 3, 4라 번호를 매길 때, 능형회귀추정량에서 $\lambda$의 값이 커짐에 따른 양상을 3, 4, 2, 1의 순서로 대응시킬 수 있겠다.
 
 ![](https://github.com/HollyRiver/Julia/blob/main/final%20ref/ref_KDnuggets_The%20Bias%20Variance%20Trade%20off.jpg?raw=true)
 
-3번째, 좌측 하단 그림의 경우는 ×표시들의 중심이 과녁의 중심과 비슷하지만 분산이 상당히 크다. 즉, 해당 그림은 $\lambda$의 값이 가장 작은 상황이라고 볼 수 있다. (1)번 문항에서의 최소제곱추정량은 분산은 크지만 불편추정량인 성질을 지니는데, 이는 능형회귀추정량에서 $\lambda = 0$인 것과 동일하다는 점에서 쉽게 이해할 수 있다.
+* 3번째, 좌측 하단 그림의 경우는 ×표시들의 중심이 과녁의 중심과 비슷하지만 분산이 상당히 크다. 즉, 해당 그림은 $\lambda$의 값이 가장 작은 상황이라고 볼 수 있다. (1)번 문항에서의 최소제곱추정량은 분산은 크지만 불편추정량인 성질을 지니는데, 이는 능형회귀추정량에서 $\lambda = 0$인 것과 동일하다는 점에서 쉽게 이해할 수 있다.
 
-여기서 $\lambda$를 더 키워보자. 능형회귀추정량의 특성 상 $\lambda$가 커짐에 따라 추정량의 분산은 줄어든다. 그러면 4번째 우측 하단 그림처럼 ×표시들의 퍼진 정도가 더 줄어든다고 생각할 수 있다. $\lambda$의 값이 조금만 커졌기 때문에 표시들의 중심점과 과녁의 중심점 간 차이는 눈으로 식별하기 어려울 정도로 거의 비슷할 것이다.
 
-이 상황에서 $\lambda$를 더 키우면 2번째 우측 상단 그림처럼 ×표시들의 퍼진 정도가 상당히 줄어든다. 표시들의 중심점과 과녁이 차이가 있음을 식별할 수 있으나, 퍼진 정도가 줄어들었다는 점에서 이전 그림과 대비하면 더 개선된 상황이라고 볼 수 있다. 이는 MSE가 더 작다는 관점에서 긍정적으로 여겨진다.
+* 여기서 $\lambda$를 더 키워보자. 능형회귀추정량의 특성 상 $\lambda$가 커짐에 따라 추정량의 분산은 줄어든다. 그러면 4번째 우측 하단 그림처럼 ×표시들의 퍼진 정도가 더 줄어든다고 생각할 수 있다. $\lambda$의 값이 조금만 커졌기 때문에 표시들의 중심점과 과녁의 중심점 간 차이는 눈으로 식별하기 어려울 정도로 거의 비슷할 것이다.
 
-해당 그림은 분산이 작고, 편향도 용납할 수 있을 정도라는 점에서 좋다고 여겨진다. 하지만, 여기서 $\lambda$를 더 키운다면 어떻게 될까? 1번째 그림에서는 ×표시들의 퍼진 정도가 확실히 작긴 하지만, 표시들의 중심점과 과녁의 중심이 현저한 차이가 있음을 알아볼 수 있다.
 
- 이러한 사실을 직관적으로 이해하기 위해 $\bf X = UDV^{\top}, $$ ~ \boldsymbol D = \text{diag}\{d_1, d_2, \cdots, d_p\}$라고 하자. 그러면 능형회귀 추정량 $\boldsymbol{\hat\beta}^R$의 MSE는 아래와 같이 나타낼 수 있다.
+* 이 상황에서 $\lambda$를 더 키우면 2번째 우측 상단 그림처럼 ×표시들의 퍼진 정도가 상당히 줄어든다. 표시들의 중심점과 과녁이 차이가 있음을 식별할 수 있으나, 퍼진 정도가 줄어들었다는 점에서 이전 그림과 대비하면 더 개선된 상황이라고 볼 수 있다. 이는 MSE가 더 작다는 관점에서 긍정적으로 여겨진다.
+
+
+* 해당 그림은 분산이 작고, 편향도 용납할 수 있을 정도라는 점에서 좋다고 여겨진다. 하지만, 여기서 $\lambda$를 더 키운다면 어떻게 될까? 1번째 그림에서는 ×표시들의 퍼진 정도가 확실히 작긴 하지만, 표시들의 중심점과 과녁의 중심이 현저한 차이가 있음을 알아볼 수 있다.
+
+
+* 이러한 사실을 쉽게 알기 위해 $\bf X = UDV^{\top}, $$ ~ \boldsymbol D = \text{diag}\{d_1, d_2, \cdots, d_p\}$라고 하자. 그러면 능형회귀 추정량 $\boldsymbol{\hat\beta}^R$의 MSE는 아래와 같이 나타낼 수 있다.
 
 $$\begin{align}
 \text{MSE}(\boldsymbol{\hat\beta}^R) & = \text{tr}\Big(\mathbb{V}(\boldsymbol{\hat \beta}^R)\Big) + \Big(\mathbb{E}(\boldsymbol{\hat\beta}^R) - \boldsymbol\beta \Big)^{\top}\Big(\mathbb{E}(\boldsymbol{\hat\beta}^R) - \boldsymbol\beta \Big) \\
 & = \sigma^2\sum_{j = 1}^{p}\frac{d_j^2}{(d_j^2 + \lambda)^2} + \sum_{j = 1}^{p}\frac{\lambda^2}{(d_j^2+\lambda)^2}(\boldsymbol \beta^{\top}V_j)^2
 \end{align}$$
 
-즉, 능형회귀를 이용하여 계수를 추정할 때, $\lambda$의 값이 커질수록 추정량의 분산$\text{tr}\Big(\mathbb{V}(\boldsymbol{\hat \beta}^R)\Big)$가 줄어들고, 추정량의 편향$\Big(\mathbb{E}(\boldsymbol{\hat\beta}^R) - \boldsymbol\beta \Big)$은 커지게 된다.
+* 즉, 능형회귀를 이용하여 계수를 추정할 때, $\lambda$의 값이 커질수록 추정량의 분산$\text{tr}\Big(\mathbb{V}(\boldsymbol{\hat \beta}^R)\Big)$가 줄어들고, 추정량의 편향$\Big(\mathbb{E}(\boldsymbol{\hat\beta}^R) - \boldsymbol\beta \Big)$은 커지게 된다.
 
 
-적당한 $\lambda$에 대하여 그 값을 넘어가는 $\lambda$를 택하게 되면 편향이 용인할 수 없을 정도로 커지게 된다. 따라서, 능형회귀추정량에서 분산과 편향을 모두 고려하여 작게 만드는 $\lambda$를 택하는 것이 상당히 중요하다.
+* 적당한 $\lambda$에 대하여 그 값을 넘어가는 $\lambda$를 택하게 되면 편향이 용인할 수 없을 정도로 커지게 된다. 따라서, 능형회귀추정량에서 분산과 편향을 모두 고려하여 작게 만드는 $\lambda$를 택하는 것이 상당히 중요하다.
 
 ---
 """
@@ -135,12 +146,72 @@ md"""
 
 # ╔═╡ 5eaba9ea-26a5-4edc-b10e-2a51598c1c03
 md"""
-주성분 회귀를 통해 추정된 계수를 $\boldsymbol{\hat \beta}^{PCR}$라고 하자. 주성분(Principle Component)의 수가 작게 설정되면
+**<답>**
+
+* 먼저 $\bf X$의 특이값 분해 표현은 아래과 같다.
+
+$${\bf X = UDV^{\top}, ~ D} = \text{diag}\{d_1, d_2, \cdots, d_p\},$$
+
+* 이때, 아래를 가정하자.
+
+$$\bf U = \begin{bmatrix} \bf U_1 & \bf U_2 \end{bmatrix}, ~ V = [V_1 ~~~~ V_2], ~ D = \begin{bmatrix}
+	\bf D_1 & \bf 0 \\
+	\bf 0 & \bf D_2
+\end{bmatrix}, ~ D_1\text{ is q×q matrix}, ~ q ≤ 3$$
+
+$\begin{align}
+	{\bf y} & = {\bf X}{\boldsymbol \beta} + {\boldsymbol \epsilon}, ~ {\boldsymbol \epsilon} \sim N({\bf 0}, \sigma^2 {\bf I_n})\\
+	& \approx {\bf U}_1{\bf D}_1 {\bf V}_1^\top{\boldsymbol \beta}  + {\boldsymbol \epsilon}\\
+	& = {\bf Z} {\boldsymbol \alpha} + {\boldsymbol \epsilon}, ~  \bf Z = U_1D_1
+\end{align}$
+
+* 주성분 회귀를 통해 추정된 계수를 $\boldsymbol{\hat \beta}^{PCR} = \bf V_1 \boldsymbol{\hat\alpha}$라고 할 때, $\boldsymbol{\hat\alpha} = \bf (Z^{\top}Z)^{-1}Z^{\top}y$ 이므로
+
+$$\begin{align}
+\mathbb{E}(\boldsymbol{\hat \beta}^{PCR}) & = \bf V_1(Z^{\top}Z)^{-1}Z^{\top}X\boldsymbol\beta \\
+& = \bf V_1 (D_1U_1^{\top}U_1D_1)^{-1}D_1U_1^{\top}UDV^{\top}\boldsymbol\beta \\
+& = \bf V_1D_1^{-2}D_1U_1^{\top}\big(U_1D_1V_1^{\top} + U_2D_2V_2^{\top}\big)\boldsymbol\beta \\
+& = \bf V_1V_1^{\top}\boldsymbol\beta \\ \\
+\mathbb{V}(\boldsymbol{\hat \beta}^{PCR}) & = \bf V_1(Z^{\top}Z)^{-1}Z^{\top}\mathbb{V}(y)Z(Z^{\top}Z)^{-1}V_1^{\top} \\
+& = \bf V_1(Z^{\top}Z)^{-1}V_1^{\top}\sigma^2 \\
+& = \bf V_1D_1^{-2}V_1^{\top}\sigma^2 \\
+\therefore \text{MSE}(\boldsymbol{\hat \beta}^{PCR}) & = \text{tr}\Big(\mathbb{V}(\boldsymbol{\hat \beta}^{PCR})\Big) + ||\mathbb{E}(\boldsymbol{\hat \beta}^{PCR}) - \boldsymbol\beta||_2^2 \\
+& = \sigma^2 \sum_{j = 1}^{q}\frac{1}{d_j^2} + \boldsymbol\beta^{\top} \bf V_2V_2^{\top}\boldsymbol\beta
+\end{align}$$
+
+$$\begin{align}
+
+\end{align}$$
+"""
+
+# ╔═╡ ff55f76c-0583-4b2a-8936-0eacb5f1d300
+md"""
+> 위 사실을 기반으로 아래와 같이 설명할 수 있다.
+>
+> * 주성분(Principle Component)의 수가 작게 설정된다는 것은 $\bf Z = U_1D_1$에서 $\bf D_1$의 차원이 줄어든다는 것을 의미한다. 즉, $\bf D$의 대각원소인 특이값 중 큰 일부만 택한다는 것이므로, 이를 주어진 식 $\text{MSE}(\boldsymbol{\hat \beta}^{PCR})$에 대입하면 분산이 작아지는 대신 편향제곱합이 커지게 된다.($\bf V_2$의 열 개수가 증가) 극단적으로 $\bf D$의 모든 대각원소를 버린다면($q = 0$), 위 식에서의 분산 부분은 $0$이 되고, 편향은 $\boldsymbol{\hat \beta}^{\top}\boldsymbol{\hat \beta}$로 커지게 된다. 이는 평균을 예측치로 내놓는 모형과 동일하다.
+>
+>
+> * 반대로 주성분의 수가 크게 설정된다는 것은 $\bf D_1$의 차원이 늘어난다는 것이다. 즉, 특이값 중 값이 작은 것들도 살려두게 되므로 이를 주어진 식 $\text{MSE}(\boldsymbol{\hat \beta}^{PCR})$에 대응하면 분산이 커지는 대신 편향제곱합이 줄어드는 것을 확인할 수 있다.($\bf V_2$의 열 개수가 감소) 극단적으로 $\bf D$를 그대로 사용하게 된다면(q = 3), 다중공선성이 있는 상황에서 분산 부분이 엄청 커지고, 편향제곱합은 $0$이 될 것이다. 이 때는 최소제곱추정량을 이용한 모형과 동일하다.
+
+---
 """
 
 # ╔═╡ 734e8d32-55de-4eaf-8498-10c9e9f2e51f
 md"""
 (4) 능형회귀에서 $\lambda=0$ 으로 설정하거나 $\lambda = \infty$로 설정하는 것이 어떠한 의미를 가지는 주성분 회귀와 연결시켜 설명하라.
+"""
+
+# ╔═╡ b21cd2e9-b162-408e-b55a-30ad48d3c59c
+md"""
+<답>
+
+`(2)`와 `(3)`에서 기술한 내용을 기반으로 아래와 같이 설명할 수 있다.
+
+* 만약 능형회귀에서 $\lambda = 0$으로 설정한다면, 이는 최소제곱추정량을 골조로 하는 회귀모형과 동일하다. 따라서, 주성분을 전부 사용한 주성분 회귀, 즉, $\bf V_1 = V$로 설정한 주성분 회귀와 동일한 의미를 가진다.
+
+
+* 만약 $\lambda = ∞$로 설정한다면, 손실함수의 L2-norm을 최소화하고자 능형회귀추정량은 전부 $0$으로 수렴한다. 이는 평균을 예측치로 내놓는 모형과 동일하므로, 주성분을 하나도 사용하지 않고 $\bf Z = \boldsymbol 0$으로, $\bf V_2 = V$로 설정한 주성분 회귀와 동일한 의미를 가진다.
+
 """
 
 # ╔═╡ 14c22744-c549-4fac-84e0-7f913f1cfa58
@@ -481,7 +552,8 @@ version = "17.4.0+2"
 # ╠═2adbe92e-ceea-4e21-9161-27e56bb5a6bf
 # ╟─3a89c770-a071-4d46-bff3-57e54008f6e8
 # ╟─8f8f60db-9082-47a5-8de0-60f11572afcd
-# ╠═e4569d07-7366-4df1-8dc5-b7e49fa4099f
+# ╟─e4569d07-7366-4df1-8dc5-b7e49fa4099f
+# ╟─6b12b718-308a-4c61-beae-8beb405549c1
 # ╟─aa306e3f-6e9a-413c-8e75-22f49fbc150a
 # ╟─9bf50bb3-350c-4edd-9a9f-a41c0fc865c2
 # ╟─51e8f9e3-b7d4-4e78-8b92-a26af54cda8b
@@ -490,8 +562,10 @@ version = "17.4.0+2"
 # ╟─e069c354-8ee3-4490-8937-25a665f0ce54
 # ╟─f6f6a2c1-ee78-4467-8f7f-3de1476d853c
 # ╟─ad99f90c-512f-450e-89e5-3283b6d68a57
-# ╠═5eaba9ea-26a5-4edc-b10e-2a51598c1c03
+# ╟─5eaba9ea-26a5-4edc-b10e-2a51598c1c03
+# ╟─ff55f76c-0583-4b2a-8936-0eacb5f1d300
 # ╟─734e8d32-55de-4eaf-8498-10c9e9f2e51f
+# ╟─b21cd2e9-b162-408e-b55a-30ad48d3c59c
 # ╟─14c22744-c549-4fac-84e0-7f913f1cfa58
 # ╟─ddd0c1bd-19fe-45ab-893b-c94242d612c0
 # ╟─a329cfda-d89c-49e0-9f0e-59d2cad465d5
